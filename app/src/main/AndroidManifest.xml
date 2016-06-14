@@ -73,6 +73,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.apkode.matano.activity.EventActivity" />
         </activity>
+        <activity
+            android:name=".activity.ProfilActivty"
+            android:label="@string/title_activity_profil_activty"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

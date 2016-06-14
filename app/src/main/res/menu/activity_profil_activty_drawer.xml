@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@mipmap/ic_action_account_box"
+            android:title="Mon profil" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@mipmap/ic_action_event"
+            android:title="Evènements" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@mipmap/ic_action_assignment"
+            android:title="Mes evènements" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@mipmap/ic_communication_email"
+            android:title="Mes Messages" />
+
+        <item
+            android:icon="@mipmap/ic_action_perm_device_info"
+            android:title="A propos" />
+
+        <item
+            android:icon="@mipmap/ic_action_settings_applications"
+            android:title="Paramètres" />
+
+        <item
+            android:icon="@mipmap/ic_action_exit_to_app"
+            android:title="Deconnexion" />
+    </group>
+
+</menu>

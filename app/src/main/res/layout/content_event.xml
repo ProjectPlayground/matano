@@ -12,116 +12,170 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/transparent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_horizontal_margin">
 
-        <Button
-            android:id="@+id/btnShareFacebook"
+        <FrameLayout
+            android:id="@+id/fmlDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:background="@color/colorPrimary"
-            android:clickable="true"
-            android:onClick="startEventShareFacebook"
-            android:text="Partager"
-            android:textColor="@android:color/white" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:background="@android:color/white"
-            android:orientation="vertical"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <TextView
-                android:id="@+id/txtTitre"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/imbPhoto"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/activity_mini"
-                android:layout_weight="1"
-                android:background="@drawable/button2"
-                android:onClick="startEventPhoto"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:src="@mipmap/ic_photo"
-                android:tint="@color/colorPrimary" />
-
-            <ImageButton
-                android:id="@+id/imbVideo"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/activity_mini"
-                android:layout_weight="1"
-                android:background="@drawable/button2"
-                android:onClick="startEventVideo"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:src="@mipmap/ic_video"
-                android:tint="@color/colorPrimary" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/txtJour"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_mini"
-            android:background="@android:color/white"
-            android:padding="@dimen/activity_horizontal_margin" />
-
-        <TextView
-            android:id="@+id/txtHoraire"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_mini"
-            android:background="@android:color/white"
-            android:padding="@dimen/activity_horizontal_margin" />
-
-        <TextView
-            android:id="@+id/txtLieu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_mini"
-            android:background="@android:color/white"
-            android:padding="@dimen/activity_horizontal_margin" />
-
-        <TextView
-            android:id="@+id/txtTarif"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_mini"
-            android:background="@android:color/white"
-            android:padding="@dimen/activity_horizontal_margin" />
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_mini"
-            android:background="@android:color/white"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txtPresentation"
+            android:visibility="gone">
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="@dimen/activity_horizontal_margin" />
+                android:scrollbars="none">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/txtTitre"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:background="@color/colorPrimary"
+                        android:textColor="@android:color/white"
+                        android:padding="@dimen/activity_horizontal_margin"
+                        android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
 
-        </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="@dimen/activity_horizontal_margin">
 
+                        <ImageButton
+                            android:id="@+id/imbPhoto"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/activity_micro"
+                            android:layout_weight="1"
+                            android:background="@drawable/button2"
+                            android:onClick="startEventPhoto"
+                            android:padding="@dimen/activity_horizontal_margin"
+                            android:src="@mipmap/ic_maps_local_see"
+                            android:tint="@color/colorPrimary" />
+
+                        <ImageButton
+                            android:id="@+id/imbVideo"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/activity_micro"
+                            android:layout_weight="1"
+                            android:background="@drawable/button2"
+                            android:onClick="startEventVideo"
+                            android:padding="@dimen/activity_horizontal_margin"
+                            android:src="@mipmap/ic_av_videocam"
+                            android:tint="@color/colorPrimary" />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="@dimen/activity_horizontal_margin">
+
+                        <ImageButton
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/activity_micro"
+                            android:layout_weight="1"
+                            android:onClick="startEventShareFacebook"
+                            android:background="@drawable/button2"
+                            android:padding="@dimen/activity_horizontal_margin"
+                            android:src="@mipmap/ic_social_share"
+                            android:tint="@color/colorPrimary" />
+
+                        <ImageButton
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/activity_micro"
+                            android:layout_weight="1"
+                            android:background="@drawable/button2"
+                            android:padding="@dimen/activity_horizontal_margin"
+                            android:src="@mipmap/ic_action_favorite"
+                            android:tint="@color/colorPrimary" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txtJour"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/activity_micro"
+                        android:background="@android:color/white"
+                        android:padding="@dimen/activity_horizontal_margin" />
+
+                    <TextView
+                        android:id="@+id/txtHoraire"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/activity_micro"
+                        android:background="@android:color/white"
+                        android:padding="@dimen/activity_horizontal_margin" />
+
+                    <TextView
+                        android:id="@+id/txtLieu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/activity_micro"
+                        android:background="@android:color/white"
+                        android:padding="@dimen/activity_horizontal_margin" />
+
+                    <TextView
+                        android:id="@+id/txtTarif"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/activity_micro"
+                        android:background="@android:color/white"
+                        android:padding="@dimen/activity_horizontal_margin" />
+
+                    <TextView
+                        android:id="@+id/txtPresentation"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/activity_micro"
+                        android:background="@android:color/white"
+                        android:padding="@dimen/activity_horizontal_margin" />
+                </LinearLayout>
+            </ScrollView>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/fmlParticipant"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:id="@+id/fmlCommentaire">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewCommentaire"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:id="@+id/fmlActualite">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewActualite"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
 
     </LinearLayout>
 
