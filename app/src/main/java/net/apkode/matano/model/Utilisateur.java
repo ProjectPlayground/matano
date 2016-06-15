@@ -18,6 +18,11 @@ public class Utilisateur implements Serializable {
         this.password = password;
     }
 
+    public Utilisateur(String telephone, String password) {
+        this.telephone = telephone;
+        this.password = password;
+    }
+
     public Utilisateur() {
     }
 

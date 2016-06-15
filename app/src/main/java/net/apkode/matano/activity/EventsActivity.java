@@ -18,13 +18,17 @@ import android.view.View;
 
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.EventSectionsPagerAdapter;
+import net.apkode.matano.helper.UtilisateurLocalStore;
 
 public class EventsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
+    private UtilisateurLocalStore utilisateurLocalStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
+
+        utilisateurLocalStore = new UtilisateurLocalStore(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -54,6 +58,15 @@ public class EventsActivity extends AppCompatActivity implements NavigationView.
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        if(!utilisateurLocalStore.isLoggedIn()){
+            finish();
+            startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -66,7 +79,6 @@ public class EventsActivity extends AppCompatActivity implements NavigationView.
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.btn_navigation_menu_profil) {
@@ -82,7 +94,9 @@ public class EventsActivity extends AppCompatActivity implements NavigationView.
         } else if (id == R.id.btn_navigation_menu_parametre) {
 
         } else if (id == R.id.btn_navigation_menu_dexonnexion) {
-
+            utilisateurLocalStore.setUtilisateurLogin(false);
+            finish();
+            startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Téléphone"
-                android:inputType="textPhonetic"/>
+                android:inputType="phone"/>
 
             <EditText android:id="@+id/edtPassword"
                 style="@style/editText1"

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import net.apkode.matano.R;
 import net.apkode.matano.helper.APIEvent;
 import net.apkode.matano.helper.IEvent;
+import net.apkode.matano.helper.UtilisateurLocalStore;
 import net.apkode.matano.model.Event;
 
 import java.util.List;
@@ -20,12 +21,15 @@ import java.util.TimerTask;
 
 public class Launch extends AppCompatActivity implements IEvent {
     private APIEvent apiEvent;
-    private static final int SPLASH_TIME = 000;
+    private static final int SPLASH_TIME = 2000;
+    private UtilisateurLocalStore utilisateurLocalStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
+
+        utilisateurLocalStore = new UtilisateurLocalStore(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().getDecorView().setSystemUiVisibility(
@@ -47,10 +51,17 @@ public class Launch extends AppCompatActivity implements IEvent {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
-
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(!utilisateurLocalStore.isLoggedIn()){
+            finish();
+            startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
+        }
+    }
+
 
     @Override
     public void getResponse(List<Event> events) {

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,7 +19,7 @@ import com.android.volley.toolbox.StringRequest;
 
 import net.apkode.matano.R;
 import net.apkode.matano.helper.AppController;
-import net.apkode.matano.model.Login;
+import net.apkode.matano.helper.UtilisateurLocalStore;
 import net.apkode.matano.model.Utilisateur;
 
 import java.util.HashMap;
@@ -30,6 +29,7 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
     private EditText edtTelephone;
     private EditText edtPassword;
     private final static String url = "http://niameyzze.apkode.net/connexion.php";
+    private UtilisateurLocalStore utilisateurLocalStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +51,8 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
         Button btnInscription = (Button)findViewById(R.id.btnInscription);
         assert btnInscription != null;
         btnInscription.setOnClickListener(this);
+
+        utilisateurLocalStore = new UtilisateurLocalStore(this);
     }
 
     @Override
@@ -74,7 +76,7 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
                 }
 
                 if(result == null){
-                    connexion(new Login(telephone, password));
+                    connexion(new Utilisateur(telephone, password));
                 }
                 break;
             case R.id.btnInscription :
@@ -84,7 +86,7 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void connexion(final Login login){
+    private void connexion(final Utilisateur utilisateur){
         final ProgressDialog progress = new ProgressDialog(this);
         progress.setMessage("Connexion... ");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -99,6 +101,8 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
                     public void onResponse(String response) {
                         progress.hide();
                         if(response.equals("1")){
+                            utilisateurLocalStore.storeUtilisateur(new Utilisateur(utilisateur.getTelephone(), utilisateur.getPassword()));
+                            utilisateurLocalStore.setUtilisateurLogin(true);
                            finish();
                             startActivity(new Intent(getApplicationContext(), Launch.class));
                         }else if (response.equals("0")){
@@ -117,8 +121,8 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
             protected Map<String, String> getParams() throws AuthFailureError {
 
                 Map<String, String> map = new HashMap<String, String>();
-                map.put("telephone", login.getTelephone());
-                map.put("password", login.getPassword());
+                map.put("telephone", utilisateur.getTelephone());
+                map.put("password", utilisateur.getPassword());
 
                 return map;
             }
