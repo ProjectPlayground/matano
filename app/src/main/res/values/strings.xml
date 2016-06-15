@@ -17,4 +17,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="title_activity_inscription_activty">Inscription</string>
+    <string name="title_activity_connexion_activty">Connexion</string>
+    <string name="error_inscription">Numéro de téléphone existe déjà</string>
+    <string name="error_reseau">Oups !  erreur réseau</string>
+    <string name="error_connexion">Téléphone ou mot de passe incorrect</string>
 </resources>

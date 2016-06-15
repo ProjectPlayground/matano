@@ -34,7 +34,7 @@ public class ParticipantHolder extends RecyclerView.ViewHolder implements View.O
                 .crossFade()
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                //.placeholder(imvParticipant.getResources().getDrawable(placeholder))
+                .placeholder(imvParticipant.getResources().getDrawable(R.mipmap.placeholder_homme))
                 .into(imvParticipant);
     }
 

@@ -23,7 +23,7 @@
                android:layout_gravity="center_vertical"
                android:layout_width="48dp"
                android:layout_height="48dp"
-               android:src="@mipmap/person" />
+               android:src="@mipmap/placeholder_homme" />
 
            <LinearLayout
                android:layout_width="match_parent"

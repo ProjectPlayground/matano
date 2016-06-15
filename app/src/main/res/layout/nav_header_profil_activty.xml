@@ -12,10 +12,10 @@
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:src="@mipmap/person"
-        app:border="true"
+        app:border="false"
         app:border_color="#EEEEEE"
-        app:border_width="2dp"
-        app:shadow="true"
+        app:border_width="0dp"
+        app:shadow="false"
         android:layout_centerInParent="true"/>
 
 

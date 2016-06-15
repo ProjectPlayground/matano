@@ -11,9 +11,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import net.apkode.matano.R;
 import net.apkode.matano.model.Commentaire;
 
-/**
- * Created by brabo on 6/14/16.
- */
 public class CommentaireHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private TextView txtNomCommentaire;
     private TextView txtJourCommentaire;
@@ -43,7 +40,7 @@ public class CommentaireHolder extends RecyclerView.ViewHolder implements View.O
                 .crossFade()
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                //.placeholder(imvImageCommentaire.getResources().getDrawable(placeholder))
+                .placeholder(imvImageCommentaire.getResources().getDrawable(R.mipmap.placeholder_femme))
                 .into(imvImageCommentaire);
     }
 

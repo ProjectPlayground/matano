@@ -5,12 +5,13 @@
         <item
             android:id="@+id/btn_navigation_menu_evenements"
             android:icon="@mipmap/ic_action_event"
-            android:title="Evènements" />
+            android:title="Evènements"
+            android:checked="true"/>
         <item
             android:id="@+id/btn_navigation_menu_profil"
             android:icon="@mipmap/ic_action_account_box"
-            android:title="Mon profil"
-            android:checked="true"/>
+            android:title="Mon profil" />
+
         <item
             android:id="@+id/btn_navigation_menu_mes_evenements"
             android:icon="@mipmap/ic_action_assignment"

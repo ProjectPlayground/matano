@@ -2,10 +2,12 @@ package net.apkode.matano.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.TextView;
 
 import net.apkode.matano.R;
 import net.apkode.matano.helper.APIEvent;
@@ -13,9 +15,12 @@ import net.apkode.matano.helper.IEvent;
 import net.apkode.matano.model.Event;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Launch extends AppCompatActivity implements IEvent {
     private APIEvent apiEvent;
+    private static final int SPLASH_TIME = 000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +36,19 @@ public class Launch extends AppCompatActivity implements IEvent {
 
         setContentView(R.layout.activity_launch);
 
-        apiEvent = new APIEvent(this, getApplicationContext());
-        apiEvent.getEvents();
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "font/Bauhaus-93_6274.ttf");
+        TextView nom = (TextView) findViewById(R.id.nom);
+        nom.setTypeface(custom_font);
+
+        try {
+            Thread.sleep(SPLASH_TIME);
+            apiEvent = new APIEvent(this, getApplicationContext());
+            apiEvent.getEvents();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
 
     }
 
