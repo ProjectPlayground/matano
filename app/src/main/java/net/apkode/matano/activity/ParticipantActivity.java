@@ -29,20 +29,12 @@ public class ParticipantActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_participant);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Participant participant = (Participant) getIntent().getSerializableExtra("Participant");
 
-        ImageView imageView = (ImageView) findViewById(R.id.main_backdrop);
 
-        Glide.with(this)
-                .load(participant.getImage())
-                .thumbnail(0.5f)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView);
 
         List<Interet> interets = new ArrayList<>();
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView);

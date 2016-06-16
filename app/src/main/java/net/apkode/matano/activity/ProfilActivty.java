@@ -3,6 +3,8 @@ package net.apkode.matano.activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import net.apkode.matano.R;
+import net.apkode.matano.adapter.InteretAdapter;
+import net.apkode.matano.model.Interet;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProfilActivty extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -25,6 +32,23 @@ public class ProfilActivty extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        List<Interet> interets = new ArrayList<>();
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setScrollbarFadingEnabled (true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        interets.add(new Interet("Film"));
+        interets.add(new Interet("Musique"));
+        interets.add(new Interet("Danse"));
+        interets.add(new Interet("Formation"));
+        interets.add(new Interet("Seminaire"));
+        interets.add(new Interet("Football"));
+        interets.add(new Interet("Natation"));
+        interets.add(new Interet("Theatre"));
+
+        recyclerView.setAdapter(new InteretAdapter(interets));
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -34,6 +58,8 @@ public class ProfilActivty extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
     }
 
     @Override

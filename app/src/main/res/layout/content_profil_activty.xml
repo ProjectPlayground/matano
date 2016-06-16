@@ -1,15 +1,318 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="net.apkode.matano.activity.ProfilActivty"
-    tools:showIn="@layout/app_bar_profil_activty">
+    tools:showIn="@layout/app_bar_profil_activty"
+    android:background="@color/transparent">
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+            <LinearLayout
+                android:background="@drawable/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/activity_mini"
+                android:layout_marginTop="@dimen/activity_mini"
+                android:layout_marginBottom="@dimen/activity_mini"
+                android:layout_marginLeft="@dimen/activity_mini"
+                android:layout_marginRight="@dimen/activity_mini"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal">
+                <ImageView
+                    android:id="@+id/imvImageCommentaire"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:src="@mipmap/person" />
+            </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin">
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/button3"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:layout_marginLeft="@dimen/activity_mini">
+
+                <ImageView
+                    android:layout_marginRight="@dimen/activity_mini"
+                    android:background="@drawable/button2"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_action_assignment"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="25"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/activity_micro"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/button3"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_mini">
+
+                <ImageView
+                    android:layout_marginRight="@dimen/activity_mini"
+                    android:background="@drawable/button2"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_communication_message"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="150"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/activity_micro"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:background="@android:color/white"
+            android:layout_marginBottom="@dimen/activity_micro"
+            android:layout_marginLeft="@dimen/activity_mini"
+            android:layout_marginRight="@dimen/activity_mini">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:text="CONTACT INFO"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_mini"
+            android:layout_marginRight="@dimen/activity_mini">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nom"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:textColor="@android:color/black"/>
+                <TextView
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:gravity="right"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:text="Bachir selah"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Prénom"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:textColor="@android:color/black"/>
+
+                <TextView
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:gravity="right"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:text="Zion"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:background="@android:color/white"
+            android:layout_marginBottom="@dimen/activity_micro"
+            android:layout_marginLeft="@dimen/activity_mini"
+            android:layout_marginRight="@dimen/activity_mini">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:text="BASIC INFO"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_mini"
+            android:layout_marginRight="@dimen/activity_mini">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sexe"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:textColor="@android:color/black"/>
+                <TextView
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:gravity="right"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:text="Homme"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date de naissance"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:textColor="@android:color/black"/>
+                <TextView
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:gravity="right"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:text="15/01/1980"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:background="@android:color/white"
+            android:layout_marginBottom="@dimen/activity_micro"
+            android:layout_marginLeft="@dimen/activity_mini"
+            android:layout_marginRight="@dimen/activity_mini">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:text="TEL INFO"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_mini"
+            android:layout_marginRight="@dimen/activity_mini">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Numéro"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:textColor="@android:color/black"/>
+                <TextView
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:gravity="right"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:text="92332322"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Email"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:textColor="@android:color/black"/>
+                <TextView
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:gravity="right"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:text="tontonbachir@gmail.com"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:background="@android:color/white"
+            android:layout_marginBottom="@dimen/activity_micro"
+            android:layout_marginLeft="@dimen/activity_mini"
+            android:layout_marginRight="@dimen/activity_mini">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:text="CENTRES D'INTÉRÊT"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_mini"
+            android:layout_marginRight="@dimen/activity_mini">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</ScrollView>

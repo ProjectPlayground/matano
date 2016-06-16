@@ -105,7 +105,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_communication_forum"/>
+                    android:src="@mipmap/ic_communication_message"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -134,9 +134,32 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
                </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/activity_mini">
+
+
+            <Button
+                android:layout_marginRight="@dimen/activity_mini"
+                android:background="@drawable/button3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Envoyer"/>
+
+            <EditText
+                style="@style/editText2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Lui écrire ..."
+                android:inputType="text|textCapSentences" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
