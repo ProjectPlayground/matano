@@ -13,6 +13,7 @@ import net.apkode.matano.model.Commentaire;
 
 public class CommentaireHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private TextView txtNomCommentaire;
+    private TextView txtPrenomCommentaire;
     private TextView txtJourCommentaire;
     private TextView txtHoraireCommentaire;
     private TextView txtCommentaire;
@@ -21,8 +22,9 @@ public class CommentaireHolder extends RecyclerView.ViewHolder implements View.O
     public CommentaireHolder(View itemView) {
         super(itemView);
         txtNomCommentaire = (TextView)itemView.findViewById(R.id.txtNomCommentaire);
+        txtPrenomCommentaire = (TextView)itemView.findViewById(R.id.txtPrenomCommentaire);
         txtJourCommentaire = (TextView)itemView.findViewById(R.id.txtJourCommentaire);
-       // txtHoraireCommentaire = (TextView)itemView.findViewById(R.id.txtHoraireCommentaire);
+        txtHoraireCommentaire = (TextView)itemView.findViewById(R.id.txtHoraireCommentaire);
         txtCommentaire = (TextView)itemView.findViewById(R.id.txtCommentaire);
         imvImageCommentaire = (ImageView)itemView.findViewById(R.id.imvImageCommentaire);
 
@@ -31,8 +33,9 @@ public class CommentaireHolder extends RecyclerView.ViewHolder implements View.O
 
     public void bind(Commentaire commentaire){
         txtNomCommentaire.setText(commentaire.getNom());
+        txtPrenomCommentaire.setText(commentaire.getPrenom());
         txtJourCommentaire.setText(commentaire.getJour());
-      //  txtHoraireCommentaire.setText(commentaire.getHoraire());
+        txtHoraireCommentaire.setText(commentaire.getHoraire());
         txtCommentaire.setText(commentaire.getCommentaire());
 
         Glide.with(imvImageCommentaire.getContext())

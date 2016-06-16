@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtTitre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@android:color/background_dark"
+                android:padding="@dimen/activity_horizontal_margin"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin">
+
+                <ImageButton
+                    android:id="@+id/imbPhoto"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/activity_micro"
+                    android:layout_weight="1"
+                    android:background="@drawable/button3"
+                    android:onClick="startEventPhoto"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:src="@mipmap/ic_maps_local_see" />
+
+                <ImageButton
+                    android:id="@+id/imbVideo"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/activity_micro"
+                    android:layout_weight="1"
+                    android:background="@drawable/button3"
+                    android:onClick="startEventVideo"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:src="@mipmap/ic_av_videocam" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:background="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_mini">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="JOUR"
+                    android:layout_marginBottom="@dimen/activity_micro"
+                    android:textColor="@android:color/black"/>
+                <TextView
+                    android:id="@+id/txtJour"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="11/02/2016" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:background="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_mini">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="HORAIRE"
+                    android:layout_marginBottom="@dimen/activity_micro"
+                    android:textColor="@android:color/black"/>
+                <TextView
+                    android:id="@+id/txtHoraire"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="11/02/2016" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:background="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_mini">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LIEU"
+                    android:layout_marginBottom="@dimen/activity_micro"
+                    android:textColor="@android:color/black"/>
+                <TextView
+                    android:id="@+id/txtLieu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="11/02/2016" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:background="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_mini">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TARIF"
+                    android:layout_marginBottom="@dimen/activity_micro"
+                    android:textColor="@android:color/black"/>
+                <TextView
+                    android:id="@+id/txtTarif"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="11/02/2016" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:background="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_mini">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="DÉTAIL"
+                    android:layout_marginBottom="@dimen/activity_micro"
+                    android:textColor="@android:color/black"/>
+                <TextView
+                    android:id="@+id/txtPresentation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="11/02/2016" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>

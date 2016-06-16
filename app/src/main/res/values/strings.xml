@@ -22,4 +22,7 @@
     <string name="error_inscription">Numéro de téléphone existe déjà</string>
     <string name="error_reseau">Oups !  erreur réseau</string>
     <string name="error_connexion">Téléphone ou mot de passe incorrect</string>
+    <string name="title_activity_participant">Participant</string>
+    <string name="action_share">Partager</string>
+    <string name="imageParticipant">Participant</string>
 </resources>

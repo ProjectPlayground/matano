@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp"
+    android:layout_margin="1dp"
     app:cardBackgroundColor="@android:color/white"
-    app:cardCornerRadius="1dp"
-    app:cardElevation="1dp">
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp">
 
    <LinearLayout
        android:layout_width="match_parent"
@@ -39,7 +39,7 @@
                    android:layout_marginBottom="@dimen/activity_micro"
                    android:textColor="@android:color/black"/>
                <TextView
-                   android:id="@+id/txtJourCommentaire"
+                   android:id="@+id/txtPrenomCommentaire"
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    android:text="11/02/2016" />
@@ -59,6 +59,26 @@
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:text=""/>
+       </LinearLayout>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal">
+           <TextView android:id="@+id/txtJourCommentaire"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="01/02/2016"
+               android:alpha="0.6" />
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="  -  "/>
+           <TextView android:id="@+id/txtHoraireCommentaire"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="14H32"
+               android:alpha="0.6"/>
        </LinearLayout>
 
    </LinearLayout>

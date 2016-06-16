@@ -8,14 +8,16 @@ import java.io.Serializable;
 public class Commentaire implements Serializable {
     private Long id;
     private String nom;
+    private String prenom;
     private String jour;
     private String horaire;
     private String image;
     private String commentaire;
 
-    public Commentaire(Long id, String nom, String jour, String horaire, String image, String commentaire) {
+    public Commentaire(Long id, String nom, String prenom, String jour, String horaire, String image, String commentaire) {
         this.id = id;
         this.nom = nom;
+        this.prenom = prenom;
         this.jour = jour;
         this.horaire = horaire;
         this.image = image;
@@ -39,6 +41,14 @@ public class Commentaire implements Serializable {
 
     public void setNom(String nom) {
         this.nom = nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
     }
 
     public String getJour() {

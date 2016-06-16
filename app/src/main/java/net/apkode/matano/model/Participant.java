@@ -8,11 +8,13 @@ import java.io.Serializable;
 public class Participant implements Serializable {
     private Long id;
     private String nom;
+    private String prenom;
     private String image;
 
-    public Participant(Long id, String nom, String image) {
+    public Participant(Long id, String nom, String prenom, String image) {
         this.id = id;
         this.nom = nom;
+        this.prenom = prenom;
         this.image = image;
     }
 
@@ -29,6 +31,14 @@ public class Participant implements Serializable {
 
     public String getNom() {
         return nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
     }
 
     public void setNom(String nom) {
