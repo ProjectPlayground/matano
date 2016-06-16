@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import net.apkode.matano.R;
-import net.apkode.matano.holder.ActualiteHolder;
 import net.apkode.matano.holder.InteretHolder;
 import net.apkode.matano.model.Interet;
 

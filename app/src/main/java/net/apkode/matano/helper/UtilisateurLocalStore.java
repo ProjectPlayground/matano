@@ -18,7 +18,7 @@ public class UtilisateurLocalStore {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
     }
 
-    public void storeUtilisateur(Utilisateur utilisateur){
+    public void storeUtilisateur(Utilisateur utilisateur) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(TELEPHONE, utilisateur.getTelephone());
         editor.putString(PASSWORD, utilisateur.getPassword());
@@ -26,30 +26,30 @@ public class UtilisateurLocalStore {
 
     }
 
-    public Utilisateur getUtilisateur(){
+    public Utilisateur getUtilisateur() {
         String telephone = sharedPreferences.getString(TELEPHONE, "");
         String password = sharedPreferences.getString(PASSWORD, "");
 
-        return  new Utilisateur(telephone, password);
+        return new Utilisateur(telephone, password);
     }
 
-    public void clearUtilisateur(){
+    public void clearUtilisateur() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.commit();
     }
 
-    public void setUtilisateurLogin(boolean loggedIn){
+    public void setUtilisateurLogin(boolean loggedIn) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(IS_LOGGED_IN, loggedIn);
         editor.commit();
     }
 
 
-    public boolean isLoggedIn(){
-        if (sharedPreferences.getBoolean(IS_LOGGED_IN, false)){
+    public boolean isLoggedIn() {
+        if (sharedPreferences.getBoolean(IS_LOGGED_IN, false)) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }

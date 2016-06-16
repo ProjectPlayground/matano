@@ -25,4 +25,7 @@
     <string name="title_activity_participant">Participant</string>
     <string name="action_share">Partager</string>
     <string name="imageParticipant">Participant</string>
+    <string name="title_activity_mes_events">Mes évènements</string>
+    <string name="title_activity_mes_messages">Mes messages</string>
+    <string name="title_activity_parametres_activty">Paramètres</string>
 </resources>

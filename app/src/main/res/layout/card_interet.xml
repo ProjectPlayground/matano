@@ -9,14 +9,14 @@
     app:cardElevation="0dp">
 
     <TextView
-        android:text="Film"
         android:id="@+id/txtInteresse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/activity_micro"
         android:paddingBottom="@dimen/activity_micro"
         android:paddingLeft="@dimen/activity_mini"
-        android:paddingRight="@dimen/activity_mini"/>
+        android:paddingRight="@dimen/activity_mini"
+        android:paddingTop="@dimen/activity_micro"
+        android:text="Film" />
 
 
-    </android.support.v7.widget.CardView>
+</android.support.v7.widget.CardView>

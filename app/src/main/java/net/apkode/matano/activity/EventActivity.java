@@ -5,15 +5,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
@@ -27,22 +23,14 @@ import net.apkode.matano.fragment.ActualiteFragment;
 import net.apkode.matano.fragment.CommentaireFragment;
 import net.apkode.matano.fragment.ParticipantFragment;
 import net.apkode.matano.fragment.PresentationFragment;
-import net.apkode.matano.model.Actualite;
 import net.apkode.matano.model.Event;
-import net.apkode.matano.model.Participant;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class EventActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
     private Event event;
     private BottomBar mBottomBar;
-    private RecyclerView recyclerViewCommentaire;
-    private RecyclerView recyclerViewActualite;
-    private List<Participant> participants = new ArrayList<>();
-    private List<Actualite> actualites = new ArrayList<>();
 
     private PresentationFragment presentationFragment;
     private CommentaireFragment commentaireFragment;
@@ -64,20 +52,10 @@ public class EventActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ImageView imageView = (ImageView) findViewById(R.id.main_backdrop);
-
-        Glide.with(this)
-                .load(event.getImage())
-                .thumbnail(0.5f)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView);
-
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
-
 
         presentationFragment = PresentationFragment.newInstance();
         presentationFragment.setArguments(bundle);
@@ -92,17 +70,17 @@ public class EventActivity extends AppCompatActivity {
         actualiteFragment.setArguments(bundle);
 
         mBottomBar = BottomBar.attach(this, savedInstanceState);
-        mBottomBar.setItems(R.menu.bottombar_menu);
+        mBottomBar.setItems(R.menu.bottom_bar);
         mBottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
             @Override
             public void onMenuTabSelected(@IdRes int menuItemId) {
-                if(menuItemId == R.id.btn_menu_description){
+                if (menuItemId == R.id.btn_menu_description) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fmlContainer, presentationFragment).commit();
-                }else if (menuItemId == R.id.btn_menu_commentaire){
+                } else if (menuItemId == R.id.btn_menu_commentaire) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fmlContainer, commentaireFragment).commit();
-                   }else if(menuItemId == R.id.btn_menu_participant){
+                } else if (menuItemId == R.id.btn_menu_participant) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fmlContainer, participantFragment).commit();
-                }else if(menuItemId == R.id.btn_menu_actualite){
+                } else if (menuItemId == R.id.btn_menu_actualite) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fmlContainer, actualiteFragment).commit();
                 }
                 //   mMessageView.setText(TabMessage.get(menuItemId, false));
@@ -135,7 +113,7 @@ public class EventActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_share) {
             if (event != null) {
                 String presentation = event.getPresentation();
                 String titre = event.getTitre();

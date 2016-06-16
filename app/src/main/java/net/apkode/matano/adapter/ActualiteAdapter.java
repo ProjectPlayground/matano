@@ -7,11 +7,9 @@ import android.view.ViewGroup;
 
 import net.apkode.matano.R;
 import net.apkode.matano.holder.ActualiteHolder;
-import net.apkode.matano.holder.CommentaireHolder;
 import net.apkode.matano.model.Actualite;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class ActualiteAdapter extends RecyclerView.Adapter<ActualiteHolder> {
     List<Actualite> list;

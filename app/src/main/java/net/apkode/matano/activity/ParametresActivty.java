@@ -3,9 +3,7 @@ package net.apkode.matano.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,34 +11,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import net.apkode.matano.R;
-import net.apkode.matano.adapter.EventSectionsPagerAdapter;
 import net.apkode.matano.helper.UtilisateurLocalStore;
 
-public class EventsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ParametresActivty extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
     private UtilisateurLocalStore utilisateurLocalStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_events);
+        setContentView(R.layout.activity_parametres);
 
         utilisateurLocalStore = new UtilisateurLocalStore(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        EventSectionsPagerAdapter eventSectionsPagerAdapter = new EventSectionsPagerAdapter(getSupportFragmentManager(), getApplicationContext());
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(eventSectionsPagerAdapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
-
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            TabLayout.Tab tab = tabLayout.getTabAt(i);
-            tab.setCustomView(eventSectionsPagerAdapter.getTabView(i));
-        }
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -50,7 +35,6 @@ public class EventsActivity extends AppCompatActivity implements NavigationView.
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
     }
 
     @Override
@@ -101,9 +85,9 @@ public class EventsActivity extends AppCompatActivity implements NavigationView.
             startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
         }
 
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 }

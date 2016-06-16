@@ -3,44 +3,36 @@ package net.apkode.matano.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import net.apkode.matano.R;
-import net.apkode.matano.adapter.EventSectionsPagerAdapter;
+import net.apkode.matano.adapter.EventAdapter;
+import net.apkode.matano.helper.DBEvent;
 import net.apkode.matano.helper.UtilisateurLocalStore;
+import net.apkode.matano.model.Event;
 
-public class EventsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+import java.util.List;
+
+public class MesEventsActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
     private UtilisateurLocalStore utilisateurLocalStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_events);
+        setContentView(R.layout.activity_mes_events);
 
         utilisateurLocalStore = new UtilisateurLocalStore(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        EventSectionsPagerAdapter eventSectionsPagerAdapter = new EventSectionsPagerAdapter(getSupportFragmentManager(), getApplicationContext());
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(eventSectionsPagerAdapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
-
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            TabLayout.Tab tab = tabLayout.getTabAt(i);
-            tab.setCustomView(eventSectionsPagerAdapter.getTabView(i));
-        }
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -50,6 +42,17 @@ public class EventsActivity extends AppCompatActivity implements NavigationView.
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        DBEvent dbEvent = new DBEvent(this);
+        // TODO rechercher les events de l'utilisateur
+        List<Event> events = dbEvent.getDatasByCategorie("Culture");
+
+        recyclerView.setAdapter(new EventAdapter(events));
 
     }
 
@@ -71,6 +74,7 @@ public class EventsActivity extends AppCompatActivity implements NavigationView.
             super.onBackPressed();
         }
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -105,5 +109,4 @@ public class EventsActivity extends AppCompatActivity implements NavigationView.
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 }

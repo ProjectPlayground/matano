@@ -1,18 +1,10 @@
 package net.apkode.matano.activity;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.InteretAdapter;
@@ -35,11 +27,10 @@ public class ParticipantActivity extends AppCompatActivity {
         Participant participant = (Participant) getIntent().getSerializableExtra("Participant");
 
 
-
         List<Interet> interets = new ArrayList<>();
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setScrollbarFadingEnabled (true);
+        recyclerView.setScrollbarFadingEnabled(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         interets.add(new Interet("Film"));
@@ -52,7 +43,6 @@ public class ParticipantActivity extends AppCompatActivity {
         interets.add(new Interet("Theatre"));
 
         recyclerView.setAdapter(new InteretAdapter(interets));
-
 
 
     }

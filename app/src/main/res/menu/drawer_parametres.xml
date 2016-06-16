@@ -5,8 +5,7 @@
         <item
             android:id="@+id/btn_navigation_menu_evenements"
             android:icon="@mipmap/ic_action_event"
-            android:title="Evènements"
-            android:checked="true"/>
+            android:title="Evènements" />
         <item
             android:id="@+id/btn_navigation_menu_profil"
             android:icon="@mipmap/ic_action_account_box"
@@ -28,6 +27,7 @@
 
         <item
             android:id="@+id/btn_navigation_menu_parametre"
+            android:checked="true"
             android:icon="@mipmap/ic_action_settings_applications"
             android:title="Paramètres" />
 

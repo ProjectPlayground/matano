@@ -16,7 +16,7 @@ public class PresentationFragment extends Fragment {
     public PresentationFragment() {
     }
 
-    public static PresentationFragment newInstance(){
+    public static PresentationFragment newInstance() {
         PresentationFragment presentationFragment = new PresentationFragment();
         return presentationFragment;
     }
@@ -44,7 +44,7 @@ public class PresentationFragment extends Fragment {
         TextView txtJour = (TextView) view.findViewById(R.id.txtJour);
 
         Bundle bundle = getArguments();
-        if(bundle != null){
+        if (bundle != null) {
             Event event = (Event) bundle.getSerializable("Event");
 
             txtTitre.setText(event.getTitre());
@@ -55,7 +55,6 @@ public class PresentationFragment extends Fragment {
             txtJour.setText(event.getJour());
 
         }
-
 
 
     }

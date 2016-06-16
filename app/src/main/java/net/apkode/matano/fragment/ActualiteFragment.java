@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.ActualiteAdapter;
 import net.apkode.matano.model.Actualite;
-import net.apkode.matano.model.Commentaire;
 import net.apkode.matano.model.Event;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class ActualiteFragment extends Fragment {
     public ActualiteFragment() {
     }
 
-    public static ActualiteFragment newInstance(){
+    public static ActualiteFragment newInstance() {
         ActualiteFragment actualiteFragment = new ActualiteFragment();
         return actualiteFragment;
     }

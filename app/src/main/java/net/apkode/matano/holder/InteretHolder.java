@@ -15,10 +15,10 @@ public class InteretHolder extends RecyclerView.ViewHolder {
 
     public InteretHolder(View itemView) {
         super(itemView);
-        txtTnteresse = (TextView)itemView.findViewById(R.id.txtInteresse);
+        txtTnteresse = (TextView) itemView.findViewById(R.id.txtInteresse);
     }
 
-    public void bind(Interet interet){
+    public void bind(Interet interet) {
         txtTnteresse.setText(interet.getInteresse());
     }
 }

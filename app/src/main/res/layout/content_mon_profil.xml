@@ -4,92 +4,93 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/transparent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="net.apkode.matano.activity.ProfilActivty"
-    tools:showIn="@layout/app_bar_profil_activty"
-    android:background="@color/transparent">
+    tools:context=".activity.MonProfilActivty"
+    tools:showIn="@layout/app_bar_mon_profil_">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-            <LinearLayout
-                android:background="@drawable/button2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="@dimen/activity_mini"
-                android:layout_marginTop="@dimen/activity_mini"
-                android:layout_marginBottom="@dimen/activity_mini"
-                android:layout_marginLeft="@dimen/activity_mini"
-                android:layout_marginRight="@dimen/activity_mini"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal">
-                <ImageView
-                    android:id="@+id/imvImageCommentaire"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:src="@mipmap/person" />
-            </LinearLayout>
-
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/activity_mini"
+            android:layout_marginLeft="@dimen/activity_mini"
+            android:layout_marginRight="@dimen/activity_mini"
+            android:layout_marginTop="@dimen/activity_mini"
+            android:background="@drawable/button2"
+            android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin">
+            android:padding="@dimen/activity_mini">
+
+            <ImageView
+                android:id="@+id/imvImageCommentaire"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/person" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:orientation="horizontal">
 
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginLeft="@dimen/activity_mini"
+                android:layout_weight="1"
                 android:background="@drawable/button3"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:layout_marginLeft="@dimen/activity_mini">
+                android:orientation="horizontal"
+                android:padding="@dimen/activity_horizontal_margin">
 
                 <ImageView
-                    android:layout_marginRight="@dimen/activity_mini"
-                    android:background="@drawable/button2"
-                    android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_action_assignment"/>
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="@dimen/activity_mini"
+                    android:background="@drawable/button2"
+                    android:src="@mipmap/ic_action_assignment" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="25"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="@dimen/activity_micro"/>
+                    android:layout_marginBottom="@dimen/activity_micro"
+                    android:text="25" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginRight="@dimen/activity_mini"
+                android:layout_weight="1"
                 android:background="@drawable/button3"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_mini">
+                android:orientation="horizontal"
+                android:padding="@dimen/activity_horizontal_margin">
 
                 <ImageView
-                    android:layout_marginRight="@dimen/activity_mini"
-                    android:background="@drawable/button2"
-                    android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_communication_message"/>
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="@dimen/activity_mini"
+                    android:background="@drawable/button2"
+                    android:src="@mipmap/ic_communication_message" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="150"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="@dimen/activity_micro"/>
+                    android:layout_marginBottom="@dimen/activity_micro"
+                    android:text="150" />
 
             </LinearLayout>
 
@@ -98,61 +99,68 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/activity_horizontal_margin"
-            android:background="@android:color/white"
             android:layout_marginBottom="@dimen/activity_micro"
             android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini">
+            android:layout_marginRight="@dimen/activity_mini"
+            android:background="@android:color/white"
+            android:padding="@dimen/activity_horizontal_margin">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                android:text="CONTACT INFO"/>
+                android:text="CONTACT INFO"
+                android:textColor="@android:color/black" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:orientation="vertical"
             android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini">
+            android:layout_marginRight="@dimen/activity_mini"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_horizontal_margin"
                     android:text="Nom"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:textColor="@android:color/black"/>
+                    android:textColor="@android:color/black" />
+
                 <TextView
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:gravity="right"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
-                    android:text="Bachir selah"/>
+                    android:gravity="right"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:text="Bachir selah" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_horizontal_margin"
                     android:text="Prénom"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:textColor="@android:color/black"/>
+                    android:textColor="@android:color/black" />
 
                 <TextView
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:gravity="right"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
-                    android:text="Zion"/>
+                    android:gravity="right"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:text="Zion" />
             </LinearLayout>
 
         </LinearLayout>
@@ -161,61 +169,68 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/activity_horizontal_margin"
-            android:background="@android:color/white"
             android:layout_marginBottom="@dimen/activity_micro"
             android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini">
+            android:layout_marginRight="@dimen/activity_mini"
+            android:background="@android:color/white"
+            android:padding="@dimen/activity_horizontal_margin">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                android:text="BASIC INFO"/>
+                android:text="BASIC INFO"
+                android:textColor="@android:color/black" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:orientation="vertical"
             android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini">
+            android:layout_marginRight="@dimen/activity_mini"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_horizontal_margin"
                     android:text="Sexe"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:textColor="@android:color/black"/>
+                    android:textColor="@android:color/black" />
+
                 <TextView
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:gravity="right"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
-                    android:text="Homme"/>
+                    android:gravity="right"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:text="Homme" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_horizontal_margin"
                     android:text="Date de naissance"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:textColor="@android:color/black"/>
+                    android:textColor="@android:color/black" />
+
                 <TextView
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:gravity="right"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
-                    android:text="15/01/1980"/>
+                    android:gravity="right"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:text="15/01/1980" />
             </LinearLayout>
 
         </LinearLayout>
@@ -224,61 +239,68 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/activity_horizontal_margin"
-            android:background="@android:color/white"
             android:layout_marginBottom="@dimen/activity_micro"
             android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini">
+            android:layout_marginRight="@dimen/activity_mini"
+            android:background="@android:color/white"
+            android:padding="@dimen/activity_horizontal_margin">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                android:text="TEL INFO"/>
+                android:text="TEL INFO"
+                android:textColor="@android:color/black" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:orientation="vertical"
             android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini">
+            android:layout_marginRight="@dimen/activity_mini"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_horizontal_margin"
                     android:text="Numéro"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:textColor="@android:color/black"/>
+                    android:textColor="@android:color/black" />
+
                 <TextView
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:gravity="right"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
-                    android:text="92332322"/>
+                    android:gravity="right"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:text="92332322" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_horizontal_margin"
                     android:text="Email"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:textColor="@android:color/black"/>
+                    android:textColor="@android:color/black" />
+
                 <TextView
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:gravity="right"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
-                    android:text="tontonbachir@gmail.com"/>
+                    android:gravity="right"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:text="tontonbachir@gmail.com" />
             </LinearLayout>
 
         </LinearLayout>
@@ -287,29 +309,31 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/activity_horizontal_margin"
-            android:background="@android:color/white"
             android:layout_marginBottom="@dimen/activity_micro"
             android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini">
+            android:layout_marginRight="@dimen/activity_mini"
+            android:background="@android:color/white"
+            android:padding="@dimen/activity_horizontal_margin">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                android:text="CENTRES D'INTÉRÊT"/>
+                android:text="CENTRES D'INTÉRÊT"
+                android:textColor="@android:color/black" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini">
+            android:layout_marginRight="@dimen/activity_mini"
+            android:orientation="vertical">
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
         </LinearLayout>
 
 

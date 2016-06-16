@@ -8,79 +8,88 @@
     app:cardCornerRadius="0dp"
     app:cardElevation="0dp">
 
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:orientation="vertical"
-       android:padding="@dimen/activity_horizontal_margin">
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin">
 
-           <ImageView
-               android:id="@+id/imvImageCommentaire"
-               android:layout_gravity="center_vertical"
-               android:layout_width="48dp"
-               android:layout_height="48dp"
-               android:src="@mipmap/placeholder_homme" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="vertical"
-               android:layout_gravity="bottom"
-               android:paddingLeft="@dimen/activity_horizontal_margin">
-               <TextView
-                   android:id="@+id/txtNomCommentaire"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:text="Bachir Selah Zion"
-                   android:layout_marginBottom="@dimen/activity_micro"
-                   android:textColor="@android:color/black"/>
-               <TextView
-                   android:id="@+id/txtPrenomCommentaire"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:text="11/02/2016" />
-           </LinearLayout>
+            <ImageView
+                android:id="@+id/imvImageCommentaire"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/placeholder_homme" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/activity_horizontal_margin">
+
+                <TextView
+                    android:id="@+id/txtNomCommentaire"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_micro"
+                    android:text="Bachir Selah Zion"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/txtPrenomCommentaire"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="11/02/2016" />
+            </LinearLayout>
 
 
-       </LinearLayout>
+        </LinearLayout>
 
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="vertical"
-           android:paddingTop="@dimen/activity_mini"
-           android:paddingBottom="@dimen/activity_mini">
-           <TextView
-               android:id="@+id/txtCommentaire"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:text=""/>
-       </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_mini"
+            android:paddingTop="@dimen/activity_mini">
 
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal">
-           <TextView android:id="@+id/txtJourCommentaire"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:text="01/02/2016"
-               android:alpha="0.6" />
-           <TextView
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:text="  -  "/>
-           <TextView android:id="@+id/txtHoraireCommentaire"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:text="14H32"
-               android:alpha="0.6"/>
-       </LinearLayout>
+            <TextView
+                android:id="@+id/txtCommentaire"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+        </LinearLayout>
 
-   </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtJourCommentaire"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.6"
+                android:text="01/02/2016" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  -  " />
+
+            <TextView
+                android:id="@+id/txtHoraireCommentaire"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.6"
+                android:text="14H32" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>

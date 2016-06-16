@@ -3,8 +3,8 @@ package net.apkode.matano.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,10 +25,10 @@ import net.apkode.matano.model.Utilisateur;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ConnexionActivity extends AppCompatActivity implements View.OnClickListener{
+public class ConnexionActivity extends AppCompatActivity implements View.OnClickListener {
+    private final static String url = "http://niameyzze.apkode.net/connexion.php";
     private EditText edtTelephone;
     private EditText edtPassword;
-    private final static String url = "http://niameyzze.apkode.net/connexion.php";
     private UtilisateurLocalStore utilisateurLocalStore;
 
     @Override
@@ -36,8 +36,8 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connexion);
 
-        edtTelephone = (EditText)findViewById(R.id.edtTelephone);
-        edtPassword = (EditText)findViewById(R.id.edtPassword);
+        edtTelephone = (EditText) findViewById(R.id.edtTelephone);
+        edtPassword = (EditText) findViewById(R.id.edtPassword);
 
         Typeface custom_font = Typeface.createFromAsset(getAssets(), "font/Bauhaus-93_6274.ttf");
         TextView nom = (TextView) findViewById(R.id.nom);
@@ -48,7 +48,7 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
         assert btnConnexion != null;
         btnConnexion.setOnClickListener(this);
 
-        Button btnInscription = (Button)findViewById(R.id.btnInscription);
+        Button btnInscription = (Button) findViewById(R.id.btnInscription);
         assert btnInscription != null;
         btnInscription.setOnClickListener(this);
 
@@ -60,33 +60,33 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
         String result = null;
 
         Integer id = v.getId();
-        switch (id){
+        switch (id) {
             case R.id.btnConnexion:
                 String telephone = edtTelephone.getText().toString();
                 String password = edtPassword.getText().toString();
 
-                if(telephone.equals("")){
+                if (telephone.equals("")) {
                     edtTelephone.setError("Required");
                     result = "error";
                 }
 
-                if(password.equals("")){
+                if (password.equals("")) {
                     edtPassword.setError("Required");
                     result = "error";
                 }
 
-                if(result == null){
+                if (result == null) {
                     connexion(new Utilisateur(telephone, password));
                 }
                 break;
-            case R.id.btnInscription :
+            case R.id.btnInscription:
                 finish();
                 startActivity(new Intent(getApplicationContext(), InscriptionActivity.class));
                 break;
         }
     }
 
-    private void connexion(final Utilisateur utilisateur){
+    private void connexion(final Utilisateur utilisateur) {
         final ProgressDialog progress = new ProgressDialog(this);
         progress.setMessage("Connexion... ");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -100,12 +100,12 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
                     @Override
                     public void onResponse(String response) {
                         progress.hide();
-                        if(response.equals("1")){
+                        if (response.equals("1")) {
                             utilisateurLocalStore.storeUtilisateur(new Utilisateur(utilisateur.getTelephone(), utilisateur.getPassword()));
                             utilisateurLocalStore.setUtilisateurLogin(true);
-                           finish();
+                            finish();
                             startActivity(new Intent(getApplicationContext(), Launch.class));
-                        }else if (response.equals("0")){
+                        } else if (response.equals("0")) {
                             Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_connexion), Toast.LENGTH_SHORT).show();
                         }
                     }

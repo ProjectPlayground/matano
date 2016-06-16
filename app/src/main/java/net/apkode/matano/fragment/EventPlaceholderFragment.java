@@ -44,7 +44,7 @@ public class EventPlaceholderFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_events, container, false);
 
-        getDataFromApi(rootView);
+        getDataFromApi();
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -67,7 +67,7 @@ public class EventPlaceholderFragment extends Fragment {
     }
 
 
-    private void getDataFromApi(View rootView) {
+    private void getDataFromApi() {
         DBEvent dbEventCulture = new DBEvent(getContext());
         DBEvent dbEventEducation = new DBEvent(getContext());
         DBEvent dbEventSport = new DBEvent(getContext());

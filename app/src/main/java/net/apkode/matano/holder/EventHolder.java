@@ -6,8 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.squareup.picasso.Picasso;
 
 import net.apkode.matano.R;
 import net.apkode.matano.activity.EventActivity;
@@ -53,13 +52,21 @@ public class EventHolder extends RecyclerView.ViewHolder implements View.OnClick
                 break;
         }
 
-        Glide.with(imvImage.getContext())
+      /*  Glide.with(imvImage.getContext())
                 .load(event.getImage())
                 .crossFade()
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(imvImage.getResources().getDrawable(placeholder))
+                .into(imvImage);*/
+
+
+        Picasso.with(imvImage.getContext())
+                .load(event.getImage())
+                //.fit()
+                // .centerCrop()
                 .into(imvImage);
+
     }
 
     @Override

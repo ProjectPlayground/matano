@@ -1,14 +1,10 @@
 package net.apkode.matano.activity;
 
-import android.annotation.TargetApi;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,24 +24,24 @@ import net.apkode.matano.model.Utilisateur;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InscriptionActivity extends AppCompatActivity implements View.OnClickListener{
+public class InscriptionActivity extends AppCompatActivity implements View.OnClickListener {
+    private final static String url = "http://niameyzze.apkode.net/inscription.php";
     private EditText edtTelephone;
     private EditText edtNom;
     private EditText edtPrenom;
     private EditText edtPassword;
     private EditText edtPasswordConfirme;
-    private final static String url = "http://niameyzze.apkode.net/inscription.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inscription);
 
-        edtTelephone = (EditText)findViewById(R.id.edtTelephone);
-        edtNom = (EditText)findViewById(R.id.edtNom);
-        edtPrenom = (EditText)findViewById(R.id.edtPrenom);
-        edtPassword = (EditText)findViewById(R.id.edtPassword);
-        edtPasswordConfirme = (EditText)findViewById(R.id.edtPasswordConfirme);
+        edtTelephone = (EditText) findViewById(R.id.edtTelephone);
+        edtNom = (EditText) findViewById(R.id.edtNom);
+        edtPrenom = (EditText) findViewById(R.id.edtPrenom);
+        edtPassword = (EditText) findViewById(R.id.edtPassword);
+        edtPasswordConfirme = (EditText) findViewById(R.id.edtPasswordConfirme);
 
 
         Typeface custom_font = Typeface.createFromAsset(getAssets(), "font/Bauhaus-93_6274.ttf");
@@ -57,11 +53,10 @@ public class InscriptionActivity extends AppCompatActivity implements View.OnCli
         assert btnInscription != null;
         btnInscription.setOnClickListener(this);
 
-        Button btnConnexion = (Button)findViewById(R.id.btnConnexion);
+        Button btnConnexion = (Button) findViewById(R.id.btnConnexion);
         assert btnConnexion != null;
         btnConnexion.setOnClickListener(this);
     }
-
 
 
     @Override
@@ -69,7 +64,7 @@ public class InscriptionActivity extends AppCompatActivity implements View.OnCli
         String result = null;
 
         Integer id = v.getId();
-        switch (id){
+        switch (id) {
             case R.id.btnInscription:
                 String telephone = edtTelephone.getText().toString();
                 String nom = edtNom.getText().toString();
@@ -77,39 +72,39 @@ public class InscriptionActivity extends AppCompatActivity implements View.OnCli
                 String password = edtPassword.getText().toString();
                 String passwordConfirme = edtPasswordConfirme.getText().toString();
 
-                if(telephone.equals("")){
+                if (telephone.equals("")) {
                     edtTelephone.setError("Required");
                     result = "error";
                 }
 
-                if(nom.equals("")){
+                if (nom.equals("")) {
                     edtNom.setError("Required");
                     result = "error";
                 }
 
-                if(prenom.equals("")){
+                if (prenom.equals("")) {
                     edtPrenom.setError("Required");
                     result = "error";
                 }
 
-                if(password.equals("")){
+                if (password.equals("")) {
                     edtPassword.setError("Required");
                     result = "error";
                 }
 
-                if(passwordConfirme.equals("")){
+                if (passwordConfirme.equals("")) {
                     edtPasswordConfirme.setError("Required");
                     result = "error";
                 }
 
-                if(!password.equals(passwordConfirme)){
+                if (!password.equals(passwordConfirme)) {
                     edtPassword.setError("Incorrect");
                     edtPasswordConfirme.setError("Incorrect");
                     result = "error";
                 }
 
-                if(result == null){
-                    inscription(new Utilisateur(nom, prenom,  telephone, password));
+                if (result == null) {
+                    inscription(new Utilisateur(nom, prenom, telephone, password));
                 }
                 break;
             case R.id.btnConnexion:
@@ -120,9 +115,9 @@ public class InscriptionActivity extends AppCompatActivity implements View.OnCli
 
     }
 
-    private void inscription(final Utilisateur utilisateur){
+    private void inscription(final Utilisateur utilisateur) {
 
-       final ProgressDialog progress = new ProgressDialog(this);
+        final ProgressDialog progress = new ProgressDialog(this);
         progress.setMessage("Inscription... ");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
@@ -136,10 +131,10 @@ public class InscriptionActivity extends AppCompatActivity implements View.OnCli
                     @Override
                     public void onResponse(String response) {
                         progress.hide();
-                        if(response.equals("1")){
+                        if (response.equals("1")) {
                             finish();
                             startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
-                        }else if (response.equals("0")){
+                        } else if (response.equals("0")) {
                             Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_inscription), Toast.LENGTH_SHORT).show();
                         }
                     }

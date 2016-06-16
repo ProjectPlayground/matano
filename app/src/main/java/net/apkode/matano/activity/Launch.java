@@ -16,12 +16,10 @@ import net.apkode.matano.helper.UtilisateurLocalStore;
 import net.apkode.matano.model.Event;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Launch extends AppCompatActivity implements IEvent {
-    private APIEvent apiEvent;
     private static final int SPLASH_TIME = 2000;
+    private APIEvent apiEvent;
     private UtilisateurLocalStore utilisateurLocalStore;
 
     @Override
@@ -56,7 +54,7 @@ public class Launch extends AppCompatActivity implements IEvent {
     @Override
     protected void onStart() {
         super.onStart();
-        if(!utilisateurLocalStore.isLoggedIn()){
+        if (!utilisateurLocalStore.isLoggedIn()) {
             finish();
             startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
         }

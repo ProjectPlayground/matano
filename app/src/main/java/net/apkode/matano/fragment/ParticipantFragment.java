@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.ParticipantAdapter;
-import net.apkode.matano.model.Commentaire;
 import net.apkode.matano.model.Event;
 import net.apkode.matano.model.Participant;
 
@@ -25,10 +24,11 @@ import java.util.List;
  */
 public class ParticipantFragment extends Fragment {
     private boolean isPassed;
+
     public ParticipantFragment() {
     }
 
-    public static ParticipantFragment newInstance(){
+    public static ParticipantFragment newInstance() {
         ParticipantFragment participantFragment = new ParticipantFragment();
         return participantFragment;
     }
@@ -38,8 +38,8 @@ public class ParticipantFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             Log.e("e", "onCreate saveInstance != null");
-        }else {
-            Log.e("e"," onCreate saveInstance == null");
+        } else {
+            Log.e("e", " onCreate saveInstance == null");
         }
     }
 
@@ -49,8 +49,8 @@ public class ParticipantFragment extends Fragment {
 
         if (savedInstanceState != null) {
             Log.e("e", "onCreateView saveInstance != null");
-        }else {
-            Log.e("e"," onCreateView saveInstance == null");
+        } else {
+            Log.e("e", " onCreateView saveInstance == null");
         }
 
         return inflater.inflate(R.layout.fragment_participant, container, false);
@@ -69,30 +69,30 @@ public class ParticipantFragment extends Fragment {
 
             recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
             recyclerView.setHasFixedSize(true);
-            recyclerView.setScrollbarFadingEnabled (true);
+            recyclerView.setScrollbarFadingEnabled(true);
             recyclerView.setNestedScrollingEnabled(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            participants.add(new Participant(1L, "Awa sow", "Hassane" ,"https://goodpitch.org/uploads/cache/user_image/max_400_400_monifa-bandele-b.jpg"));
-            participants.add(new Participant(1L, "Bachir", "Rabo" , "https://pbs.twimg.com/profile_images/1717956431/BP-headshot-fb-profile-photo_400x400.jpg"));
-            participants.add(new Participant(2L, "Iamel", "Touré" , "http://cps-static.rovicorp.com/3/JPG_400/MI0003/643/MI0003643950.jpg?partner=allrovi.com"));
-            participants.add(new Participant(2L, "Issata", "Ousmane" , "https://pbs.twimg.com/profile_images/637722086547587072/g3kWsOVa.jpg"));
-            participants.add(new Participant(2L, "Aicha", "Kader" , "http://servotronicstech.com/wp-content/uploads/2015/03/p-1-400x400.jpg"));
-            participants.add(new Participant(1L, "Awa", "Bachir" , "https://goodpitch.org/uploads/cache/user_image/max_400_400_monifa-bandele-b.jpg"));
-            participants.add(new Participant(1L, "Karim", "Benzema" , "https://pbs.twimg.com/profile_images/1717956431/BP-headshot-fb-profile-photo_400x400.jpg"));
-            participants.add(new Participant(2L, "Bachir", "Mahamadou" , "http://cps-static.rovicorp.com/3/JPG_400/MI0003/643/MI0003643950.jpg?partner=allrovi.com"));
-            participants.add(new Participant(2L, "Mahamadou", "Hassane" , "https://pbs.twimg.com/profile_images/637722086547587072/g3kWsOVa.jpg"));
-            participants.add(new Participant(2L, "Hdiza", "Mansour" , "http://servotronicstech.com/wp-content/uploads/2015/03/p-1-400x400.jpg"));
+            participants.add(new Participant(1L, "Awa sow", "Hassane", "https://goodpitch.org/uploads/cache/user_image/max_400_400_monifa-bandele-b.jpg"));
+            participants.add(new Participant(1L, "Bachir", "Rabo", "https://pbs.twimg.com/profile_images/1717956431/BP-headshot-fb-profile-photo_400x400.jpg"));
+            participants.add(new Participant(2L, "Iamel", "Touré", "http://cps-static.rovicorp.com/3/JPG_400/MI0003/643/MI0003643950.jpg?partner=allrovi.com"));
+            participants.add(new Participant(2L, "Issata", "Ousmane", "https://pbs.twimg.com/profile_images/637722086547587072/g3kWsOVa.jpg"));
+            participants.add(new Participant(2L, "Aicha", "Kader", "http://servotronicstech.com/wp-content/uploads/2015/03/p-1-400x400.jpg"));
+            participants.add(new Participant(1L, "Awa", "Bachir", "https://goodpitch.org/uploads/cache/user_image/max_400_400_monifa-bandele-b.jpg"));
+            participants.add(new Participant(1L, "Karim", "Benzema", "https://pbs.twimg.com/profile_images/1717956431/BP-headshot-fb-profile-photo_400x400.jpg"));
+            participants.add(new Participant(2L, "Bachir", "Mahamadou", "http://cps-static.rovicorp.com/3/JPG_400/MI0003/643/MI0003643950.jpg?partner=allrovi.com"));
+            participants.add(new Participant(2L, "Mahamadou", "Hassane", "https://pbs.twimg.com/profile_images/637722086547587072/g3kWsOVa.jpg"));
+            participants.add(new Participant(2L, "Hdiza", "Mansour", "http://servotronicstech.com/wp-content/uploads/2015/03/p-1-400x400.jpg"));
             recyclerView.setAdapter(new ParticipantAdapter(participants));
         }
 
         if (isPassed) {
             Log.e("e", "first time");
 
-        }else {
-            Log.e("e","already passed");
+        } else {
+            Log.e("e", "already passed");
         }
 
-        }
+    }
 
     @Override
     public void onAttach(Context context) {

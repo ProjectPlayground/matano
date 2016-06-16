@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import net.apkode.matano.R;
 import net.apkode.matano.holder.CommentaireHolder;
-import net.apkode.matano.holder.EventHolder;
 import net.apkode.matano.model.Commentaire;
 
 import java.util.List;

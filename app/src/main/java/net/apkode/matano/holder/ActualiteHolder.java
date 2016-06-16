@@ -18,15 +18,15 @@ public class ActualiteHolder extends RecyclerView.ViewHolder implements View.OnC
     public ActualiteHolder(View itemView) {
         super(itemView);
 
-        txtJourActualite = (TextView)itemView.findViewById(R.id.txtJourActualite);
-        txtHoraireAcutalite = (TextView)itemView.findViewById(R.id.txtHoraireAcutalite);
-        txtActualite = (TextView)itemView.findViewById(R.id.txtActualite);
+        txtJourActualite = (TextView) itemView.findViewById(R.id.txtJourActualite);
+        txtHoraireAcutalite = (TextView) itemView.findViewById(R.id.txtHoraireAcutalite);
+        txtActualite = (TextView) itemView.findViewById(R.id.txtActualite);
 
         itemView.setOnClickListener(this);
 
     }
 
-    public void bind(Actualite actualite){
+    public void bind(Actualite actualite) {
         txtJourActualite.setText(actualite.getJour());
         txtHoraireAcutalite.setText(actualite.getHoraire());
         txtActualite.setText(actualite.getActualite());

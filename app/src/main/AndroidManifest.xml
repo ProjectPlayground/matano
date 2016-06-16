@@ -65,16 +65,7 @@
                 android:value="net.apkode.matano.activity.EventActivity" />
         </activity>
         <activity
-            android:name=".activity.AboutActivity"
-            android:label="@string/title_activity_about"
-            android:parentActivityName=".activity.EventActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.apkode.matano.activity.EventActivity" />
-        </activity>
-        <activity
-            android:name=".activity.ProfilActivty"
+            android:name=".activity.MonProfilActivty"
             android:label="@string/title_activity_profil_activty"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -96,6 +87,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.apkode.matano.activity.EventActivity" />
         </activity>
+        <activity
+            android:name=".activity.MesEventsActivity"
+            android:label="@string/title_activity_mes_events"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.MesMessages"
+            android:label="@string/title_activity_mes_messages"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.ParametresActivty"
+            android:label="@string/title_activity_parametres_activty"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.AboutActivity"
+            android:label="@string/title_activity_about"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

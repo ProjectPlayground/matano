@@ -1,7 +1,6 @@
 package net.apkode.matano.holder;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,14 +22,14 @@ public class ParticipantHolder extends RecyclerView.ViewHolder implements View.O
 
     public ParticipantHolder(View itemView) {
         super(itemView);
-        txtNomParticiapant = (TextView)itemView.findViewById(R.id.txtNomParticiapant);
-        txtPrenomParticiapant = (TextView)itemView.findViewById(R.id.txtPrenomParticiapant);
-        imvParticipant = (ImageView)itemView.findViewById(R.id.imvParticipant);
+        txtNomParticiapant = (TextView) itemView.findViewById(R.id.txtNomParticiapant);
+        txtPrenomParticiapant = (TextView) itemView.findViewById(R.id.txtPrenomParticiapant);
+        imvParticipant = (ImageView) itemView.findViewById(R.id.imvParticipant);
 
         itemView.setOnClickListener(this);
     }
 
-    public void bind(Participant participant){
+    public void bind(Participant participant) {
         txtNomParticiapant.setText(participant.getNom());
         txtPrenomParticiapant.setText(participant.getPrenom());
 
@@ -46,7 +45,7 @@ public class ParticipantHolder extends RecyclerView.ViewHolder implements View.O
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(v.getContext(), ParticipantActivity.class);
-        intent.putExtra("Participant",  (Serializable) v.getTag());
+        intent.putExtra("Participant", (Serializable) v.getTag());
         v.getContext().startActivity(intent);
     }
 }

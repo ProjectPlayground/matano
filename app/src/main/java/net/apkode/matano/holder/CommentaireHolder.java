@@ -21,17 +21,17 @@ public class CommentaireHolder extends RecyclerView.ViewHolder implements View.O
 
     public CommentaireHolder(View itemView) {
         super(itemView);
-        txtNomCommentaire = (TextView)itemView.findViewById(R.id.txtNomCommentaire);
-        txtPrenomCommentaire = (TextView)itemView.findViewById(R.id.txtPrenomCommentaire);
-        txtJourCommentaire = (TextView)itemView.findViewById(R.id.txtJourCommentaire);
-        txtHoraireCommentaire = (TextView)itemView.findViewById(R.id.txtHoraireCommentaire);
-        txtCommentaire = (TextView)itemView.findViewById(R.id.txtCommentaire);
-        imvImageCommentaire = (ImageView)itemView.findViewById(R.id.imvImageCommentaire);
+        txtNomCommentaire = (TextView) itemView.findViewById(R.id.txtNomCommentaire);
+        txtPrenomCommentaire = (TextView) itemView.findViewById(R.id.txtPrenomCommentaire);
+        txtJourCommentaire = (TextView) itemView.findViewById(R.id.txtJourCommentaire);
+        txtHoraireCommentaire = (TextView) itemView.findViewById(R.id.txtHoraireCommentaire);
+        txtCommentaire = (TextView) itemView.findViewById(R.id.txtCommentaire);
+        imvImageCommentaire = (ImageView) itemView.findViewById(R.id.imvImageCommentaire);
 
         itemView.setOnClickListener(this);
     }
 
-    public void bind(Commentaire commentaire){
+    public void bind(Commentaire commentaire) {
         txtNomCommentaire.setText(commentaire.getNom());
         txtPrenomCommentaire.setText(commentaire.getPrenom());
         txtJourCommentaire.setText(commentaire.getJour());

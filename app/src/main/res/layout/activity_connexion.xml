@@ -20,51 +20,53 @@
             android:orientation="vertical">
 
             <TextView
-                android:textSize="32sp"
-                android:layout_margin="@dimen/activity_horizontal_margin"
-                android:layout_gravity="center_horizontal"
+                android:id="@+id/nom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimary"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/activity_horizontal_margin"
                 android:text="matano"
-                android:id="@+id/nom"/>
+                android:textColor="@color/colorPrimary"
+                android:textSize="32sp" />
 
-            <EditText android:id="@+id/edtTelephone"
+            <EditText
+                android:id="@+id/edtTelephone"
                 style="@style/editText1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Téléphone"
-                android:inputType="phone"/>
+                android:inputType="phone" />
 
-            <EditText android:id="@+id/edtPassword"
+            <EditText
+                android:id="@+id/edtPassword"
                 style="@style/editText1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Password"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword" />
 
             <Button
                 android:id="@+id/btnConnexion"
-                android:padding="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_micro"
                 android:layout_marginRight="@dimen/activity_micro"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:padding="@dimen/activity_horizontal_margin"
                 android:text="Connexion"
-                android:textColor="@android:color/white"
-                android:background="@color/colorPrimary"/>
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/btnInscription"
-                android:padding="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_micro"
                 android:layout_marginRight="@dimen/activity_micro"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_horizontal_margin"
                 android:text="Créer un compte"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary" />
 
         </LinearLayout>
 
