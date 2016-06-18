@@ -11,9 +11,6 @@ import net.apkode.matano.model.Participant;
 
 import java.util.List;
 
-/**
- * Created by brabo on 6/14/16.
- */
 public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantHolder> {
     List<Participant> list;
 

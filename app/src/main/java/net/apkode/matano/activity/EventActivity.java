@@ -23,6 +23,7 @@ import com.roughike.bottombar.OnMenuTabClickListener;
 import net.apkode.matano.R;
 import net.apkode.matano.fragment.ActualiteFragment;
 import net.apkode.matano.fragment.CommentaireFragment;
+import net.apkode.matano.fragment.ImageGalerieFragment;
 import net.apkode.matano.fragment.ParticipantFragment;
 import net.apkode.matano.fragment.PresentationFragment;
 import net.apkode.matano.model.Event;
@@ -37,6 +38,7 @@ public class EventActivity extends AppCompatActivity {
     private PresentationFragment presentationFragment;
     private CommentaireFragment commentaireFragment;
     private ParticipantFragment participantFragment;
+    private ImageGalerieFragment imageGalerieFragment;
     private ActualiteFragment actualiteFragment;
 
     @Override
@@ -68,6 +70,9 @@ public class EventActivity extends AppCompatActivity {
         participantFragment = ParticipantFragment.newInstance();
         participantFragment.setArguments(bundle);
 
+        imageGalerieFragment = ImageGalerieFragment.newInstance();
+        imageGalerieFragment.setArguments(bundle);
+
         actualiteFragment = ActualiteFragment.newInstance();
         actualiteFragment.setArguments(bundle);
 
@@ -82,6 +87,8 @@ public class EventActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fmlContainer, commentaireFragment).commit();
                 } else if (menuItemId == R.id.btn_menu_participant) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fmlContainer, participantFragment).commit();
+                } else if (menuItemId == R.id.btn_menu_image) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fmlContainer, imageGalerieFragment).commit();
                 } else if (menuItemId == R.id.btn_menu_actualite) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fmlContainer, actualiteFragment).commit();
                 }

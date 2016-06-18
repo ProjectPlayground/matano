@@ -13,6 +13,12 @@
         android:id="@+id/btn_menu_participant"
         android:icon="@mipmap/ic_social_people"
         android:title="Participant" />
+
+    <item
+        android:id="@+id/btn_menu_image"
+        android:icon="@mipmap/ic_image_image"
+        android:title="Image" />
+
     <item
         android:id="@+id/btn_menu_actualite"
         android:icon="@mipmap/ic_action_assignment"
