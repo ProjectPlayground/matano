@@ -55,7 +55,6 @@ public class Launch extends AppCompatActivity implements IEvent {
     protected void onStart() {
         super.onStart();
         if (!utilisateurLocalStore.isLoggedIn()) {
-            finish();
             startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
         }
     }

@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.InteretAdapter;
@@ -89,27 +90,19 @@ public class MonProfilActivty extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+
         if (id == R.id.btn_navigation_menu_profil) {
-            finish();
             startActivity(new Intent(this, MonProfilActivty.class));
         } else if (id == R.id.btn_navigation_menu_evenements) {
-            finish();
             startActivity(new Intent(this, EventsActivity.class));
         } else if (id == R.id.btn_navigation_menu_mes_evenements) {
-            finish();
             startActivity(new Intent(this, MesEventsActivity.class));
-        } else if (id == R.id.btn_navigation_menu_mes_messages) {
-            finish();
-            startActivity(new Intent(this, MesMessages.class));
         } else if (id == R.id.btn_navigation_menu_about) {
             startActivity(new Intent(this, AboutActivity.class));
-            finish();
         } else if (id == R.id.btn_navigation_menu_parametre) {
-            finish();
             startActivity(new Intent(this, ParametresActivty.class));
         } else if (id == R.id.btn_navigation_menu_dexonnexion) {
             utilisateurLocalStore.setUtilisateurLogin(false);
-            finish();
             startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
         }
 
@@ -117,5 +110,25 @@ public class MonProfilActivty extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void startUpdateContact(View view) {
+        startActivity(new Intent(getApplicationContext(), UpdateContact.class));
+    }
+
+    public void startUpdateProfil(View view) {
+        startActivity(new Intent(getApplicationContext(), UpdateProfil.class));
+    }
+
+    public void startUpdateBasic(View view) {
+        startActivity(new Intent(getApplicationContext(), UpdateBasic.class));
+    }
+
+    public void startUpdatePresentation(View view) {
+        startActivity(new Intent(getApplicationContext(), UpdatePresentation.class));
+    }
+
+    public void startUpdateInteret(View view) {
+        startActivity(new Intent(getApplicationContext(), UpdateInteret.class));
     }
 }

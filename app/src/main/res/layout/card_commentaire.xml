@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="1dp"
+    android:layout_margin="@dimen/activity_mini"
     app:cardBackgroundColor="@android:color/white"
-    app:cardCornerRadius="0dp"
-    app:cardElevation="0dp">
+    app:cardCornerRadius="2dp"
+    app:cardElevation="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,19 +33,35 @@
                 android:orientation="vertical"
                 android:paddingLeft="@dimen/activity_horizontal_margin">
 
-                <TextView
-                    android:id="@+id/txtNomCommentaire"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/activity_micro"
-                    android:text="Bachir Selah Zion"
-                    android:textColor="@android:color/black" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtNomCommentaire"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_micro"
+                        android:text="Bachir Selah Zion"
+                        android:textColor="@android:color/black" />
+                    <TextView
+                        android:id="@+id/txtJourCommentaire"
+                        android:layout_gravity="end"
+                        android:textAlignment="textEnd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_micro"
+                        android:text="11/02/2016"
+                        android:textColor="@color/colorPrimary"/>
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/txtPrenomCommentaire"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="11/02/2016" />
+                    android:text="Rabo Hima" />
             </LinearLayout>
 
 
@@ -63,31 +79,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/txtJourCommentaire"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:alpha="0.6"
-                android:text="01/02/2016" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="  -  " />
-
-            <TextView
-                android:id="@+id/txtHoraireCommentaire"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:alpha="0.6"
-                android:text="14H32" />
         </LinearLayout>
 
     </LinearLayout>

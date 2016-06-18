@@ -11,21 +11,19 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_mini">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/activity_mini"
-            android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini"
-            android:layout_marginTop="@dimen/activity_mini"
             android:background="@drawable/button2"
             android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:padding="@dimen/activity_mini">
+            android:orientation="vertical"
+            android:padding="@dimen/activity_mini"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin">
 
             <ImageView
                 android:id="@+id/imvImageCommentaire"
@@ -33,77 +31,45 @@
                 android:layout_height="96dp"
                 android:layout_gravity="center_vertical"
                 android:src="@mipmap/person" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:text="Modifier"
+                android:textColor="@color/colorPrimary"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:orientation="horizontal">
-
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_mini"
-                android:layout_weight="1"
-                android:background="@drawable/button3"
-                android:orientation="horizontal"
-                android:padding="@dimen/activity_horizontal_margin">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="@dimen/activity_mini"
-                    android:background="@drawable/button2"
-                    android:src="@mipmap/ic_action_assignment" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="@dimen/activity_micro"
-                    android:text="25" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/activity_mini"
-                android:layout_weight="1"
-                android:background="@drawable/button3"
-                android:orientation="horizontal"
-                android:padding="@dimen/activity_horizontal_margin">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="@dimen/activity_mini"
-                    android:background="@drawable/button2"
-                    android:src="@mipmap/ic_communication_message" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="@dimen/activity_micro"
-                    android:text="150" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_micro"
-            android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini"
+            android:orientation="horizontal"
             android:background="@android:color/white"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:padding="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:background="@drawable/button2"
+                android:src="@mipmap/ic_action_event" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="25" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_micro">
 
             <TextView
                 android:layout_width="match_parent"
@@ -116,8 +82,59 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:text="Numéro"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:gravity="right"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:text="92332322" />
+
+            </LinearLayout>
+            <Button
+                android:layout_gravity="right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:text="Modifier"
+                android:textColor="@color/colorPrimary"
+                android:onClick="startUpdateContact"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_micro"
+            android:background="@android:color/white"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PROFIL INFO"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:background="@android:color/white"
             android:orientation="vertical">
 
@@ -163,15 +180,21 @@
                     android:text="Zion" />
             </LinearLayout>
 
-        </LinearLayout>
+            <Button
+                android:layout_gravity="right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:text="Modifier"
+                android:textColor="@color/colorPrimary"
+                android:onClick="startUpdateProfil"/>
 
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_micro"
-            android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini"
             android:background="@android:color/white"
             android:padding="@dimen/activity_horizontal_margin">
 
@@ -186,8 +209,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini"
             android:background="@android:color/white"
             android:orientation="vertical">
 
@@ -231,55 +252,7 @@
                     android:gravity="right"
                     android:padding="@dimen/activity_horizontal_margin"
                     android:text="15/01/1980" />
-            </LinearLayout>
 
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_micro"
-            android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini"
-            android:background="@android:color/white"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TEL INFO"
-                android:textColor="@android:color/black" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini"
-            android:background="@android:color/white"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Numéro"
-                    android:textColor="@android:color/black" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="right"
-                    android:gravity="right"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:text="92332322" />
             </LinearLayout>
 
             <LinearLayout
@@ -303,15 +276,67 @@
                     android:text="tontonbachir@gmail.com" />
             </LinearLayout>
 
-        </LinearLayout>
+            <Button
+                android:layout_gravity="right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:text="Modifier"
+                android:textColor="@color/colorPrimary"
+                android:onClick="startUpdateBasic"/>
 
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_micro"
-            android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini"
+            android:background="@android:color/white"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PRESENTATION"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:text="Le même jour dans la matinée, le Chef de l’Etat s’est d’abord  rendu au siège de l’OIF où il a rencontré la Secrétaire Générale de cette organisation, Mme Michaelle Jean. - See more at: http://www.presidence.ne/article/visite-officielle-du-president-de-la-republique-paris-sem-issoufou-mahamadou-recu-mercredi#sthash.RSD92p1J.lmvN18Io.dpuf"
+                    android:textColor="@android:color/black" />
+
+
+            </LinearLayout>
+            <Button
+                android:layout_gravity="right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:text="Modifier"
+                android:textColor="@color/colorPrimary"
+                android:onClick="startUpdatePresentation"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_micro"
             android:background="@android:color/white"
             android:padding="@dimen/activity_horizontal_margin">
 
@@ -326,16 +351,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:layout_marginLeft="@dimen/activity_mini"
-            android:layout_marginRight="@dimen/activity_mini"
             android:orientation="vertical">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+            <Button
+                android:layout_gravity="right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:text="Modifier"
+                android:textColor="@color/colorPrimary"
+                android:onClick="startUpdateInteret"/>
         </LinearLayout>
-
 
     </LinearLayout>
 

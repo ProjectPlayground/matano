@@ -77,6 +77,7 @@
                 android:padding="@dimen/activity_horizontal_margin">
 
                 <ImageView
+                    android:tint="@color/colorPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -85,7 +86,9 @@
                     android:src="@mipmap/ic_action_assignment" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginBottom="@dimen/activity_micro"
@@ -103,6 +106,7 @@
                 android:padding="@dimen/activity_horizontal_margin">
 
                 <ImageView
+                    android:tint="@color/colorPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -111,6 +115,8 @@
                     android:src="@mipmap/ic_communication_message" />
 
                 <TextView
+                    android:textAlignment="center"
+                    android:textColor="@color/colorPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -139,29 +145,6 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/activity_mini">
-
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/activity_mini"
-                android:background="@drawable/button3"
-                android:text="Envoyer" />
-
-            <EditText
-                style="@style/editText2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Lui écrire ..."
-                android:inputType="text|textCapSentences" />
 
         </LinearLayout>
 

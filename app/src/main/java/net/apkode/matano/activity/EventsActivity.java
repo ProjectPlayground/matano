@@ -78,26 +78,17 @@ public class EventsActivity extends AppCompatActivity implements NavigationView.
         int id = item.getItemId();
 
         if (id == R.id.btn_navigation_menu_profil) {
-            finish();
             startActivity(new Intent(this, MonProfilActivty.class));
         } else if (id == R.id.btn_navigation_menu_evenements) {
-            finish();
             startActivity(new Intent(this, EventsActivity.class));
         } else if (id == R.id.btn_navigation_menu_mes_evenements) {
-            finish();
             startActivity(new Intent(this, MesEventsActivity.class));
-        } else if (id == R.id.btn_navigation_menu_mes_messages) {
-            finish();
-            startActivity(new Intent(this, MesMessages.class));
         } else if (id == R.id.btn_navigation_menu_about) {
             startActivity(new Intent(this, AboutActivity.class));
-            finish();
         } else if (id == R.id.btn_navigation_menu_parametre) {
-            finish();
             startActivity(new Intent(this, ParametresActivty.class));
         } else if (id == R.id.btn_navigation_menu_dexonnexion) {
             utilisateurLocalStore.setUtilisateurLogin(false);
-            finish();
             startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
         }
 

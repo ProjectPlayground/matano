@@ -3,11 +3,11 @@
 
     <item
         android:id="@+id/btn_menu_description"
-        android:icon="@mipmap/ic_action_assignment"
+        android:icon="@mipmap/ic_action_event"
         android:title="Description" />
     <item
         android:id="@+id/btn_menu_commentaire"
-        android:icon="@mipmap/ic_communication_forum"
+        android:icon="@mipmap/ic_communication_message"
         android:title="Commentaire" />
     <item
         android:id="@+id/btn_menu_participant"

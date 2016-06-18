@@ -102,7 +102,52 @@
         <activity
             android:name=".activity.AboutActivity"
             android:label="@string/title_activity_about"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.UpdateContact"
+            android:label="@string/title_activity_update_contact"
+            android:parentActivityName=".activity.MonProfilActivty"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.apkode.matano.activity.MonProfilActivty" />
+        </activity>
+        <activity
+            android:name=".activity.UpdateProfil"
+            android:label="@string/title_activity_update_profil"
+            android:parentActivityName=".activity.MonProfilActivty"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.apkode.matano.activity.MonProfilActivty" />
+        </activity>
+        <activity
+            android:name=".activity.UpdateBasic"
+            android:label="@string/title_activity_update_basic"
+            android:parentActivityName=".activity.MonProfilActivty"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.apkode.matano.activity.MonProfilActivty" />
+        </activity>
+        <activity
+            android:name=".activity.UpdatePresentation"
+            android:label="@string/title_activity_update_presentation"
+            android:parentActivityName=".activity.MonProfilActivty"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.apkode.matano.activity.MonProfilActivty" />
+        </activity>
+        <activity
+            android:name=".activity.UpdateInteret"
+            android:label="@string/title_activity_update_interet"
+            android:parentActivityName=".activity.MonProfilActivty"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.apkode.matano.activity.MonProfilActivty" />
+        </activity>
     </application>
 
 </manifest>

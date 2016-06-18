@@ -28,4 +28,9 @@
     <string name="title_activity_mes_events">Mes évènements</string>
     <string name="title_activity_mes_messages">Mes messages</string>
     <string name="title_activity_parametres_activty">Paramètres</string>
+    <string name="title_activity_update_contact">Contact info</string>
+    <string name="title_activity_update_profil">Profil info</string>
+    <string name="title_activity_update_basic">Basic info</string>
+    <string name="title_activity_update_presentation">Présentation info</string>
+    <string name="title_activity_update_interet">Centre d\'Interets</string>
 </resources>
