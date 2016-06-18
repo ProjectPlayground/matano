@@ -5,28 +5,28 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
-        android:layout_above="@+id/btn"
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical"
-        android:fadeScrollbars="true"/>
+        android:layout_above="@+id/btn"
+        android:fadeScrollbars="true"
+        android:scrollbars="vertical" />
 
     <LinearLayout android:id="@+id/btn"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/grey300"
         android:orientation="horizontal"
-        android:padding="@dimen/activity_mini"
-        android:background="@android:color/white">
+        android:padding="@dimen/activity_mini">
 
         <Button
-            android:textColor="@android:color/white"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginRight="@dimen/activity_mini"
             android:background="@drawable/button4"
-            android:text="Envoyer" />
+            android:text="Envoyer"
+            android:textColor="@android:color/white" />
 
         <EditText
             style="@style/editText3"

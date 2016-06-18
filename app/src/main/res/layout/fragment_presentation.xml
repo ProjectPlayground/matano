@@ -13,16 +13,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin">
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:background="@android:color/white">
             <TextView
                 android:id="@+id/txtTitre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="@dimen/activity_horizontal_margin"
-                android:textColor="@android:color/background_dark"
-                android:text="Le loup et l'agneau"/>
+                android:text="Le loup et l'agneau"
+                android:textColor="@color/colorPrimary" />
         </LinearLayout>
 
         <LinearLayout
@@ -191,9 +191,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/button3"
+                android:drawableTop="@mipmap/ic_maps_local_see"
                 android:onClick="startEventPhoto"
                 android:padding="@dimen/activity_horizontal_margin"
-                android:drawableTop="@mipmap/ic_maps_local_see"
                 android:text="Affiche"/>
 
             <Button
@@ -202,28 +202,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/button3"
+                android:drawableTop="@mipmap/ic_av_videocam"
                 android:onClick="startEventVideo"
                 android:padding="@dimen/activity_horizontal_margin"
-                android:drawableTop="@mipmap/ic_av_videocam"
                 android:text="Vidéo"/>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <Button
-                android:textColor="@android:color/white"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/activity_mini"
-                android:background="@drawable/button4"
-                android:text="Participer"
-                android:paddingLeft="@dimen/activity_micro"
-                android:paddingRight="@dimen/activity_micro"
-                android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
         </LinearLayout>
 
     </LinearLayout>

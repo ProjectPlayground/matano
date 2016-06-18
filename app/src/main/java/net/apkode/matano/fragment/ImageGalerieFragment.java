@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +18,6 @@ import net.apkode.matano.model.Event;
 import net.apkode.matano.model.ImageGalerie;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class ImageGalerieFragment extends Fragment {
@@ -50,8 +50,7 @@ public class ImageGalerieFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView recyclerView;
-        List<ImageGalerie> imageGaleries = new ArrayList<>();
-
+        final ArrayList<ImageGalerie> imageGaleries = new ArrayList<>();
         Bundle bundle = getArguments();
         if (bundle != null) {
             Event event = (Event) bundle.getSerializable("Event");
@@ -69,7 +68,26 @@ public class ImageGalerieFragment extends Fragment {
             imageGaleries.add(new ImageGalerie("http://community.stagephod.com/wp-content/uploads/2015/02/Events-stagephod.jpg"));
             imageGaleries.add(new ImageGalerie("https://adrianinitiative.files.wordpress.com/2015/11/event-3.jpg"));
             imageGaleries.add(new ImageGalerie("http://www.photolakedistrict.co.uk/wp-content/uploads/events-FIREWORKS.jpg"));
+            imageGaleries.add(new ImageGalerie("https://goodpitch.org/uploads/cache/user_image/max_400_400_monifa-bandele-b.jpg"));
             recyclerView.setAdapter(new ImageGalerieAdapter(imageGaleries));
+
+            recyclerView.addOnItemTouchListener(new ImageGalerieAdapter.RecyclerTouchListener(getActivity(), recyclerView, new ImageGalerieAdapter.ClickListener() {
+                @Override
+                public void onClick(View view, int position) {
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putSerializable("ImageGalerie", imageGaleries);
+                    bundle1.putInt("position", position);
+                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                    ImageGalerieSlideshow imageGalerieSlideshow = ImageGalerieSlideshow.newInstance();
+                    imageGalerieSlideshow.setArguments(bundle1);
+                    imageGalerieSlideshow.show(fragmentTransaction, "slideshow");
+                }
+
+                @Override
+                public void onLongClick(View view, int position) {
+
+                }
+            }));
 
         }
     }

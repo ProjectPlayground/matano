@@ -11,14 +11,12 @@ import net.apkode.matano.R;
 import net.apkode.matano.model.ImageGalerie;
 
 
-public class ImageGalerieHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class ImageGalerieHolder extends RecyclerView.ViewHolder {
     private ImageView thumbnail;
 
     public ImageGalerieHolder(View itemView) {
         super(itemView);
         thumbnail = (ImageView) itemView.findViewById(R.id.thumbnail);
-
-        itemView.setOnClickListener(this);
     }
 
     public void bind(ImageGalerie imageGalerie) {
@@ -31,8 +29,4 @@ public class ImageGalerieHolder extends RecyclerView.ViewHolder implements View.
                 .into(thumbnail);
     }
 
-    @Override
-    public void onClick(View v) {
-
-    }
 }
