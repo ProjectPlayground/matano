@@ -212,37 +212,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@android:color/white"
-            android:padding="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin">
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:background="@drawable/button2"
-                android:src="@mipmap/ic_social_people" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="25" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
             <Button
+                android:textColor="@android:color/white"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button2"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/activity_mini"
+                android:background="@drawable/button4"
                 android:text="Participer"
-                android:textColor="@color/colorPrimary"
+                android:paddingLeft="@dimen/activity_micro"
+                android:paddingRight="@dimen/activity_micro"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
         </LinearLayout>
 

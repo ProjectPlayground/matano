@@ -1,6 +1,7 @@
 package net.apkode.matano.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -16,6 +17,7 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.BottomBarBadge;
 import com.roughike.bottombar.OnMenuTabClickListener;
 
 import net.apkode.matano.R;
@@ -83,7 +85,6 @@ public class EventActivity extends AppCompatActivity {
                 } else if (menuItemId == R.id.btn_menu_actualite) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fmlContainer, actualiteFragment).commit();
                 }
-                //   mMessageView.setText(TabMessage.get(menuItemId, false));
             }
 
             @Override
@@ -93,14 +94,23 @@ public class EventActivity extends AppCompatActivity {
             }
         });
 
-        // Setting colors for different tabs when there's more than three of them.
-        // You can set colors for tabs in three different ways as shown below.
-        /*mBottomBar.mapColorForTab(0, ContextCompat.getColor(this, R.color.colorAccent));
-        mBottomBar.mapColorForTab(1, 0xFF5D4037);
-        mBottomBar.mapColorForTab(2, "#7B1FA2");
-        mBottomBar.mapColorForTab(3, "#FF5252");
-        mBottomBar.mapColorForTab(4, "#FF9800");*/
+        int redColor = Color.parseColor("#FF0000");
 
+        BottomBarBadge bottomBarBadgeCommentaire = mBottomBar.makeBadgeForTabAt(1, redColor, 5);
+        BottomBarBadge bottomBarBadgeParticipant = mBottomBar.makeBadgeForTabAt(2, redColor, 10);
+
+        bottomBarBadgeCommentaire.setAutoShowAfterUnSelection(true);
+        bottomBarBadgeParticipant.setAutoShowAfterUnSelection(true);
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Necessary to restore the BottomBar's state, otherwise we would
+        // lose the current tab on orientation change.
+        mBottomBar.onSaveInstanceState(outState);
     }
 
     @Override
