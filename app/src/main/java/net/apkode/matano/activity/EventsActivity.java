@@ -77,12 +77,14 @@ public class EventsActivity extends AppCompatActivity implements NavigationView.
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.btn_navigation_menu_profil) {
-            startActivity(new Intent(this, MonProfilActivty.class));
-        } else if (id == R.id.btn_navigation_menu_evenements) {
+        if (id == R.id.btn_navigation_menu_evenements) {
             startActivity(new Intent(this, EventsActivity.class));
         } else if (id == R.id.btn_navigation_menu_mes_evenements) {
             startActivity(new Intent(this, MesEventsActivity.class));
+        } else if (id == R.id.btn_navigation_menu_profil) {
+            startActivity(new Intent(this, MonProfilActivty.class));
+        } else if (id == R.id.btn_navigation_menu_feedback) {
+            startActivity(new Intent(this, FeedbackActivity.class));
         } else if (id == R.id.btn_navigation_menu_about) {
             startActivity(new Intent(this, AboutActivity.class));
         } else if (id == R.id.btn_navigation_menu_parametre) {

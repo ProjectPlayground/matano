@@ -6,7 +6,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import net.apkode.matano.R;
 import net.apkode.matano.model.Event;
@@ -43,6 +47,8 @@ public class PresentationFragment extends Fragment {
         TextView txtPresentation = (TextView) view.findViewById(R.id.txtPresentation);
         TextView txtJour = (TextView) view.findViewById(R.id.txtJour);
 
+        ImageView cover = (ImageView) view.findViewById(R.id.cover);
+
         Bundle bundle = getArguments();
         if (bundle != null) {
             Event event = (Event) bundle.getSerializable("Event");
@@ -53,6 +59,14 @@ public class PresentationFragment extends Fragment {
             txtTarif.setText(event.getTarif());
             txtPresentation.setText(event.getPresentation());
             txtJour.setText(event.getJour());
+
+            Glide.with(cover.getContext())
+                    .load(event.getImage())
+                    .crossFade()
+                    .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    // .placeholder(view.getResources().getDrawable(R.mipmap.cover1))
+                    .into(cover);
 
         }
 

@@ -13,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import net.apkode.matano.R;
-import net.apkode.matano.adapter.EventAdapter;
 import net.apkode.matano.adapter.MessageListeAdapter;
 import net.apkode.matano.helper.UtilisateurLocalStore;
 import net.apkode.matano.model.MessageListe;
@@ -21,14 +20,14 @@ import net.apkode.matano.model.MessageListe;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MesMessages extends AppCompatActivity
+public class FeedbackActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private UtilisateurLocalStore utilisateurLocalStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mes_messages);
+        setContentView(R.layout.activity_feedback);
 
         utilisateurLocalStore = new UtilisateurLocalStore(this);
 
@@ -81,27 +80,20 @@ public class MesMessages extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.btn_navigation_menu_profil) {
-            finish();
-            startActivity(new Intent(this, MonProfilActivty.class));
-        } else if (id == R.id.btn_navigation_menu_evenements) {
-            finish();
+        if (id == R.id.btn_navigation_menu_evenements) {
             startActivity(new Intent(this, EventsActivity.class));
         } else if (id == R.id.btn_navigation_menu_mes_evenements) {
-            finish();
             startActivity(new Intent(this, MesEventsActivity.class));
-        } else if (id == R.id.btn_navigation_menu_mes_messages) {
-            finish();
-            startActivity(new Intent(this, MesMessages.class));
+        } else if (id == R.id.btn_navigation_menu_profil) {
+            startActivity(new Intent(this, MonProfilActivty.class));
+        } else if (id == R.id.btn_navigation_menu_feedback) {
+            startActivity(new Intent(this, FeedbackActivity.class));
         } else if (id == R.id.btn_navigation_menu_about) {
             startActivity(new Intent(this, AboutActivity.class));
-            finish();
         } else if (id == R.id.btn_navigation_menu_parametre) {
-            finish();
             startActivity(new Intent(this, ParametresActivty.class));
         } else if (id == R.id.btn_navigation_menu_dexonnexion) {
             utilisateurLocalStore.setUtilisateurLogin(false);
-            finish();
             startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
         }
 

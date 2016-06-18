@@ -92,7 +92,7 @@
             android:label="@string/title_activity_mes_events"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.MesMessages"
+            android:name=".activity.FeedbackActivity"
             android:label="@string/title_activity_mes_messages"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

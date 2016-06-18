@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/transparent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="net.apkode.matano.activity.MesMessages"
-    tools:showIn="@layout/app_bar_mes_messages"
-    android:background="@color/transparent">
+    tools:context=".activity.FeedbackActivity"
+    tools:showIn="@layout/app_bar_mes_messages">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
