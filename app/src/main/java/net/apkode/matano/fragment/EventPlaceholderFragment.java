@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.EventAdapter;
-import net.apkode.matano.helper.DBEvent;
+import net.apkode.matano.db.DBEvent;
 import net.apkode.matano.model.Event;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package net.apkode.matano.helper;
+package net.apkode.matano.db;
 
 import android.content.ContentValues;
 import android.content.Context;

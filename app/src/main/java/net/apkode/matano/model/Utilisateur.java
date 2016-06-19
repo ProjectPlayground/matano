@@ -2,9 +2,6 @@ package net.apkode.matano.model;
 
 import java.io.Serializable;
 
-/**
- * Created by brabo on 6/14/16.
- */
 public class Utilisateur implements Serializable {
     private String nom;
     private String prenom;

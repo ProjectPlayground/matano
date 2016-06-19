@@ -2,24 +2,21 @@ package net.apkode.matano.model;
 
 import java.io.Serializable;
 
-/**
- * Created by brabo on 6/14/16.
- */
 public class Commentaire implements Serializable {
-    private Long id;
+    private Integer id;
     private String nom;
     private String prenom;
+    private String telephone;
     private String jour;
-    private String horaire;
     private String image;
     private String commentaire;
 
-    public Commentaire(Long id, String nom, String prenom, String jour, String horaire, String image, String commentaire) {
+    public Commentaire(Integer id, String nom, String prenom, String telephone, String jour, String image, String commentaire) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
+        this.telephone = telephone;
         this.jour = jour;
-        this.horaire = horaire;
         this.image = image;
         this.commentaire = commentaire;
     }
@@ -27,11 +24,12 @@ public class Commentaire implements Serializable {
     public Commentaire() {
     }
 
-    public Long getId() {
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -51,20 +49,20 @@ public class Commentaire implements Serializable {
         this.prenom = prenom;
     }
 
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
     public String getJour() {
         return jour;
     }
 
     public void setJour(String jour) {
         this.jour = jour;
-    }
-
-    public String getHoraire() {
-        return horaire;
-    }
-
-    public void setHoraire(String horaire) {
-        this.horaire = horaire;
     }
 
     public String getImage() {

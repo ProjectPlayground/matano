@@ -59,16 +59,16 @@ public class ImageGalerieFragment extends Fragment {
             //recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
-            imageGaleries.add(new ImageGalerie("http://www.revelryeventdesigners.com/wp-content/uploads/2011/05/Revelry-Event-Designers-Taylor-Wedding.jpg"));
-            imageGaleries.add(new ImageGalerie("http://www.makingdifferent.com/wp-content/uploads/2015/04/business-event-planning.jpg"));
-            imageGaleries.add(new ImageGalerie("https://goodpitch.org/uploads/cache/user_image/max_400_400_monifa-bandele-b.jpg"));
-            imageGaleries.add(new ImageGalerie("http://blog.lewispr.com/content/uploads/2015/04/Event.jpg"));
-            imageGaleries.add(new ImageGalerie("https://pixabay.com/static/uploads/photo/2015/10/01/21/39/background-image-967820_960_720.jpg"));
-            imageGaleries.add(new ImageGalerie("http://www.fourdiamondevents.com/wp-content/uploads/2015/06/SetWidth1920-A-championship-event10.jpg"));
-            imageGaleries.add(new ImageGalerie("http://community.stagephod.com/wp-content/uploads/2015/02/Events-stagephod.jpg"));
-            imageGaleries.add(new ImageGalerie("https://adrianinitiative.files.wordpress.com/2015/11/event-3.jpg"));
-            imageGaleries.add(new ImageGalerie("http://www.photolakedistrict.co.uk/wp-content/uploads/events-FIREWORKS.jpg"));
-            imageGaleries.add(new ImageGalerie("https://goodpitch.org/uploads/cache/user_image/max_400_400_monifa-bandele-b.jpg"));
+            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "http://www.revelryeventdesigners.com/wp-content/uploads/2011/05/Revelry-Event-Designers-Taylor-Wedding.jpg"));
+            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "http://www.makingdifferent.com/wp-content/uploads/2015/04/business-event-planning.jpg"));
+            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "https://goodpitch.org/uploads/cache/user_image/max_400_400_monifa-bandele-b.jpg"));
+            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "http://blog.lewispr.com/content/uploads/2015/04/Event.jpg"));
+            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "https://pixabay.com/static/uploads/photo/2015/10/01/21/39/background-image-967820_960_720.jpg"));
+            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "http://www.fourdiamondevents.com/wp-content/uploads/2015/06/SetWidth1920-A-championship-event10.jpg"));
+            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "http://community.stagephod.com/wp-content/uploads/2015/02/Events-stagephod.jpg"));
+            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "https://adrianinitiative.files.wordpress.com/2015/11/event-3.jpg"));
+            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "http://www.photolakedistrict.co.uk/wp-content/uploads/events-FIREWORKS.jpg"));
+            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "https://goodpitch.org/uploads/cache/user_image/max_400_400_monifa-bandele-b.jpg"));
             recyclerView.setAdapter(new ImageGalerieAdapter(imageGaleries));
 
             recyclerView.addOnItemTouchListener(new ImageGalerieAdapter.RecyclerTouchListener(getActivity(), recyclerView, new ImageGalerieAdapter.ClickListener() {

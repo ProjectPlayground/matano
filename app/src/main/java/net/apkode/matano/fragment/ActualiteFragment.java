@@ -69,10 +69,10 @@ public class ActualiteFragment extends Fragment {
             recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            actualites.add(new Actualite(1l, "08/11/2016", "11H10", "Then the activity that hosts the fragment implements the OnArticleSelectedListener interface and overrides onArticleSelected() to notify fragment B of the event from fragment"));
-            actualites.add(new Actualite(2l, "12/03/2016", "9H42", "o ensure that the host activity implements this interface, fragment A's onAttach() callback method (which the system calls when adding the fragment to the activity) instantiates an instance of OnArticleSelectedListener by casting the Activity that is passed into onAttach"));
-            actualites.add(new Actualite(3l, "02/08/2016", "14H17", "When the activity receives a callback through the interface, it can share the information with other fragments in the layout as necessary."));
-            actualites.add(new Actualite(4l, "10/06/2016", "23H33", "Although a Fragment is implemented as an object that's independent from an Activity and can be used inside multiple activities, a given instance of a fragment is directly tied to the activity that contains it."));
+            actualites.add(new Actualite(1, "08/11/2016", "Then the activity that hosts the fragment implements the OnArticleSelectedListener interface and overrides onArticleSelected() to notify fragment B of the event from fragment"));
+            actualites.add(new Actualite(2, "12/03/2016", "o ensure that the host activity implements this interface, fragment A's onAttach() callback method (which the system calls when adding the fragment to the activity) instantiates an instance of OnArticleSelectedListener by casting the Activity that is passed into onAttach"));
+            actualites.add(new Actualite(3, "02/08/2016", "When the activity receives a callback through the interface, it can share the information with other fragments in the layout as necessary."));
+            actualites.add(new Actualite(4, "10/06/2016", "Although a Fragment is implemented as an object that's independent from an Activity and can be used inside multiple activities, a given instance of a fragment is directly tied to the activity that contains it."));
             recyclerView.setAdapter(new ActualiteAdapter(actualites));
 
         }

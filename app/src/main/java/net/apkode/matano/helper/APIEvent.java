@@ -8,6 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 
+import net.apkode.matano.db.DBEvent;
 import net.apkode.matano.model.Event;
 
 import org.json.JSONArray;

@@ -2,30 +2,30 @@ package net.apkode.matano.model;
 
 import java.io.Serializable;
 
-/**
- * Created by brabo on 6/14/16.
- */
+
 public class Participant implements Serializable {
-    private Long id;
+    private Integer id;
     private String nom;
     private String prenom;
+    private String telephone;
     private String image;
 
-    public Participant(Long id, String nom, String prenom, String image) {
+    public Participant(Integer id, String nom, String prenom, String telephone, String image) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
+        this.telephone = telephone;
         this.image = image;
     }
 
     public Participant() {
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -43,6 +43,14 @@ public class Participant implements Serializable {
 
     public void setPrenom(String prenom) {
         this.prenom = prenom;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
     }
 
     public String getImage() {

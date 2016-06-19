@@ -2,30 +2,25 @@ package net.apkode.matano.model;
 
 import java.io.Serializable;
 
-/**
- * Created by brabo on 6/14/16.
- */
 public class Actualite implements Serializable {
-    private Long id;
+    private Integer id;
     private String jour;
-    private String horaire;
     private String actualite;
 
-    public Actualite(Long id, String jour, String horaire, String actualite) {
+    public Actualite(Integer id, String jour, String actualite) {
         this.id = id;
         this.jour = jour;
-        this.horaire = horaire;
         this.actualite = actualite;
     }
 
     public Actualite() {
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -37,13 +32,6 @@ public class Actualite implements Serializable {
         this.jour = jour;
     }
 
-    public String getHoraire() {
-        return horaire;
-    }
-
-    public void setHoraire(String horaire) {
-        this.horaire = horaire;
-    }
 
     public String getActualite() {
         return actualite;

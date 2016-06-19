@@ -83,4 +83,5 @@ public class AboutActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

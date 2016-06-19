@@ -2,9 +2,6 @@ package net.apkode.matano.model;
 
 import java.io.Serializable;
 
-/**
- * Created by brabo on 6/16/16.
- */
 public class Interet implements Serializable {
     private String interesse;
 
