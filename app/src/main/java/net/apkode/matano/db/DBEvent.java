@@ -178,6 +178,11 @@ public class DBEvent extends SQLiteOpenHelper {
         return db.delete(TABLE_NAME, "id = ? ", new String[]{Integer.toString(id)});
     }
 
+    public void deleteAll() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("Delete from " + TABLE_NAME + "");
+    }
+
     /**
      * Mise à jour d'un event
      *
@@ -216,5 +221,6 @@ public class DBEvent extends SQLiteOpenHelper {
         db.update(TABLE_NAME, contentValues, "id = ? ", new String[]{Integer.toString(id)});
         return true;
     }
+
 
 }

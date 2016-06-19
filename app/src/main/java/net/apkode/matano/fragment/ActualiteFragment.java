@@ -9,9 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.ActualiteAdapter;
+import net.apkode.matano.api.APIActualite;
+import net.apkode.matano.interfac.IActualite;
 import net.apkode.matano.model.Actualite;
 import net.apkode.matano.model.Event;
 
@@ -19,7 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ActualiteFragment extends Fragment {
+public class ActualiteFragment extends Fragment implements IActualite {
+    private APIActualite apiActualite;
+    private RecyclerView recyclerView;
+    private ProgressBar progressBar;
 
     public ActualiteFragment() {
     }
@@ -28,6 +34,13 @@ public class ActualiteFragment extends Fragment {
         ActualiteFragment actualiteFragment = new ActualiteFragment();
         return actualiteFragment;
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        apiActualite = new APIActualite(this, context);
+    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,13 +54,25 @@ public class ActualiteFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        progressBar = (ProgressBar) view.findViewById(R.id.loading);
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            Event event = (Event) bundle.getSerializable("Event");
+
+            if (event != null) {
+                apiActualite.getData(event);
+                recyclerView.setAdapter(new ActualiteAdapter(new ArrayList<Actualite>()));
+            }
+        }
+
     }
 
     @Override
@@ -56,28 +81,39 @@ public class ActualiteFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onResume() {
+        super.onResume();
+    }
 
-        RecyclerView recyclerView;
-        List<Actualite> actualites = new ArrayList<>();
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
 
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            Event event = (Event) bundle.getSerializable("Event");
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 
-            recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            actualites.add(new Actualite(1, "08/11/2016", "Then the activity that hosts the fragment implements the OnArticleSelectedListener interface and overrides onArticleSelected() to notify fragment B of the event from fragment"));
-            actualites.add(new Actualite(2, "12/03/2016", "o ensure that the host activity implements this interface, fragment A's onAttach() callback method (which the system calls when adding the fragment to the activity) instantiates an instance of OnArticleSelectedListener by casting the Activity that is passed into onAttach"));
-            actualites.add(new Actualite(3, "02/08/2016", "When the activity receives a callback through the interface, it can share the information with other fragments in the layout as necessary."));
-            actualites.add(new Actualite(4, "10/06/2016", "Although a Fragment is implemented as an object that's independent from an Activity and can be used inside multiple activities, a given instance of a fragment is directly tied to the activity that contains it."));
-            recyclerView.setAdapter(new ActualiteAdapter(actualites));
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
 
-        }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
 
+    @Override
+    public void getResponse(List<Actualite> actualites) {
+        progressBar.setVisibility(View.GONE);
+        recyclerView.setAdapter(new ActualiteAdapter(actualites));
+    }
 }

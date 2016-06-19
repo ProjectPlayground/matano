@@ -11,16 +11,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.ImageGalerieAdapter;
+import net.apkode.matano.api.APIImageGalerie;
+import net.apkode.matano.interfac.IImageGalerie;
 import net.apkode.matano.model.Event;
 import net.apkode.matano.model.ImageGalerie;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class ImageGalerieFragment extends Fragment {
+public class ImageGalerieFragment extends Fragment implements IImageGalerie {
+    private APIImageGalerie apiImageGalerie;
+    private RecyclerView recyclerView;
+    private ProgressBar progressBar;
 
     public ImageGalerieFragment() {
     }
@@ -44,51 +52,52 @@ public class ImageGalerieFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        apiImageGalerie = new APIImageGalerie(this, context);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerView;
-        final ArrayList<ImageGalerie> imageGaleries = new ArrayList<>();
+
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        progressBar = (ProgressBar) view.findViewById(R.id.loading);
+
         Bundle bundle = getArguments();
         if (bundle != null) {
             Event event = (Event) bundle.getSerializable("Event");
 
-            recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-            //recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "http://www.revelryeventdesigners.com/wp-content/uploads/2011/05/Revelry-Event-Designers-Taylor-Wedding.jpg"));
-            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "http://www.makingdifferent.com/wp-content/uploads/2015/04/business-event-planning.jpg"));
-            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "https://goodpitch.org/uploads/cache/user_image/max_400_400_monifa-bandele-b.jpg"));
-            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "http://blog.lewispr.com/content/uploads/2015/04/Event.jpg"));
-            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "https://pixabay.com/static/uploads/photo/2015/10/01/21/39/background-image-967820_960_720.jpg"));
-            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "http://www.fourdiamondevents.com/wp-content/uploads/2015/06/SetWidth1920-A-championship-event10.jpg"));
-            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "http://community.stagephod.com/wp-content/uploads/2015/02/Events-stagephod.jpg"));
-            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "https://adrianinitiative.files.wordpress.com/2015/11/event-3.jpg"));
-            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "http://www.photolakedistrict.co.uk/wp-content/uploads/events-FIREWORKS.jpg"));
-            imageGaleries.add(new ImageGalerie(1, "Bachir", "Rabo", "92332322", "https://goodpitch.org/uploads/cache/user_image/max_400_400_monifa-bandele-b.jpg"));
-            recyclerView.setAdapter(new ImageGalerieAdapter(imageGaleries));
-
-            recyclerView.addOnItemTouchListener(new ImageGalerieAdapter.RecyclerTouchListener(getActivity(), recyclerView, new ImageGalerieAdapter.ClickListener() {
-                @Override
-                public void onClick(View view, int position) {
-                    Bundle bundle1 = new Bundle();
-                    bundle1.putSerializable("ImageGalerie", imageGaleries);
-                    bundle1.putInt("position", position);
-                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                    ImageGalerieSlideshow imageGalerieSlideshow = ImageGalerieSlideshow.newInstance();
-                    imageGalerieSlideshow.setArguments(bundle1);
-                    imageGalerieSlideshow.show(fragmentTransaction, "slideshow");
-                }
-
-                @Override
-                public void onLongClick(View view, int position) {
-
-                }
-            }));
-
+            if (event != null) {
+                apiImageGalerie.getData(event);
+                recyclerView.setAdapter(new ImageGalerieAdapter(new ArrayList<ImageGalerie>()));
+            }
         }
+    }
+
+    @Override
+    public void getResponse(final List<ImageGalerie> imageGaleries) {
+        progressBar.setVisibility(View.GONE);
+        recyclerView.setAdapter(new ImageGalerieAdapter(imageGaleries));
+        recyclerView.addOnItemTouchListener(new ImageGalerieAdapter.RecyclerTouchListener(getActivity(), recyclerView, new ImageGalerieAdapter.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Bundle bundle1 = new Bundle();
+                bundle1.putSerializable("ImageGalerie", (Serializable) imageGaleries);
+                bundle1.putInt("position", position);
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                ImageGalerieSlideshow imageGalerieSlideshow = ImageGalerieSlideshow.newInstance();
+                imageGalerieSlideshow.setArguments(bundle1);
+                imageGalerieSlideshow.show(fragmentTransaction, "slideshow");
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+
     }
 }

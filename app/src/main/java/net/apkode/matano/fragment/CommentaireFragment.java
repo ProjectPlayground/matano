@@ -1,26 +1,32 @@
 package net.apkode.matano.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.CommentaireAdapter;
+import net.apkode.matano.api.APICommentaire;
+import net.apkode.matano.interfac.ICommentaire;
 import net.apkode.matano.model.Commentaire;
 import net.apkode.matano.model.Event;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by brabo on 6/15/16.
- */
-public class CommentaireFragment extends Fragment {
+
+public class CommentaireFragment extends Fragment implements ICommentaire {
+    private APICommentaire apiCommentaire;
+    private RecyclerView recyclerView;
+    private ProgressBar progressBar;
 
     public CommentaireFragment() {
     }
@@ -31,40 +37,94 @@ public class CommentaireFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        apiCommentaire = new APICommentaire(this, context);
+        Log.e("e", "onAttach");
+
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("e", "onCreate");
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.e("e", "onCreateView");
         return inflater.inflate(R.layout.fragment_commentaire, container, false);
     }
 
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Log.e("e", "onViewCreated");
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recyclerView;
-        List<Commentaire> commentaires = new ArrayList<>();
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        progressBar = (ProgressBar) view.findViewById(R.id.loading);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
             Event event = (Event) bundle.getSerializable("Event");
 
-            recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            commentaires.add(new Commentaire(1, "Bachir", "selah zion", "92332322", "01/02/2016", "https://goodpitch.org/uploads/cache/user_image/max_400_400_monifa-bandele-b.jpg", "Merci pour cette nouvelle vidéo; je me pose de plus en plus la question suite aux chroniques de ramadan précédentes, je comprends qu’il est essentiel de resister à son ego, à l’envie de se penser parfaitement pur, angelique, mais dans le monde d’aujourd’hui j’ai des difficultés à appliquer exactement ces principes et j’ai même l’impression qu’ils pourraient être destructeurs si appliqués à la lettre."));
-            commentaires.add(new Commentaire(1, "Awa sow", "Mansour", "92332322", "11/12/2016", "https://pbs.twimg.com/profile_images/1717956431/BP-headshot-fb-profile-photo_400x400.jpg", "Merci pour cette nouvelle vidéo; je me pose de plus en plus la question suite aux chroniques de ramadan précédentes, je comprends qu’il est essentiel de resister à son ego, à l’envie de se penser parfaitement pur, angelique, mais dans le monde d’aujourd’hui j’ai des difficultés à appliquer exactement ces principes et j’ai même l’impression qu’ils pourraient être destructeurs si appliqués à la lettre."));
-            commentaires.add(new Commentaire(1, "Salif keita", "Amine", "92332322", "01/02/2016", "http://cps-static.rovicorp.com/3/JPG_400/MI0003/643/MI0003643950.jpg?partner=allrovi.com", "Merci pour cette nouvelle vidéo; je me pose de plus en plus la question suite aux chroniques de ramadan précédentes, je comprends qu’il est essentiel de resister à son ego, à l’envie de se penser parfaitement pur, angelique, mais dans le monde d’aujourd’hui j’ai des difficultés à appliquer exactement ces principes et j’ai même l’impression qu’ils pourraient être destructeurs si appliqués à la lettre."));
-            commentaires.add(new Commentaire(1, "Nasser Marabout", "Karim", "92332322", "01/02/2016", "https://pbs.twimg.com/profile_images/637722086547587072/g3kWsOVa.jpg", "Merci pour cette nouvelle vidéo; je me pose de plus en plus la question suite aux chroniques de ramadan précédentes, je comprends qu’il est essentiel de resister à son ego, à l’envie de se penser parfaitement pur, angelique, mais dans le monde d’aujourd’hui j’ai des difficultés à appliquer exactement ces principes et j’ai même l’impression qu’ils pourraient être destructeurs si appliqués à la lettre."));
-            commentaires.add(new Commentaire(1, "Moctar", "seini", "92332322", "01/02/2016", "http://servotronicstech.com/wp-content/uploads/2015/03/p-1-400x400.jpg", "Merci pour cette nouvelle vidéo; je me pose de plus en plus la question suite aux chroniques de ramadan précédentes, je comprends qu’il est essentiel de resister à son ego, à l’envie de se penser parfaitement pur, angelique, mais dans le monde d’aujourd’hui j’ai des difficultés à appliquer exactement ces principes et j’ai même l’impression qu’ils pourraient être destructeurs si appliqués à la lettre."));
-            recyclerView.setAdapter(new CommentaireAdapter(commentaires));
-
+            if (event != null) {
+                apiCommentaire.getData(event);
+                recyclerView.setAdapter(new CommentaireAdapter(new ArrayList<Commentaire>()));
+            }
         }
+    }
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e("e", "onStart");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("e", "onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e("e", "onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e("e", "onStop");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.e("e", "onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e("e", "onDestroy");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.e("e", "onDetach");
+    }
+
+    @Override
+    public void getResponse(List<Commentaire> commentaires) {
+        progressBar.setVisibility(View.GONE);
+        recyclerView.setAdapter(new CommentaireAdapter(commentaires));
     }
 }

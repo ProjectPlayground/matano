@@ -10,9 +10,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import net.apkode.matano.R;
-import net.apkode.matano.helper.APIEvent;
-import net.apkode.matano.helper.IEvent;
+import net.apkode.matano.api.APIEvent;
 import net.apkode.matano.helper.UtilisateurLocalStore;
+import net.apkode.matano.interfac.IEvent;
 import net.apkode.matano.model.Event;
 
 import java.util.List;

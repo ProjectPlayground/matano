@@ -1,4 +1,4 @@
-package net.apkode.matano.helper;
+package net.apkode.matano.api;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,6 +9,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 
 import net.apkode.matano.db.DBEvent;
+import net.apkode.matano.helper.AppController;
+import net.apkode.matano.interfac.IEvent;
 import net.apkode.matano.model.Event;
 
 import org.json.JSONArray;

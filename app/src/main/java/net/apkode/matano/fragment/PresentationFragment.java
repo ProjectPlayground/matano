@@ -1,5 +1,6 @@
 package net.apkode.matano.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,11 @@ public class PresentationFragment extends Fragment {
     public static PresentationFragment newInstance() {
         PresentationFragment presentationFragment = new PresentationFragment();
         return presentationFragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
     @Override
@@ -71,5 +77,40 @@ public class PresentationFragment extends Fragment {
         }
 
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 }
