@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.ParticipantAdapter;
 import net.apkode.matano.api.APIParticipant;
-import net.apkode.matano.interfac.IParticipant;
+import net.apkode.matano.interfaces.IParticipant;
 import net.apkode.matano.model.Event;
 import net.apkode.matano.model.Participant;
 

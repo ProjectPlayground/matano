@@ -10,7 +10,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 
 import net.apkode.matano.db.DBImageGalerie;
 import net.apkode.matano.helper.AppController;
-import net.apkode.matano.interfac.IImageGalerie;
+import net.apkode.matano.interfaces.IImageGalerie;
 import net.apkode.matano.model.Event;
 import net.apkode.matano.model.ImageGalerie;
 

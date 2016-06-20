@@ -15,7 +15,7 @@ import android.widget.ProgressBar;
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.CommentaireAdapter;
 import net.apkode.matano.api.APICommentaire;
-import net.apkode.matano.interfac.ICommentaire;
+import net.apkode.matano.interfaces.ICommentaire;
 import net.apkode.matano.model.Commentaire;
 import net.apkode.matano.model.Event;
 
@@ -121,6 +121,7 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
         super.onDetach();
         Log.e("e", "onDetach");
     }
+
 
     @Override
     public void getResponse(List<Commentaire> commentaires) {

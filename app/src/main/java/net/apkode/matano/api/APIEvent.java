@@ -2,6 +2,7 @@ package net.apkode.matano.api;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -10,7 +11,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 
 import net.apkode.matano.db.DBEvent;
 import net.apkode.matano.helper.AppController;
-import net.apkode.matano.interfac.IEvent;
+import net.apkode.matano.interfaces.IEvent;
 import net.apkode.matano.model.Event;
 
 import org.json.JSONArray;
@@ -39,7 +40,7 @@ public class APIEvent {
      *
      * @return
      */
-    public void getEvents() {
+    public void getData() {
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
 
                 new Response.Listener<JSONArray>() {
@@ -75,6 +76,7 @@ public class APIEvent {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         iEvent.getResponse(events);
+                        Log.e("e", "error " + error.getMessage());
                     }
 
                 });
@@ -89,6 +91,7 @@ public class APIEvent {
      * @param eventsServer
      */
     public void compareAndCharge(List<Event> eventsServer) {
+        // Log.e("e", "eventsServer "+eventsServer.size());
         Cursor cursor = dbEvent.getDatasCursor();
         Integer lastIdLocal;
         if (cursor.getCount() == 0) {
@@ -97,6 +100,8 @@ public class APIEvent {
             cursor.moveToLast();
             lastIdLocal = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
         }
+
+        //Log.e("e","local "+cursor.getCount());
 
         Integer lastIdServer;
         if (eventsServer.size() == 0) {

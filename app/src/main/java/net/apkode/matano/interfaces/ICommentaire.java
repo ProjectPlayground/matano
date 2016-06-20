@@ -1,4 +1,4 @@
-package net.apkode.matano.interfac;
+package net.apkode.matano.interfaces;
 
 import net.apkode.matano.model.Commentaire;
 

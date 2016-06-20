@@ -12,7 +12,7 @@ import android.widget.TextView;
 import net.apkode.matano.R;
 import net.apkode.matano.api.APIEvent;
 import net.apkode.matano.helper.UtilisateurLocalStore;
-import net.apkode.matano.interfac.IEvent;
+import net.apkode.matano.interfaces.IEvent;
 import net.apkode.matano.model.Event;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class Launch extends AppCompatActivity implements IEvent {
         try {
             Thread.sleep(SPLASH_TIME);
             apiEvent = new APIEvent(this, getApplicationContext());
-            apiEvent.getEvents();
+            apiEvent.getData();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -9,7 +9,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 
 import net.apkode.matano.db.DBActualite;
 import net.apkode.matano.helper.AppController;
-import net.apkode.matano.interfac.IActualite;
+import net.apkode.matano.interfaces.IActualite;
 import net.apkode.matano.model.Actualite;
 import net.apkode.matano.model.Event;
 

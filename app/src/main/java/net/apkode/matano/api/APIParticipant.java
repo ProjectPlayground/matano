@@ -10,7 +10,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 
 import net.apkode.matano.db.DBParticipant;
 import net.apkode.matano.helper.AppController;
-import net.apkode.matano.interfac.IParticipant;
+import net.apkode.matano.interfaces.IParticipant;
 import net.apkode.matano.model.Event;
 import net.apkode.matano.model.Participant;
 

@@ -17,10 +17,13 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.BottomBarBadge;
 import com.roughike.bottombar.OnMenuTabClickListener;
 
 import net.apkode.matano.R;
+import net.apkode.matano.db.DBActualite;
+import net.apkode.matano.db.DBCommentaire;
+import net.apkode.matano.db.DBImageGalerie;
+import net.apkode.matano.db.DBParticipant;
 import net.apkode.matano.fragment.ActualiteFragment;
 import net.apkode.matano.fragment.CommentaireFragment;
 import net.apkode.matano.fragment.ImageGalerieFragment;
@@ -41,6 +44,11 @@ public class EventActivity extends AppCompatActivity {
     private ImageGalerieFragment imageGalerieFragment;
     private ActualiteFragment actualiteFragment;
 
+    private DBCommentaire dbCommentaire;
+    private DBParticipant dbParticipant;
+    private DBImageGalerie dbImageGalerie;
+    private DBActualite dbActualite;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +63,11 @@ public class EventActivity extends AppCompatActivity {
         toolbar.setTitle("#" + event.getRubrique());
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        dbCommentaire = new DBCommentaire(this);
+        dbParticipant = new DBParticipant(this);
+        dbImageGalerie = new DBImageGalerie(this);
+        dbActualite = new DBActualite(this);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -103,11 +116,11 @@ public class EventActivity extends AppCompatActivity {
 
         int redColor = Color.parseColor("#FF0000");
 
-        BottomBarBadge bottomBarBadgeCommentaire = mBottomBar.makeBadgeForTabAt(1, redColor, 5);
+       /* BottomBarBadge bottomBarBadgeCommentaire = mBottomBar.makeBadgeForTabAt(1, redColor, 5);
         BottomBarBadge bottomBarBadgeParticipant = mBottomBar.makeBadgeForTabAt(2, redColor, 10);
 
         bottomBarBadgeCommentaire.setAutoShowAfterUnSelection(true);
-        bottomBarBadgeParticipant.setAutoShowAfterUnSelection(true);
+        bottomBarBadgeParticipant.setAutoShowAfterUnSelection(true);*/
 
     }
 
@@ -173,6 +186,4 @@ public class EventActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
-
-
 }

@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.ActualiteAdapter;
 import net.apkode.matano.api.APIActualite;
-import net.apkode.matano.interfac.IActualite;
+import net.apkode.matano.interfaces.IActualite;
 import net.apkode.matano.model.Actualite;
 import net.apkode.matano.model.Event;
 

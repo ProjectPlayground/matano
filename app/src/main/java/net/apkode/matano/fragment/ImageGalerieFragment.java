@@ -16,7 +16,7 @@ import android.widget.ProgressBar;
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.ImageGalerieAdapter;
 import net.apkode.matano.api.APIImageGalerie;
-import net.apkode.matano.interfac.IImageGalerie;
+import net.apkode.matano.interfaces.IImageGalerie;
 import net.apkode.matano.model.Event;
 import net.apkode.matano.model.ImageGalerie;
 
