@@ -5,6 +5,16 @@
     android:orientation="vertical">
 
     <ProgressBar
+        android:id="@+id/progressBarParticipant"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:indeterminateTint="@color/colorPrimary"
+        android:indeterminateTintMode="src_atop"
+        android:visibility="gone" />
+
+    <ProgressBar
         android:id="@+id/loading"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -27,9 +37,11 @@
         android:layout_alignParentBottom="true"
         android:background="@color/grey300"
         android:orientation="horizontal"
-        android:padding="@dimen/activity_mini">
+        android:padding="@dimen/activity_mini"
+        android:visibility="gone">
 
         <Button
+            android:id="@+id/btnSendParticipant"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/button4"

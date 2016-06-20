@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+
     <application
         android:name=".helper.AppController"
         android:allowBackup="true"
@@ -67,7 +68,12 @@
         <activity
             android:name=".activity.MonProfilActivty"
             android:label="@string/title_activity_profil_activty"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:parentActivityName=".activity.EventsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.apkode.matano.activity.EventsActivity" />
+        </activity>
         <activity
             android:name=".activity.InscriptionActivity"
             android:label="@string/app_name"
@@ -122,26 +128,8 @@
                 android:value="net.apkode.matano.activity.MonProfilActivty" />
         </activity>
         <activity
-            android:name=".activity.UpdateBasic"
-            android:label="@string/title_activity_update_basic"
-            android:parentActivityName=".activity.MonProfilActivty"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.apkode.matano.activity.MonProfilActivty" />
-        </activity>
-        <activity
             android:name=".activity.UpdatePresentation"
             android:label="@string/title_activity_update_presentation"
-            android:parentActivityName=".activity.MonProfilActivty"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.apkode.matano.activity.MonProfilActivty" />
-        </activity>
-        <activity
-            android:name=".activity.UpdateInteret"
-            android:label="@string/title_activity_update_interet"
             android:parentActivityName=".activity.MonProfilActivty"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

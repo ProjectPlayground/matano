@@ -8,8 +8,15 @@ import net.apkode.matano.model.Utilisateur;
 
 public class UtilisateurLocalStore {
     public static final String SP_NAME = "utilisateur";
+
+    public static final String NOM = "nom";
+    public static final String PRENOM = "prenom";
     public static final String TELEPHONE = "telephone";
     public static final String PASSWORD = "password";
+    public static final String SEXE = "sexe";
+    public static final String EMAIL = "email";
+    public static final String PRESENTATION = "presentation";
+
     public static final String IS_LOGGED_IN = "isLogged";
 
     SharedPreferences sharedPreferences;
@@ -20,17 +27,29 @@ public class UtilisateurLocalStore {
 
     public void storeUtilisateur(Utilisateur utilisateur) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString(NOM, utilisateur.getNom());
+        editor.putString(PRENOM, utilisateur.getPrenom());
         editor.putString(TELEPHONE, utilisateur.getTelephone());
         editor.putString(PASSWORD, utilisateur.getPassword());
+        editor.putString(SEXE, utilisateur.getSexe());
+        editor.putString(EMAIL, utilisateur.getEmail());
+        editor.putString(PRESENTATION, utilisateur.getPresentation());
         editor.commit();
 
     }
 
+
     public Utilisateur getUtilisateur() {
+        String nom = sharedPreferences.getString(NOM, "");
+        String prenom = sharedPreferences.getString(PRENOM, "");
         String telephone = sharedPreferences.getString(TELEPHONE, "");
         String password = sharedPreferences.getString(PASSWORD, "");
+        String sexe = sharedPreferences.getString(SEXE, "");
+        String email = sharedPreferences.getString(EMAIL, "");
+        String presentation = sharedPreferences.getString(PRESENTATION, "");
 
-        return new Utilisateur(telephone, password);
+        return new Utilisateur(nom, prenom, telephone, password, sexe, email, presentation);
     }
 
     public void clearUtilisateur() {
@@ -47,11 +66,7 @@ public class UtilisateurLocalStore {
 
 
     public boolean isLoggedIn() {
-        if (sharedPreferences.getBoolean(IS_LOGGED_IN, false)) {
-            return true;
-        } else {
-            return false;
-        }
+        return sharedPreferences.getBoolean(IS_LOGGED_IN, false);
     }
 
 

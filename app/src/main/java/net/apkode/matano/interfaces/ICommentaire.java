@@ -9,4 +9,6 @@ import java.util.List;
  */
 public interface ICommentaire {
     void getResponse(List<Commentaire> commentaires);
+
+    void sendResponse(String response);
 }

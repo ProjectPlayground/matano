@@ -33,4 +33,16 @@
     <string name="title_activity_update_basic">Basic info</string>
     <string name="title_activity_update_presentation">Présentation info</string>
     <string name="title_activity_update_interet">Centre d\'Interets</string>
+    <string name="error_commentaire">Veuillez saisir un commentaire</string>
+    <string name="participate0">Ne pas participer</string>
+    <string name="participate1">Participer</string>
+    <string name="contact_nom">Nom</string>
+    <string name="contact_prenom">Prénom</string>
+    <string name="contact_email">Email</string>
+    <string name="btn_modifier">Modifier</string>
+    <string name="contact_telephone">Téléphone</string>
+    <string name="contact_title_presentation">PRESENTATION</string>
+    <string name="contact_title_profil">PROFIL INFO</string>
+    <string name="contact_title_contact">CONTACT INFO</string>
+    <string name="contact_presentation">Présentation</string>
 </resources>

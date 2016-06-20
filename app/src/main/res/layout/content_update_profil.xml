@@ -17,39 +17,62 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin">
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/activity_horizontal_margin"
-                android:text="Nom"
+                android:text="@string/contact_nom"
                 android:textColor="@android:color/black"/>
+
             <EditText
+                android:id="@+id/edtUpdateNom"
                 style="@style/editText1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Bob marley"
                 android:inputType="textCapSentences|text" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin">
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/activity_horizontal_margin"
-                android:text="Prénom"
+                android:text="@string/contact_prenom"
                 android:textColor="@android:color/black"/>
+
             <EditText
+                android:id="@+id/edtUpdatePrenom"
                 style="@style/editText1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Marley"
                 android:inputType="textCapSentences|text" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:text="@string/contact_email"
+                android:textColor="@android:color/black" />
+
+            <EditText
+                android:id="@+id/edtUpdateEmail"
+                style="@style/editText1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress" />
         </LinearLayout>
 
         <LinearLayout
@@ -59,8 +82,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimary"
-                android:textColor="@android:color/white"
-                android:text="Modifer" />
+                android:text="@string/btn_modifier"
+                android:textColor="@android:color/white" />
         </LinearLayout>
 
     </LinearLayout>

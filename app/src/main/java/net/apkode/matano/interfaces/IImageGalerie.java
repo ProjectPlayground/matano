@@ -10,4 +10,6 @@ import java.util.List;
 public interface IImageGalerie {
 
     void getResponse(List<ImageGalerie> imageGaleries);
+
+    void sendResponse(String response);
 }

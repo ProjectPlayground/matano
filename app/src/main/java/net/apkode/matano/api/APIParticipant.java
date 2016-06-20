@@ -3,10 +3,12 @@ package net.apkode.matano.api;
 
 import android.content.Context;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 
 import net.apkode.matano.db.DBParticipant;
 import net.apkode.matano.helper.AppController;
@@ -19,11 +21,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class APIParticipant {
     private static final String COLUMN_ID = "id";
     private final static String url = "http://niameyzze.apkode.net/participants.php?id=";
+    private final static String urlSuppression = "http://niameyzze.apkode.net/delete-participant.php";
+    private final static String urlAjout = "http://niameyzze.apkode.net/send-participant.php";
     private IParticipant iParticipant;
     private List<Participant> participants;
     private DBParticipant dbParticipant;
@@ -65,6 +71,43 @@ public class APIParticipant {
                     }
 
                 });
+
+        AppController.getInstance().addToRequestQueue(request);
+    }
+
+    public void sendParticipant(final Event event, final String telephone, final String status) {
+
+        String url = "";
+
+        if (status.equals("suppression")) {
+            url = urlSuppression;
+        } else if (status.equals("ajout")) {
+            url = urlAjout;
+        }
+
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        iParticipant.sendResponse(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        iParticipant.sendResponse(error.getMessage());
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("telephone", telephone);
+                map.put("id", event.getId().toString());
+
+                return map;
+            }
+        };
 
         AppController.getInstance().addToRequestQueue(request);
     }

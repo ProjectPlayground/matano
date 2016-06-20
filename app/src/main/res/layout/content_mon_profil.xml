@@ -7,7 +7,7 @@
     android:background="@color/transparent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activity.MonProfilActivty"
-    tools:showIn="@layout/app_bar_mon_profil_">
+    tools:showIn="@layout/activity_mon_profil">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,11 +19,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:background="@drawable/button2"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="@dimen/activity_mini"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin">
+            android:padding="@dimen/activity_mini">
 
             <ImageView
                 android:id="@+id/imvImageCommentaire"
@@ -35,46 +35,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                android:text="Modifier"
+                android:text="@string/btn_modifier"
                 android:textColor="@color/colorPrimary"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/activity_micro"
             android:background="@android:color/white"
-            android:padding="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:background="@drawable/button2"
-                android:src="@mipmap/ic_action_event" />
+            android:padding="@dimen/activity_horizontal_margin">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="25" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:padding="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_micro">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="CONTACT INFO"
+                android:text="@string/contact_title_contact"
                 android:textColor="@android:color/black" />
         </LinearLayout>
 
@@ -94,26 +69,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Numéro"
+                    android:text="@string/contact_telephone"
                     android:textColor="@android:color/black" />
 
                 <TextView
+                    android:id="@+id/txtUpdateTelephone"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
                     android:gravity="right"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:text="92332322" />
+                    android:padding="@dimen/activity_horizontal_margin" />
 
             </LinearLayout>
             <Button
-                android:layout_gravity="right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="right"
                 android:background="@android:color/white"
-                android:text="Modifier"
-                android:textColor="@color/colorPrimary"
-                android:onClick="startUpdateContact"/>
+                android:onClick="startUpdateContact"
+                android:text="@string/btn_modifier"
+                android:textColor="@color/colorPrimary" />
 
         </LinearLayout>
 
@@ -127,7 +102,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="PROFIL INFO"
+                android:text="@string/contact_title_profil"
                 android:textColor="@android:color/black" />
         </LinearLayout>
 
@@ -147,16 +122,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Nom"
+                    android:text="@string/contact_nom"
                     android:textColor="@android:color/black" />
 
                 <TextView
+                    android:id="@+id/txtUpdateNom"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
                     android:gravity="right"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Bachir selah" />
+                    android:padding="@dimen/activity_horizontal_margin" />
             </LinearLayout>
 
             <LinearLayout
@@ -168,124 +143,50 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Prénom"
+                    android:text="@string/contact_prenom"
                     android:textColor="@android:color/black" />
 
                 <TextView
+                    android:id="@+id/txtUpdatePrenom"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
                     android:gravity="right"
+                    android:padding="@dimen/activity_horizontal_margin" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Zion" />
+                    android:text="@string/contact_email"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/txtUpdateEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:gravity="right"
+                    android:padding="@dimen/activity_horizontal_margin" />
             </LinearLayout>
 
             <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                android:text="Modifier"
-                android:textColor="@color/colorPrimary"
-                android:onClick="startUpdateProfil"/>
+                android:onClick="startUpdateProfil"
+                android:text="@string/btn_modifier"
+                android:textColor="@color/colorPrimary" />
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_micro"
-            android:background="@android:color/white"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="BASIC INFO"
-                android:textColor="@android:color/black" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:background="@android:color/white"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Sexe"
-                    android:textColor="@android:color/black" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="right"
-                    android:gravity="right"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Homme" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Date de naissance"
-                    android:textColor="@android:color/black" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="right"
-                    android:gravity="right"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:text="15/01/1980" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Email"
-                    android:textColor="@android:color/black" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="right"
-                    android:gravity="right"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:text="tontonbachir@gmail.com" />
-            </LinearLayout>
-
-            <Button
-                android:layout_gravity="right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:text="Modifier"
-                android:textColor="@color/colorPrimary"
-                android:onClick="startUpdateBasic"/>
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -297,7 +198,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="PRESENTATION"
+                android:text="@string/contact_title_presentation"
                 android:textColor="@android:color/black" />
         </LinearLayout>
 
@@ -314,58 +215,25 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/txtUpdatePresentation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Le même jour dans la matinée, le Chef de l’Etat s’est d’abord  rendu au siège de l’OIF où il a rencontré la Secrétaire Générale de cette organisation, Mme Michaelle Jean. - See more at: http://www.presidence.ne/article/visite-officielle-du-president-de-la-republique-paris-sem-issoufou-mahamadou-recu-mercredi#sthash.RSD92p1J.lmvN18Io.dpuf"
                     android:textColor="@android:color/black" />
 
 
             </LinearLayout>
             <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                android:text="Modifier"
-                android:textColor="@color/colorPrimary"
-                android:onClick="startUpdatePresentation"/>
+                android:onClick="startUpdatePresentation"
+                android:text="@string/btn_modifier"
+                android:textColor="@color/colorPrimary" />
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_micro"
-            android:background="@android:color/white"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CENTRES D'INTÉRÊT"
-                android:textColor="@android:color/black" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:orientation="vertical">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-            <Button
-                android:layout_gravity="right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:text="Modifier"
-                android:textColor="@color/colorPrimary"
-                android:onClick="startUpdateInteret"/>
-        </LinearLayout>
 
     </LinearLayout>
 

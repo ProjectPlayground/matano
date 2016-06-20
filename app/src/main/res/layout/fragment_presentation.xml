@@ -204,12 +204,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/button3"
-                    android:drawableTint="@color/colorPrimary"
                     android:drawableTop="@mipmap/ic_maps_local_see"
                     android:onClick="startEventPhoto"
                     android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Affiche"
-                    android:textColor="@color/colorPrimary" />
+                    android:text="Affiche" />
 
                 <Button
                     android:id="@+id/imbVideo"
@@ -217,12 +215,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/button3"
-                    android:drawableTint="@color/colorPrimary"
                     android:drawableTop="@mipmap/ic_av_videocam"
                     android:onClick="startEventVideo"
                     android:padding="@dimen/activity_horizontal_margin"
-                    android:text="Vidéo"
-                    android:textColor="@color/colorPrimary" />
+                    android:text="Vidéo" />
 
             </LinearLayout>
 
