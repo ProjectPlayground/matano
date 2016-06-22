@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,7 +87,6 @@ public class ParticipantFragment extends Fragment implements IParticipant {
             if (evennement != null) {
 
                 if (isParticipantPassed) {
-                    Log.e("e", "first time");
                     apiParticipant.getData(evennement);
                     isParticipantPassed = false;
                 } else {
@@ -97,7 +95,6 @@ public class ParticipantFragment extends Fragment implements IParticipant {
                     } else {
                         progressBar.setVisibility(View.GONE);
                         linearLayoutBtn.setVisibility(View.VISIBLE);
-                        Log.e("e", "fassed");
                     }
                 }
 
@@ -159,7 +156,6 @@ public class ParticipantFragment extends Fragment implements IParticipant {
     @Override
     public void getResponse(List<Participant> participants) {
         if (participants == null) {
-            Log.e("e", "actualites == null");
             apiParticipant.getData(evennement);
         } else {
             if (participants.size() == 0) {
@@ -179,7 +175,6 @@ public class ParticipantFragment extends Fragment implements IParticipant {
 
     @Override
     public void sendResponse(String response) {
-        Log.e("e", "response " + response);
         progressBarParticipant.setVisibility(View.GONE);
     }
 

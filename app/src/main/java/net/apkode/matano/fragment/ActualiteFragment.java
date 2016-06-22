@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +76,6 @@ public class ActualiteFragment extends Fragment implements IActualite {
 
             if (evennement != null) {
                 if (isActualitePassed) {
-                    Log.e("e", "first time");
                     apiActualite.getData(evennement);
                     isActualitePassed = false;
                 } else {
@@ -85,7 +83,6 @@ public class ActualiteFragment extends Fragment implements IActualite {
                         apiActualite.getData(evennement);
                     } else {
                         progressBar.setVisibility(View.GONE);
-                        Log.e("e", "fassed");
                     }
                 }
             }
@@ -132,7 +129,6 @@ public class ActualiteFragment extends Fragment implements IActualite {
     @Override
     public void getResponse(List<Actualite> actualites) {
         if (actualites == null) {
-            Log.e("e", "actualites == null");
             apiActualite.getData(evennement);
         } else {
             if (actualites.size() == 0) {

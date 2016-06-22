@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +48,6 @@ public class EvennementsFragment extends Fragment implements IEvennement {
     public void onAttach(Context context) {
         super.onAttach(context);
         apiEvennement = new APIEvennement(this, context);
-        Log.e("e", "onAttache");
         getDataFromApi();
     }
 
@@ -62,8 +60,6 @@ public class EvennementsFragment extends Fragment implements IEvennement {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_evennements, container, false);
-        Log.e("e", "onCreateView");
-
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -71,15 +67,12 @@ public class EvennementsFragment extends Fragment implements IEvennement {
 
         switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
             case 1:
-                Log.e("e", "onCreateView evenementsCulture");
                 recyclerView.setAdapter(new EvennementAdapter(evenementsCulture));
                 break;
             case 2:
-                Log.e("e", "onCreateView evenementsEducation");
                 recyclerView.setAdapter(new EvennementAdapter(evenementsEducation));
                 break;
             case 3:
-                Log.e("e", "onCreateView evenementsSport");
                 recyclerView.setAdapter(new EvennementAdapter(evenementsSport));
                 break;
 
@@ -91,7 +84,6 @@ public class EvennementsFragment extends Fragment implements IEvennement {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.e("e", "onViewCreated");
     }
 
     @Override
@@ -130,7 +122,6 @@ public class EvennementsFragment extends Fragment implements IEvennement {
     }
 
     private void getDataFromApi() {
-        Log.e("e", "getDataFromApi");
         DBEvennement dbEvennementCulture = new DBEvennement(getContext());
         DBEvennement dbEvennementEducation = new DBEvennement(getContext());
         DBEvennement dbEvennementSport = new DBEvennement(getContext());

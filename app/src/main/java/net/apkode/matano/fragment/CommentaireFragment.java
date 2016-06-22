@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,7 +89,6 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
             if (evennement != null) {
 
                 if (isCommentairePassed) {
-                    Log.e("e", "first time");
                     apiCommentaire.getData(evennement);
                     isCommentairePassed = false;
                 } else {
@@ -99,7 +97,6 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
                     } else {
                         progressBar.setVisibility(View.GONE);
                         linearLayoutBtn.setVisibility(View.VISIBLE);
-                        Log.e("e", "fassed");
                     }
 
                 }
@@ -167,7 +164,6 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
     @Override
     public void getResponse(List<Commentaire> commentaires) {
         if (commentaires == null) {
-            Log.e("e", "actualites == null");
             apiCommentaire.getData(evennement);
             linearLayoutBtn.setVisibility(View.VISIBLE);
         } else {

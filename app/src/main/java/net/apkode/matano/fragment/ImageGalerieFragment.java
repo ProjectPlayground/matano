@@ -15,7 +15,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,7 +98,6 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
 
             if (evennement != null) {
                 if (isImageGaleriePassed) {
-                    Log.e("e", "first time");
                     apiImageGalerie.getData(evennement);
                     isImageGaleriePassed = false;
                 } else {
@@ -108,7 +106,6 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
                     } else {
                         progressBar.setVisibility(View.GONE);
                         linearLayoutBtn.setVisibility(View.VISIBLE);
-                        Log.e("e", "fassed");
                     }
                 }
 
@@ -130,7 +127,6 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
     @Override
     public void getResponse(final List<ImageGalerie> imageGaleries) {
         if (imageGaleries == null) {
-            Log.e("e", "actualites == null");
             apiImageGalerie.getData(evennement);
         } else {
             if (imageGaleries.size() == 0) {
@@ -199,7 +195,7 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
     public Uri getCaptureUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "OrangeNigerEvent", null);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Matano", null);
         return Uri.parse(path);
     }
 

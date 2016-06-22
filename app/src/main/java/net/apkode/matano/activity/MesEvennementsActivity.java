@@ -68,6 +68,7 @@ public class MesEvennementsActivity extends AppCompatActivity implements IEvenne
 
     @Override
     public void getResponse(List<Evennement> evennements) {
+
         if (evennements == null) {
             apiEvennement.getMyData(utilisateur.getId());
         } else {
