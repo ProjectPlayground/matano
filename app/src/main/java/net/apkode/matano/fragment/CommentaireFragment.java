@@ -23,8 +23,11 @@ import net.apkode.matano.helper.UtilisateurLocalStore;
 import net.apkode.matano.interfaces.ICommentaire;
 import net.apkode.matano.model.Commentaire;
 import net.apkode.matano.model.Evennement;
+import net.apkode.matano.model.Utilisateur;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -39,6 +42,8 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
     private LinearLayout linearLayoutBtn;
     private List<Commentaire> commentairesListe = new ArrayList<>();
     private Evennement evennement;
+    private CommentaireAdapter commentaireAdapter;
+    private String commentaire;
 
     public CommentaireFragment() {
     }
@@ -76,9 +81,11 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        commentaireAdapter = new CommentaireAdapter(commentairesListe);
+
         progressBar = (ProgressBar) view.findViewById(R.id.loading);
         progressBarCommentaire = (ProgressBar) view.findViewById(R.id.loadingCommentaire);
-        recyclerView.setAdapter(new CommentaireAdapter(commentairesListe));
+        recyclerView.setAdapter(commentaireAdapter);
 
         linearLayoutBtn = (LinearLayout) view.findViewById(R.id.btn);
 
@@ -107,14 +114,16 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
                 btnCommentaire.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String commentaire = edtCommentaire.getText().toString();
+                        commentaire = edtCommentaire.getText().toString();
 
                         if (commentaire.equals("")) {
                             Toast.makeText(getContext(), getString(R.string.error_commentaire), Toast.LENGTH_LONG).show();
                         } else {
-                            sendCommentaire(commentaire, evennement);
+                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(edtCommentaire.getWindowToken(), 0);
                             edtCommentaire.setText("");
                             progressBarCommentaire.setVisibility(View.VISIBLE);
+                            sendCommentaire(commentaire, evennement);
                         }
                         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(edtCommentaire.getWindowToken(), 0);
@@ -170,6 +179,7 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
             if (commentaires.size() == 0) {
                 //    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
                 progressBar.setVisibility(View.GONE);
+                linearLayoutBtn.setVisibility(View.VISIBLE);
             } else {
                 progressBar.setVisibility(View.GONE);
                 commentairesListe = commentaires;
@@ -182,10 +192,27 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
     @Override
     public void sendResponse(String response) {
         progressBarCommentaire.setVisibility(View.GONE);
+        if (response == null) {
+            Toast.makeText(getContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+        } else {
+            if (response.equals("0")) {
+                Toast.makeText(getContext(), getString(R.string.error_commentaire), Toast.LENGTH_LONG).show();
+            } else if (response.equals("1")) {
+                Utilisateur utilisateur = utilisateurLocalStore.getUtilisateur();
+
+                Date date = new Date();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+                commentairesListe.add(new Commentaire(99, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getTelephone(), simpleDateFormat.format(date), utilisateur.getImage(), commentaire));
+
+                commentaireAdapter.notifyItemInserted(commentairesListe.size() - 1);
+                recyclerView.scrollToPosition(commentairesListe.size() - 1);
+            }
+        }
     }
 
     private void sendCommentaire(String commentaire, Evennement evennement) {
-        String telephone = utilisateurLocalStore.getUtilisateur().getTelephone();
-        apiCommentaire.sendCommentaire(evennement, commentaire, telephone);
+        Utilisateur utilisateur = utilisateurLocalStore.getUtilisateur();
+        apiCommentaire.sendCommentaire(evennement, commentaire, utilisateur);
     }
 }

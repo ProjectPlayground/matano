@@ -1,7 +1,6 @@
 package net.apkode.matano.api;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -15,13 +14,13 @@ import net.apkode.matano.helper.AppController;
 import net.apkode.matano.interfaces.ICommentaire;
 import net.apkode.matano.model.Commentaire;
 import net.apkode.matano.model.Evennement;
+import net.apkode.matano.model.Utilisateur;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,7 @@ public class APICommentaire {
     private static final String COLUMN_ID = "id";
     //private final static String url = "http://niameyzze.apkode.net/commentaires.php?id=";
     private final static String url = "https://matano-api.herokuapp.com/commentaires/evenements/";
-    private final static String urlCommentaire = "http://niameyzze.apkode.net/send-commentaire.php";
+    private final static String urlCommentaire = "https://matano-api.herokuapp.com/commentaires";
     private ICommentaire iCommentaire;
     private List<Commentaire> commentaires;
     private DBCommentaire dbCommentaire;
@@ -79,30 +78,29 @@ public class APICommentaire {
         AppController.getInstance().addToRequestQueue(request);
     }
 
-    public void sendCommentaire(final Evennement evennement, final String commentaire, final String telephone) {
+    public void sendCommentaire(final Evennement evennement, final String commentaire, final Utilisateur utilisateur) {
+
         StringRequest request = new StringRequest(Request.Method.POST, urlCommentaire,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("e", "response " + response);
                         iCommentaire.sendResponse(response);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("e", "error " + error.getMessage());
-                        iCommentaire.sendResponse(error.getMessage());
+                        iCommentaire.sendResponse(null);
                     }
                 }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
 
                 Map<String, String> map = new HashMap<String, String>();
+
                 map.put("commentaire", commentaire);
-                map.put("telephone", telephone);
-                map.put("jour", new Date().toString());
-                map.put("id", evennement.getId().toString());
+                map.put("evenement.id", evennement.getId().toString());
+                map.put("utilisateur.id", utilisateur.getId().toString());
 
                 return map;
             }
