@@ -30,16 +30,16 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_margin="@dimen/activity_horizontal_margin"
-                android:background="@color/black_trans80"
+                android:background="@color/colorPrimary"
                 android:padding="8dp"
-                android:textColor="#ffffff"
+                android:textColor="@android:color/white"
                 android:textStyle="bold" />
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/transparent"
+            android:background="@color/black_trans80"
             android:orientation="vertical"
             android:padding="@dimen/activity_horizontal_margin">
 
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:padding="@dimen/activity_horizontal_margin"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/colorPrimary" />
 
             <TextView
                 android:id="@+id/txtJour"

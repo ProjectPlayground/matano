@@ -43,7 +43,6 @@ public class CommentaireHolder extends RecyclerView.ViewHolder implements View.O
                 .crossFade()
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(imvImageCommentaire.getResources().getDrawable(R.mipmap.placeholder_femme))
                 .into(imvImageCommentaire);
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");

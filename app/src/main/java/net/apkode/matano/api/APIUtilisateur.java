@@ -1,16 +1,21 @@
 package net.apkode.matano.api;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
 import net.apkode.matano.helper.AppController;
 import net.apkode.matano.interfaces.IUtilisateur;
 import net.apkode.matano.model.Utilisateur;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,8 +23,10 @@ import java.util.Map;
 public class APIUtilisateur {
     private final static String urlInscription = "https://matano-api.herokuapp.com/inscription";
     private final static String urlConnexion = "https://matano-api.herokuapp.com/connexion";
+    private final static String urlGetUtilisateurByTelephone = "https://matano-api.herokuapp.com/utilisateurs/telephones/";
     private final static String urlUpdate = "https://matano-api.herokuapp.com/utilisateurs/update";
     private IUtilisateur iUtilisateur;
+    private Utilisateur utilisateurNew;
 
     public APIUtilisateur(IUtilisateur reference, Context ctx) {
         iUtilisateur = reference;
@@ -119,6 +126,41 @@ public class APIUtilisateur {
                 return map;
             }
         };
+
+        AppController.getInstance().addToRequestQueue(request);
+    }
+
+    public void getUtilisateur(String telephone) {
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, urlGetUtilisateurByTelephone + telephone, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.e("e", "response " + response);
+                        try {
+                            utilisateurNew = new Utilisateur(
+                                    response.getInt("id"),
+                                    response.getString("nom"),
+                                    response.getString("prenom"),
+                                    response.getString("telephone"),
+                                    response.getString("password"),
+                                    response.getString("email"),
+                                    response.getString("presentation"),
+                                    response.getString("image")
+                            );
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        iUtilisateur.responseGetUtilisateur(utilisateurNew);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("e", "error " + error.getMessage());
+                        iUtilisateur.responseGetUtilisateur(null);
+                    }
+                });
 
         AppController.getInstance().addToRequestQueue(request);
     }

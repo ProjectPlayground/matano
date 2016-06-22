@@ -25,6 +25,7 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
     private UtilisateurLocalStore utilisateurLocalStore;
     private APIUtilisateur apiUtilisateur;
     private ProgressDialog progress;
+    private String telephone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +61,7 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
         Integer id = v.getId();
         switch (id) {
             case R.id.btnConnexion:
-                String telephone = edtTelephone.getText().toString();
+                telephone = edtTelephone.getText().toString();
                 String password = edtPassword.getText().toString();
 
                 if (telephone.equals("")) {
@@ -116,10 +117,22 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
             if (response.equals("0")) {
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_connexion), Toast.LENGTH_SHORT).show();
             } else if (response.equals("1")) {
-                utilisateurLocalStore.setUtilisateurLogin(true);
-                finish();
-                startActivity(new Intent(getApplicationContext(), Launch.class));
+                apiUtilisateur.getUtilisateur(telephone);
             }
         }
     }
+
+    @Override
+    public void responseGetUtilisateur(Utilisateur utilisateur) {
+        if (utilisateur == null) {
+            Toast.makeText(getApplicationContext(), getString(R.string.error_connexion), Toast.LENGTH_LONG).show();
+        } else {
+            utilisateurLocalStore.clearUtilisateur();
+            utilisateurLocalStore.storeUtilisateur(utilisateur);
+            utilisateurLocalStore.setUtilisateurLogin(true);
+            finish();
+            startActivity(new Intent(getApplicationContext(), Launch.class));
+        }
+    }
+
 }

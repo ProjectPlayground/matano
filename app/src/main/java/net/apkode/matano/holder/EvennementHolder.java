@@ -68,6 +68,7 @@ public class EvennementHolder extends RecyclerView.ViewHolder implements View.On
 
         Picasso.with(imvImage.getContext())
                 .load(evennement.getImage())
+                //.placeholder(imvImage.getResources().getDrawable(placeholder))
                 //.fit()
                 // .centerCrop()
                 .into(imvImage);

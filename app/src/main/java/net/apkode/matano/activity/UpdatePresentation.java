@@ -97,4 +97,9 @@ public class UpdatePresentation extends AppCompatActivity implements IUtilisateu
     public void responseConnexion(String response) {
 
     }
+
+    @Override
+    public void responseGetUtilisateur(Utilisateur utilisateur) {
+
+    }
 }

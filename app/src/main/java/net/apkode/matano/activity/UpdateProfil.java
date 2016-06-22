@@ -107,4 +107,9 @@ public class UpdateProfil extends AppCompatActivity implements IUtilisateur {
     public void responseConnexion(String response) {
 
     }
+
+    @Override
+    public void responseGetUtilisateur(Utilisateur utilisateur) {
+
+    }
 }

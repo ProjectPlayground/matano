@@ -160,4 +160,9 @@ public class InscriptionActivity extends AppCompatActivity implements View.OnCli
     public void responseConnexion(String response) {
 
     }
+
+    @Override
+    public void responseGetUtilisateur(Utilisateur utilisateur) {
+
+    }
 }
