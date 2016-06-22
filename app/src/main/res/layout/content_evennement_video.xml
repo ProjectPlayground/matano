@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="net.apkode.matano.activity.EventVideo"
-    tools:showIn="@layout/activity_event_video">
+    tools:context=".activity.EvennementVideo"
+    tools:showIn="@layout/activity_evennement_video">
 
     <com.google.android.youtube.player.YouTubePlayerView
         android:id="@+id/youtube_player"

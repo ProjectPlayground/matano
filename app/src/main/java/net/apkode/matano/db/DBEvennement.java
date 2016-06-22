@@ -6,16 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import net.apkode.matano.model.Event;
+import net.apkode.matano.model.Evennement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class DBEvent extends SQLiteOpenHelper {
+public class DBEvennement extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Matano.db";
-    private static final Integer DATBASE_VERSION = 2;
-    private static final String TABLE_NAME = "events";
+    private static final Integer DATBASE_VERSION = 1;
+    private static final String TABLE_NAME = "evennements";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_CATEGORIE = "categorie";
     private static final String COLUMN_RUBRIQUE = "rubrique";
@@ -34,9 +34,9 @@ public class DBEvent extends SQLiteOpenHelper {
     private static final String TABLE_CREATE = "CREATE TABLE " + TABLE_NAME + " (" + COLUMN_ID + " INTEGER PRIMARY KEY , " + COLUMN_CATEGORIE + " TEXT, " + COLUMN_RUBRIQUE + " TEXT, " + COLUMN_TITRE + " TEXT, " + COLUMN_TARIF + " TEXT, " + COLUMN_LIEU + " TEXT, " + COLUMN_PRESENTATION + " TEXT, " + COLUMN_IMAGE + " TEXT, " + COLUMN_HORAIRE + " TEXT, " + COLUMN_LIEN + " TEXT, " + COLUMN_JOUR + " TEXT, " + COLUMN_VIDEO + " TEXT, " + COLUMN_IMAGEFULL + " TEXT );";
 
 
-    private List<Event> events = new ArrayList<>();
+    private List<Evennement> evennements = new ArrayList<>();
 
-    public DBEvent(Context context) {
+    public DBEvennement(Context context) {
         super(context, DATABASE_NAME, null, DATBASE_VERSION);
     }
 
@@ -96,16 +96,16 @@ public class DBEvent extends SQLiteOpenHelper {
     }
 
     /**
-     * Liste de tous les events
+     * Liste de tous les evennements
      *
      * @return
      */
-    public List<Event> getDatas() {
+    public List<Evennement> getDatas() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + TABLE_NAME + "", null);
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            events.add(new Event(
+            evennements.add(new Evennement(
                     cursor.getInt(cursor.getColumnIndex(COLUMN_ID)),
                     cursor.getString(cursor.getColumnIndex(COLUMN_CATEGORIE)),
                     cursor.getString(cursor.getColumnIndex(COLUMN_RUBRIQUE)),
@@ -123,11 +123,11 @@ public class DBEvent extends SQLiteOpenHelper {
         }
         cursor.close();
 
-        return events;
+        return evennements;
     }
 
     /**
-     * Liste de tous les events cursor
+     * Liste de tous les evennements cursor
      *
      * @return
      */
@@ -137,16 +137,16 @@ public class DBEvent extends SQLiteOpenHelper {
     }
 
     /**
-     * Liste de tous les events
+     * Liste de tous les evennements
      *
      * @return
      */
-    public List<Event> getDatasByCategorie(String categorie) {
+    public List<Evennement> getDatasByCategorie(String categorie) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + TABLE_NAME + " WHERE categorie='" + categorie + "' order by id Desc", null);
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            events.add(new Event(
+            evennements.add(new Evennement(
                     cursor.getInt(cursor.getColumnIndex(COLUMN_ID)),
                     cursor.getString(cursor.getColumnIndex(COLUMN_CATEGORIE)),
                     cursor.getString(cursor.getColumnIndex(COLUMN_RUBRIQUE)),
@@ -164,7 +164,7 @@ public class DBEvent extends SQLiteOpenHelper {
         }
         cursor.close();
 
-        return events;
+        return evennements;
     }
 
     /**

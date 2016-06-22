@@ -8,16 +8,26 @@ public class ImageGalerie implements Serializable {
     private String prenom;
     private String telephone;
     private String image;
+    private String imagegalerie;
 
-    public ImageGalerie(Integer id, String nom, String prenom, String telephone, String image) {
+    public ImageGalerie(Integer id, String nom, String prenom, String telephone, String image, String imagegalerie) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
         this.telephone = telephone;
         this.image = image;
+        this.imagegalerie = imagegalerie;
     }
 
     public ImageGalerie() {
+    }
+
+    public String getImagegalerie() {
+        return imagegalerie;
+    }
+
+    public void setImagegalerie(String imagegalerie) {
+        this.imagegalerie = imagegalerie;
     }
 
     public Integer getId() {

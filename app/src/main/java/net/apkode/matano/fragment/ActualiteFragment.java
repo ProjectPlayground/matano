@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,21 +17,26 @@ import net.apkode.matano.adapter.ActualiteAdapter;
 import net.apkode.matano.api.APIActualite;
 import net.apkode.matano.interfaces.IActualite;
 import net.apkode.matano.model.Actualite;
-import net.apkode.matano.model.Event;
+import net.apkode.matano.model.Evennement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class ActualiteFragment extends Fragment implements IActualite {
+    private static boolean isActualitePassed = false;
     private APIActualite apiActualite;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private List<Actualite> actualitesListe = new ArrayList<>();
+    private Evennement evennement;
 
     public ActualiteFragment() {
     }
 
     public static ActualiteFragment newInstance() {
+        isActualitePassed = true;
+
         ActualiteFragment actualiteFragment = new ActualiteFragment();
         return actualiteFragment;
     }
@@ -61,15 +67,27 @@ public class ActualiteFragment extends Fragment implements IActualite {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        recyclerView.setAdapter(new ActualiteAdapter(actualitesListe));
+
         progressBar = (ProgressBar) view.findViewById(R.id.loading);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            Event event = (Event) bundle.getSerializable("Event");
+            evennement = (Evennement) bundle.getSerializable("Evennement");
 
-            if (event != null) {
-                apiActualite.getData(event);
-                recyclerView.setAdapter(new ActualiteAdapter(new ArrayList<Actualite>()));
+            if (evennement != null) {
+                if (isActualitePassed) {
+                    Log.e("e", "first time");
+                    apiActualite.getData(evennement);
+                    isActualitePassed = false;
+                } else {
+                    if (actualitesListe.size() == 0) {
+                        apiActualite.getData(evennement);
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        Log.e("e", "fassed");
+                    }
+                }
             }
         }
 
@@ -113,7 +131,20 @@ public class ActualiteFragment extends Fragment implements IActualite {
 
     @Override
     public void getResponse(List<Actualite> actualites) {
-        progressBar.setVisibility(View.GONE);
-        recyclerView.setAdapter(new ActualiteAdapter(actualites));
+        if (actualites == null) {
+            Log.e("e", "actualites == null");
+            apiActualite.getData(evennement);
+        } else {
+            if (actualites.size() == 0) {
+                //     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.GONE);
+            } else {
+                progressBar.setVisibility(View.GONE);
+                actualitesListe = actualites;
+                recyclerView.setAdapter(new ActualiteAdapter(actualitesListe));
+            }
+        }
+
+
     }
 }

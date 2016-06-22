@@ -14,7 +14,7 @@ import net.apkode.matano.db.DBCommentaire;
 import net.apkode.matano.helper.AppController;
 import net.apkode.matano.interfaces.ICommentaire;
 import net.apkode.matano.model.Commentaire;
-import net.apkode.matano.model.Event;
+import net.apkode.matano.model.Evennement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +28,8 @@ import java.util.Map;
 
 public class APICommentaire {
     private static final String COLUMN_ID = "id";
-    private final static String url = "http://niameyzze.apkode.net/commentaires.php?id=";
+    //private final static String url = "http://niameyzze.apkode.net/commentaires.php?id=";
+    private final static String url = "https://matano-api.herokuapp.com/commentaires/evenements/";
     private final static String urlCommentaire = "http://niameyzze.apkode.net/send-commentaire.php";
     private ICommentaire iCommentaire;
     private List<Commentaire> commentaires;
@@ -40,8 +41,8 @@ public class APICommentaire {
         dbCommentaire = new DBCommentaire(ctx);
     }
 
-    public void getData(Event event) {
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url + event.getId(), null,
+    public void getData(Evennement evennement) {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url + evennement.getId(), null,
 
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -49,6 +50,7 @@ public class APICommentaire {
                         for (int i = 0; i < response.length(); i++) {
                             try {
                                 JSONObject jsonObject = response.getJSONObject(i);
+
                                 commentaires.add(new Commentaire(
                                         jsonObject.getInt("id"),
                                         jsonObject.getString("nom"),
@@ -61,7 +63,6 @@ public class APICommentaire {
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                                Log.e("e", "e " + e.getMessage());
                             }
                         }
                         iCommentaire.getResponse(commentaires);
@@ -70,7 +71,7 @@ public class APICommentaire {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        iCommentaire.getResponse(commentaires);
+                        iCommentaire.getResponse(null);
                     }
 
                 });
@@ -78,17 +79,19 @@ public class APICommentaire {
         AppController.getInstance().addToRequestQueue(request);
     }
 
-    public void sendCommentaire(final Event event, final String commentaire, final String telephone) {
+    public void sendCommentaire(final Evennement evennement, final String commentaire, final String telephone) {
         StringRequest request = new StringRequest(Request.Method.POST, urlCommentaire,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Log.e("e", "response " + response);
                         iCommentaire.sendResponse(response);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.e("e", "error " + error.getMessage());
                         iCommentaire.sendResponse(error.getMessage());
                     }
                 }) {
@@ -99,7 +102,7 @@ public class APICommentaire {
                 map.put("commentaire", commentaire);
                 map.put("telephone", telephone);
                 map.put("jour", new Date().toString());
-                map.put("id", event.getId().toString());
+                map.put("id", evennement.getId().toString());
 
                 return map;
             }

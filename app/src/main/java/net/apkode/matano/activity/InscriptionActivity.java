@@ -1,41 +1,43 @@
 package net.apkode.matano.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-
 import net.apkode.matano.R;
-import net.apkode.matano.helper.AppController;
+import net.apkode.matano.api.APIUtilisateur;
+import net.apkode.matano.helper.UtilisateurLocalStore;
+import net.apkode.matano.interfaces.IUtilisateur;
 import net.apkode.matano.model.Utilisateur;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class InscriptionActivity extends AppCompatActivity implements View.OnClickListener {
-    private final static String url = "http://niameyzze.apkode.net/inscription.php";
+public class InscriptionActivity extends AppCompatActivity implements View.OnClickListener, IUtilisateur {
     private EditText edtTelephone;
     private EditText edtNom;
     private EditText edtPrenom;
     private EditText edtPassword;
     private EditText edtPasswordConfirme;
+    private APIUtilisateur apiUtilisateur;
+    private ProgressDialog progress;
+    private UtilisateurLocalStore utilisateurLocalStore;
+    private Utilisateur utilisateurNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inscription);
+
+        apiUtilisateur = new APIUtilisateur(this, this);
+        utilisateurLocalStore = new UtilisateurLocalStore(getApplicationContext());
 
         edtTelephone = (EditText) findViewById(R.id.edtTelephone);
         edtNom = (EditText) findViewById(R.id.edtNom);
@@ -104,7 +106,8 @@ public class InscriptionActivity extends AppCompatActivity implements View.OnCli
                 }
 
                 if (result == null) {
-                    inscription(new Utilisateur(nom, prenom, telephone, password));
+                    utilisateurNew = new Utilisateur(nom, prenom, telephone, password);
+                    inscription(utilisateurNew);
                 }
                 break;
             case R.id.btnConnexion:
@@ -116,51 +119,45 @@ public class InscriptionActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void inscription(final Utilisateur utilisateur) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(edtPassword.getWindowToken(), 0);
 
-        final ProgressDialog progress = new ProgressDialog(this);
+        progress = new ProgressDialog(this);
         progress.setMessage("Inscription... ");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
         progress.show();
 
+        apiUtilisateur.doInscription(utilisateur);
 
-        StringRequest request = new StringRequest(
-                Request.Method.POST,
-                url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        progress.hide();
-                        if (response.equals("1")) {
-                            finish();
-                            startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
-                        } else if (response.equals("0")) {
-                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_inscription), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progress.hide();
-                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_reseau), Toast.LENGTH_SHORT).show();
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("nom", utilisateur.getNom());
-                map.put("prenom", utilisateur.getPrenom());
-                map.put("telephone", utilisateur.getTelephone());
-                map.put("password", utilisateur.getPassword());
-
-                return map;
-            }
-        };
-
-        AppController.getInstance().addToRequestQueue(request);
     }
 
 
+    @Override
+    public void responseUpdate(String response) {
+
+    }
+
+    @Override
+    public void responseInscription(String response) {
+        progress.hide();
+        if (response == null) {
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_reseau), Toast.LENGTH_SHORT).show();
+        } else {
+            if (response.equals("0")) {
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_inscription), Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e("e", "id " + response);
+                utilisateurNew.setId(Integer.parseInt(response));
+                utilisateurLocalStore.storeUtilisateur(utilisateurNew);
+                finish();
+                startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
+            }
+        }
+    }
+
+    @Override
+    public void responseConnexion(String response) {
+
+    }
 }

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black_trans80"
-    tools:context=".fragment.EventPlaceholderFragment">
+    tools:context=".fragment.EvennementsFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"

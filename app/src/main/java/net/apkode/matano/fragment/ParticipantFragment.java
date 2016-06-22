@@ -19,13 +19,14 @@ import net.apkode.matano.adapter.ParticipantAdapter;
 import net.apkode.matano.api.APIParticipant;
 import net.apkode.matano.helper.UtilisateurLocalStore;
 import net.apkode.matano.interfaces.IParticipant;
-import net.apkode.matano.model.Event;
+import net.apkode.matano.model.Evennement;
 import net.apkode.matano.model.Participant;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ParticipantFragment extends Fragment implements IParticipant {
+    private static boolean isParticipantPassed = false;
     private APIParticipant apiParticipant;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
@@ -33,11 +34,16 @@ public class ParticipantFragment extends Fragment implements IParticipant {
     private UtilisateurLocalStore utilisateurLocalStore;
     private Button btnSendParticipant;
     private LinearLayout linearLayoutBtn;
+    private List<Participant> participantsListe = new ArrayList<>();
+    private Evennement evennement;
 
     public ParticipantFragment() {
     }
 
     public static ParticipantFragment newInstance() {
+
+        isParticipantPassed = true;
+
         ParticipantFragment participantFragment = new ParticipantFragment();
         return participantFragment;
     }
@@ -73,14 +79,27 @@ public class ParticipantFragment extends Fragment implements IParticipant {
 
         btnSendParticipant = (Button) view.findViewById(R.id.btnSendParticipant);
         linearLayoutBtn = (LinearLayout) view.findViewById(R.id.btn);
+        recyclerView.setAdapter(new ParticipantAdapter(participantsListe));
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            final Event event = (Event) bundle.getSerializable("Event");
+            evennement = (Evennement) bundle.getSerializable("Evennement");
 
-            if (event != null) {
-                apiParticipant.getData(event);
-                recyclerView.setAdapter(new ParticipantAdapter(new ArrayList<Participant>()));
+            if (evennement != null) {
+
+                if (isParticipantPassed) {
+                    Log.e("e", "first time");
+                    apiParticipant.getData(evennement);
+                    isParticipantPassed = false;
+                } else {
+                    if (participantsListe.size() == 0) {
+                        apiParticipant.getData(evennement);
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        linearLayoutBtn.setVisibility(View.VISIBLE);
+                        Log.e("e", "fassed");
+                    }
+                }
 
                 btnSendParticipant.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -88,9 +107,9 @@ public class ParticipantFragment extends Fragment implements IParticipant {
                         String text = btnSendParticipant.getText().toString();
 
                         if (text.equals("Participer")) {
-                            sendPartiticpant(event, "suppression");
+                            sendPartiticpant(evennement, "suppression");
                         } else if (text.equals("Ne pas participer")) {
-                            sendPartiticpant(event, "ajout");
+                            sendPartiticpant(evennement, "ajout");
                         }
                         progressBarParticipant.setVisibility(View.VISIBLE);
 
@@ -139,10 +158,23 @@ public class ParticipantFragment extends Fragment implements IParticipant {
 
     @Override
     public void getResponse(List<Participant> participants) {
-        progressBar.setVisibility(View.GONE);
-        linearLayoutBtn.setVisibility(View.VISIBLE);
-        recyclerView.setAdapter(new ParticipantAdapter(participants));
-        checkIsParticipant(participants);
+        if (participants == null) {
+            Log.e("e", "actualites == null");
+            apiParticipant.getData(evennement);
+        } else {
+            if (participants.size() == 0) {
+                //       Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.GONE);
+                linearLayoutBtn.setVisibility(View.VISIBLE);
+            } else {
+                progressBar.setVisibility(View.GONE);
+                participantsListe = participants;
+                recyclerView.setAdapter(new ParticipantAdapter(participantsListe));
+                linearLayoutBtn.setVisibility(View.VISIBLE);
+                // checkIsParticipant(participants);
+            }
+        }
+
     }
 
     @Override
@@ -151,9 +183,9 @@ public class ParticipantFragment extends Fragment implements IParticipant {
         progressBarParticipant.setVisibility(View.GONE);
     }
 
-    private void sendPartiticpant(Event event, String status) {
+    private void sendPartiticpant(Evennement evennement, String status) {
         String telephone = utilisateurLocalStore.getUtilisateur().getTelephone();
-        apiParticipant.sendParticipant(event, telephone, status);
+        apiParticipant.sendParticipant(evennement, telephone, status);
     }
 
     private void checkIsParticipant(List<Participant> participants) {
@@ -167,10 +199,10 @@ public class ParticipantFragment extends Fragment implements IParticipant {
         }
 
         if (existe.equals("0")) {
-            btnSendParticipant.setText(getString(R.string.participate1));
+//            btnSendParticipant.setText(getString(R.string.participate1));
         } else {
-            btnSendParticipant.setText(getString(R.string.participate0));
-            btnSendParticipant.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+            //         btnSendParticipant.setText(getString(R.string.participate0));
+            //           btnSendParticipant.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
         }
     }
 

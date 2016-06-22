@@ -14,16 +14,17 @@ import java.util.List;
 
 public class DBImageGalerie extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Matano.db";
-    private static final Integer DATBASE_VERSION = 1;
+    private static final Integer DATBASE_VERSION = 2;
     private static final String TABLE_NAME = "images";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_NOM = "nom";
     private static final String COLUMN_PRENOM = "prenom";
     private static final String COLUMN_TELEPHONE = "telephone";
     private static final String COLUMN_IMAGE = "image";
+    private static final String COLUMN_IMAGE_GALERIE = "imagegalerie";
 
     private static final String TABLE_DROP = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
-    private static final String TABLE_CREATE = "CREATE TABLE " + TABLE_NAME + " (" + COLUMN_ID + " INTEGER PRIMARY KEY , " + COLUMN_NOM + " TEXT, " + COLUMN_PRENOM + " TEXT, " + COLUMN_TELEPHONE + " TEXT, " + COLUMN_IMAGE + " TEXT );";
+    private static final String TABLE_CREATE = "CREATE TABLE " + TABLE_NAME + " (" + COLUMN_ID + " INTEGER PRIMARY KEY , " + COLUMN_NOM + " TEXT, " + COLUMN_PRENOM + " TEXT, " + COLUMN_TELEPHONE + " TEXT, " + COLUMN_IMAGE + " TEXT, " + COLUMN_IMAGE_GALERIE + " TEXT );";
 
     List<ImageGalerie> imageGaleries = new ArrayList<>();
 
@@ -48,7 +49,7 @@ public class DBImageGalerie extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void createData(Integer id, String nom, String prenom, String telephone, String image) {
+    public void createData(Integer id, String nom, String prenom, String telephone, String image, String imagegalerie) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -57,6 +58,7 @@ public class DBImageGalerie extends SQLiteOpenHelper {
         contentValues.put("prenom", prenom);
         contentValues.put("telephone", telephone);
         contentValues.put("image", image);
+        contentValues.put("imagegalerie", imagegalerie);
 
         db.insert(TABLE_NAME, null, contentValues);
     }
@@ -71,7 +73,8 @@ public class DBImageGalerie extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(COLUMN_NOM)),
                     cursor.getString(cursor.getColumnIndex(COLUMN_PRENOM)),
                     cursor.getString(cursor.getColumnIndex(COLUMN_TELEPHONE)),
-                    cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE))
+                    cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE)),
+                    cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_GALERIE))
             ));
         }
         cursor.close();

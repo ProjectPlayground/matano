@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
     <application
         android:name=".helper.AppController"
         android:allowBackup="true"
@@ -33,46 +32,47 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.EventsActivity"
+            android:name=".activity.EvennementsActivity"
             android:label="@string/title_activity_events"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.EventActivity"
+            android:name=".activity.EvennementActivity"
             android:label="@string/title_activity_event"
             android:launchMode="singleTop"
-            android:parentActivityName=".activity.EventsActivity"
+            android:parentActivityName=".activity.EvennementsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.apkode.matano.activity.EventsActivity" />
+                android:value=".activity.EvennementsActivity" />
         </activity>
         <activity
-            android:name=".activity.EventVideo"
+            android:name=".activity.EvennementVideo"
             android:label="@string/title_activity_event_video"
-            android:parentActivityName=".activity.EventActivity"
+            android:parentActivityName=".activity.EvennementActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.apkode.matano.activity.EventActivity" />
+                android:value=".activity.EvennementActivity" />
         </activity>
         <activity
-            android:name=".activity.EventPhoto"
+            android:name=".activity.EvennementPhoto"
             android:label="@string/title_activity_event_photo"
-            android:parentActivityName=".activity.EventActivity"
+            android:parentActivityName=".activity.EvennementActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.apkode.matano.activity.EventActivity" />
+                android:value=".activity.EvennementActivity" />
         </activity>
         <activity
             android:name=".activity.MonProfilActivty"
             android:label="@string/title_activity_profil_activty"
-            android:parentActivityName=".activity.EventsActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".activity.EvennementsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.apkode.matano.activity.EventsActivity" />
+                android:value=".activity.EvennementsActivity" />
         </activity>
         <activity
             android:name=".activity.InscriptionActivity"
@@ -87,28 +87,40 @@
         <activity
             android:name=".activity.ParticipantActivity"
             android:label="@string/title_activity_participant"
-            android:parentActivityName=".activity.EventActivity"
+            android:parentActivityName=".activity.EvennementActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.apkode.matano.activity.EventActivity" />
+                android:value=".activity.EvennementActivity" />
         </activity>
         <activity
-            android:name=".activity.MesEventsActivity"
+            android:name=".activity.MesEvennementsActivity"
             android:label="@string/title_activity_mes_events"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.FeedbackActivity"
-            android:label="@string/title_activity_mes_messages"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:parentActivityName=".activity.EvennementsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.EvennementsActivity" />
+        </activity>
         <activity
             android:name=".activity.ParametresActivty"
             android:label="@string/title_activity_parametres_activty"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:parentActivityName=".activity.EvennementsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.EvennementsActivity" />
+        </activity>
         <activity
             android:name=".activity.AboutActivity"
             android:label="@string/title_activity_about"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:parentActivityName=".activity.EvennementsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.EvennementsActivity" />
+        </activity>
+
         <activity
             android:name=".activity.UpdateContact"
             android:label="@string/title_activity_update_contact"
@@ -135,6 +147,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.apkode.matano.activity.MonProfilActivty" />
+        </activity>
+        <activity
+            android:name=".activity.FeedbackActivity"
+            android:label="@string/title_activity_feedback"
+            android:parentActivityName=".activity.EvennementsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.EvennementsActivity" />
         </activity>
     </application>
 

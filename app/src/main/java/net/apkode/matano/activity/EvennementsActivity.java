@@ -13,32 +13,32 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import net.apkode.matano.R;
-import net.apkode.matano.adapter.EventSectionsPagerAdapter;
+import net.apkode.matano.adapter.EvennementSectionsPagerAdapter;
 import net.apkode.matano.helper.UtilisateurLocalStore;
 
-public class EventsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class EvennementsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private UtilisateurLocalStore utilisateurLocalStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_events);
+        setContentView(R.layout.activity_evennemens);
 
         utilisateurLocalStore = new UtilisateurLocalStore(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        EventSectionsPagerAdapter eventSectionsPagerAdapter = new EventSectionsPagerAdapter(getSupportFragmentManager(), getApplicationContext());
+        EvennementSectionsPagerAdapter evennementSectionsPagerAdapter = new EvennementSectionsPagerAdapter(getSupportFragmentManager(), getApplicationContext());
         ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(eventSectionsPagerAdapter);
+        mViewPager.setAdapter(evennementSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
-            tab.setCustomView(eventSectionsPagerAdapter.getTabView(i));
+            tab.setCustomView(evennementSectionsPagerAdapter.getTabView(i));
         }
 
 
@@ -78,9 +78,9 @@ public class EventsActivity extends AppCompatActivity implements NavigationView.
         int id = item.getItemId();
 
         if (id == R.id.btn_navigation_menu_evenements) {
-            startActivity(new Intent(this, EventsActivity.class));
+            startActivity(new Intent(this, EvennementsActivity.class));
         } else if (id == R.id.btn_navigation_menu_mes_evenements) {
-            startActivity(new Intent(this, MesEventsActivity.class));
+            startActivity(new Intent(this, MesEvennementsActivity.class));
         } else if (id == R.id.btn_navigation_menu_profil) {
             startActivity(new Intent(this, MonProfilActivty.class));
         } else if (id == R.id.btn_navigation_menu_feedback) {

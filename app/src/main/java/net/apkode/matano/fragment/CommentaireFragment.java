@@ -23,13 +23,14 @@ import net.apkode.matano.api.APICommentaire;
 import net.apkode.matano.helper.UtilisateurLocalStore;
 import net.apkode.matano.interfaces.ICommentaire;
 import net.apkode.matano.model.Commentaire;
-import net.apkode.matano.model.Event;
+import net.apkode.matano.model.Evennement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class CommentaireFragment extends Fragment implements ICommentaire {
+    private static boolean isCommentairePassed = false;
     private APICommentaire apiCommentaire;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
@@ -37,11 +38,15 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
     private EditText edtCommentaire;
     private UtilisateurLocalStore utilisateurLocalStore;
     private LinearLayout linearLayoutBtn;
+    private List<Commentaire> commentairesListe = new ArrayList<>();
+    private Evennement evennement;
 
     public CommentaireFragment() {
     }
 
     public static CommentaireFragment newInstance() {
+
+        isCommentairePassed = true;
         CommentaireFragment commentaireFragment = new CommentaireFragment();
         return commentaireFragment;
     }
@@ -51,25 +56,21 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
         super.onAttach(context);
         apiCommentaire = new APICommentaire(this, context);
         utilisateurLocalStore = new UtilisateurLocalStore(context);
-        Log.e("e", "onAttach");
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("e", "onCreate");
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.e("e", "onCreateView");
         return inflater.inflate(R.layout.fragment_commentaire, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Log.e("e", "onViewCreated");
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
@@ -78,16 +79,30 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
 
         progressBar = (ProgressBar) view.findViewById(R.id.loading);
         progressBarCommentaire = (ProgressBar) view.findViewById(R.id.loadingCommentaire);
+        recyclerView.setAdapter(new CommentaireAdapter(commentairesListe));
 
         linearLayoutBtn = (LinearLayout) view.findViewById(R.id.btn);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            final Event event = (Event) bundle.getSerializable("Event");
+            evennement = (Evennement) bundle.getSerializable("Evennement");
 
-            if (event != null) {
-                apiCommentaire.getData(event);
-                recyclerView.setAdapter(new CommentaireAdapter(new ArrayList<Commentaire>()));
+            if (evennement != null) {
+
+                if (isCommentairePassed) {
+                    Log.e("e", "first time");
+                    apiCommentaire.getData(evennement);
+                    isCommentairePassed = false;
+                } else {
+                    if (commentairesListe.size() == 0) {
+                        apiCommentaire.getData(evennement);
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        linearLayoutBtn.setVisibility(View.VISIBLE);
+                        Log.e("e", "fassed");
+                    }
+
+                }
 
                 Button btnCommentaire = (Button) view.findViewById(R.id.btnCommentaire);
                 edtCommentaire = (EditText) view.findViewById(R.id.edtCommentaire);
@@ -100,7 +115,7 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
                         if (commentaire.equals("")) {
                             Toast.makeText(getContext(), getString(R.string.error_commentaire), Toast.LENGTH_LONG).show();
                         } else {
-                            sendCommentaire(commentaire, event);
+                            sendCommentaire(commentaire, evennement);
                             edtCommentaire.setText("");
                             progressBarCommentaire.setVisibility(View.VISIBLE);
                         }
@@ -108,72 +123,73 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
                         imm.hideSoftInputFromWindow(edtCommentaire.getWindowToken(), 0);
                     }
                 });
-
             }
         }
-
-
     }
 
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.e("e", "onStart");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("e", "onResume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.e("e", "onPause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.e("e", "onStop");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.e("e", "onDestroyView");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e("e", "onDestroy");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.e("e", "onDetach");
     }
 
 
     @Override
     public void getResponse(List<Commentaire> commentaires) {
-        progressBar.setVisibility(View.GONE);
-        recyclerView.setAdapter(new CommentaireAdapter(commentaires));
-        linearLayoutBtn.setVisibility(View.VISIBLE);
+        if (commentaires == null) {
+            Log.e("e", "actualites == null");
+            apiCommentaire.getData(evennement);
+            linearLayoutBtn.setVisibility(View.VISIBLE);
+        } else {
+            if (commentaires.size() == 0) {
+                //    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.GONE);
+            } else {
+                progressBar.setVisibility(View.GONE);
+                commentairesListe = commentaires;
+                recyclerView.setAdapter(new CommentaireAdapter(commentairesListe));
+                linearLayoutBtn.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
     public void sendResponse(String response) {
-        Log.e("e", "response " + response);
         progressBarCommentaire.setVisibility(View.GONE);
     }
 
-    private void sendCommentaire(String commentaire, Event event) {
+    private void sendCommentaire(String commentaire, Evennement evennement) {
         String telephone = utilisateurLocalStore.getUtilisateur().getTelephone();
-        apiCommentaire.sendCommentaire(event, commentaire, telephone);
+        apiCommentaire.sendCommentaire(evennement, commentaire, telephone);
     }
 }

@@ -3,22 +3,24 @@ package net.apkode.matano.model;
 import java.io.Serializable;
 
 public class Utilisateur implements Serializable {
+    private Integer id;
     private String nom;
     private String prenom;
     private String telephone;
     private String password;
-    private String sexe;
     private String email;
     private String presentation;
+    private String image;
 
-    public Utilisateur(String nom, String prenom, String telephone, String password, String sexe, String email, String presentation) {
+    public Utilisateur(Integer id, String nom, String prenom, String telephone, String password, String email, String presentation, String image) {
+        this.id = id;
         this.nom = nom;
         this.prenom = prenom;
         this.telephone = telephone;
         this.password = password;
-        this.sexe = sexe;
         this.email = email;
         this.presentation = presentation;
+        this.image = image;
     }
 
     public Utilisateur(String nom, String prenom, String telephone, String password) {
@@ -34,6 +36,14 @@ public class Utilisateur implements Serializable {
     }
 
     public Utilisateur() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNom() {
@@ -68,14 +78,6 @@ public class Utilisateur implements Serializable {
         this.password = password;
     }
 
-    public String getSexe() {
-        return sexe;
-    }
-
-    public void setSexe(String sexe) {
-        this.sexe = sexe;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -90,5 +92,13 @@ public class Utilisateur implements Serializable {
 
     public void setPresentation(String presentation) {
         this.presentation = presentation;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

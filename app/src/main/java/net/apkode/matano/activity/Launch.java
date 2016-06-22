@@ -10,24 +10,19 @@ import android.view.View;
 import android.widget.TextView;
 
 import net.apkode.matano.R;
-import net.apkode.matano.api.APIEvent;
-import net.apkode.matano.helper.UtilisateurLocalStore;
-import net.apkode.matano.interfaces.IEvent;
-import net.apkode.matano.model.Event;
+import net.apkode.matano.api.APIEvennement;
+import net.apkode.matano.interfaces.IEvennement;
+import net.apkode.matano.model.Evennement;
 
 import java.util.List;
 
-public class Launch extends AppCompatActivity implements IEvent {
-    private static final int SPLASH_TIME = 2000;
-    private APIEvent apiEvent;
-    private UtilisateurLocalStore utilisateurLocalStore;
+public class Launch extends AppCompatActivity implements IEvennement {
+    private APIEvennement apiEvennement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
-
-        utilisateurLocalStore = new UtilisateurLocalStore(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().getDecorView().setSystemUiVisibility(
@@ -42,29 +37,22 @@ public class Launch extends AppCompatActivity implements IEvent {
         TextView nom = (TextView) findViewById(R.id.nom);
         nom.setTypeface(custom_font);
 
-        try {
-            Thread.sleep(SPLASH_TIME);
-            apiEvent = new APIEvent(this, getApplicationContext());
-            apiEvent.getData();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!utilisateurLocalStore.isLoggedIn()) {
-            startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
-        }
+        apiEvennement = new APIEvennement(this, getApplicationContext());
+        apiEvennement.getData();
     }
 
 
+
     @Override
-    public void getResponse(List<Event> events) {
-        apiEvent.compareAndCharge(events);
+    public void getResponses(List<Evennement> evennements) {
+        apiEvennement.compareAndCharge(evennements);
         finish();
-        startActivity(new Intent(this, EventsActivity.class));
+        startActivity(new Intent(this, EvennementsActivity.class));
+    }
+
+    @Override
+    public void getResponse(List<Evennement> evennements) {
+
     }
 
 }

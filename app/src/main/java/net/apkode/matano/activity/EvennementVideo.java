@@ -10,7 +10,7 @@ import com.google.android.youtube.player.YouTubePlayerView;
 
 import net.apkode.matano.R;
 
-public class EventVideo extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
+public class EvennementVideo extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
     public static final String API_KEY = "AIzaSyCoaCm1OrA4laMeLado3OKnq_Zz8y0R7CQ";
 
     public static String VIDEO_ID;
@@ -76,7 +76,7 @@ public class EventVideo extends YouTubeBaseActivity implements YouTubePlayer.OnI
             finish();
             Toast.makeText(this, "Aucune vidéo disponible", Toast.LENGTH_LONG).show();
         } else {
-            setContentView(R.layout.activity_event_video);
+            setContentView(R.layout.activity_evennement_video);
 
             VIDEO_ID = VIDEO;
             YouTubePlayerView youTubePlayerView = (YouTubePlayerView) findViewById(R.id.youtube_player);

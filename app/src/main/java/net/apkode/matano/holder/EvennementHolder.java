@@ -9,17 +9,17 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import net.apkode.matano.R;
-import net.apkode.matano.activity.EventActivity;
-import net.apkode.matano.model.Event;
+import net.apkode.matano.activity.EvennementActivity;
+import net.apkode.matano.model.Evennement;
 
 import java.io.Serializable;
 
 
-public class EventHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class EvennementHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private TextView txtRubrique, txtTitre, txtTarif, txtLieu, txtJour;
     private ImageView imvImage;
 
-    public EventHolder(View itemView) {
+    public EvennementHolder(View itemView) {
         super(itemView);
 
         txtRubrique = (TextView) itemView.findViewById(R.id.txtRubrique);
@@ -32,15 +32,15 @@ public class EventHolder extends RecyclerView.ViewHolder implements View.OnClick
         itemView.setOnClickListener(this);
     }
 
-    public void bind(Event event) {
-        txtRubrique.setText("#" + event.getRubrique());
-        txtTitre.setText(event.getTitre());
-        txtTarif.setText(event.getTarif());
-        txtLieu.setText(event.getLieu());
-        txtJour.setText(event.getJour());
+    public void bind(Evennement evennement) {
+        txtRubrique.setText("#" + evennement.getRubrique());
+        txtTitre.setText(evennement.getTitre());
+        txtTarif.setText(evennement.getTarif());
+        txtLieu.setText(evennement.getLieu());
+        txtJour.setText(evennement.getJour());
 
         Integer placeholder = R.mipmap.placeholder_culture;
-        switch (event.getCategorie()) {
+        switch (evennement.getCategorie()) {
             case "Culture":
                 placeholder = R.mipmap.placeholder_culture;
                 break;
@@ -53,7 +53,7 @@ public class EventHolder extends RecyclerView.ViewHolder implements View.OnClick
         }
 
       /*  Glide.with(imvImage.getContext())
-                .load(event.getImage())
+                .load(evennement.getImage())
                 .crossFade()
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -62,7 +62,7 @@ public class EventHolder extends RecyclerView.ViewHolder implements View.OnClick
 
 
         Picasso.with(imvImage.getContext())
-                .load(event.getImage())
+                .load(evennement.getImage())
                 //.fit()
                 // .centerCrop()
                 .into(imvImage);
@@ -71,8 +71,8 @@ public class EventHolder extends RecyclerView.ViewHolder implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(v.getContext().getApplicationContext(), EventActivity.class);
-        intent.putExtra("Event", (Serializable) v.getTag());
+        Intent intent = new Intent(v.getContext().getApplicationContext(), EvennementActivity.class);
+        intent.putExtra("Evennement", (Serializable) v.getTag());
         v.getContext().startActivity(intent);
     }
 }

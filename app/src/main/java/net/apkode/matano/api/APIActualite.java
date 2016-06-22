@@ -11,7 +11,7 @@ import net.apkode.matano.db.DBActualite;
 import net.apkode.matano.helper.AppController;
 import net.apkode.matano.interfaces.IActualite;
 import net.apkode.matano.model.Actualite;
-import net.apkode.matano.model.Event;
+import net.apkode.matano.model.Evennement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,7 +23,8 @@ import java.util.List;
 
 public class APIActualite {
     private static final String COLUMN_ID = "id";
-    private final static String url = "http://niameyzze.apkode.net/actualites.php?id=";
+    //private final static String url = "http://niameyzze.apkode.net/actualites.php?id=";
+    private final static String url = "https://matano-api.herokuapp.com/actualites/evenements/";
     private IActualite iActualite;
     private List<Actualite> actualites;
     private DBActualite dbActualite;
@@ -34,8 +35,8 @@ public class APIActualite {
         actualites = new ArrayList<>();
     }
 
-    public void getData(Event event) {
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+    public void getData(Evennement evennement) {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url + evennement.getId(), null,
 
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -59,7 +60,8 @@ public class APIActualite {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        iActualite.getResponse(actualites);
+                        actualites = null;
+                        iActualite.getResponse(null);
                     }
 
                 });

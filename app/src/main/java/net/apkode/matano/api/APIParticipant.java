@@ -13,7 +13,7 @@ import com.android.volley.toolbox.StringRequest;
 import net.apkode.matano.db.DBParticipant;
 import net.apkode.matano.helper.AppController;
 import net.apkode.matano.interfaces.IParticipant;
-import net.apkode.matano.model.Event;
+import net.apkode.matano.model.Evennement;
 import net.apkode.matano.model.Participant;
 
 import org.json.JSONArray;
@@ -27,7 +27,8 @@ import java.util.Map;
 
 public class APIParticipant {
     private static final String COLUMN_ID = "id";
-    private final static String url = "http://niameyzze.apkode.net/participants.php?id=";
+    // private final static String url = "http://niameyzze.apkode.net/participants.php?id=";
+    private final static String url = "https://matano-api.herokuapp.com/participants/evenements/";
     private final static String urlSuppression = "http://niameyzze.apkode.net/delete-participant.php";
     private final static String urlAjout = "http://niameyzze.apkode.net/send-participant.php";
     private IParticipant iParticipant;
@@ -40,8 +41,8 @@ public class APIParticipant {
         dbParticipant = new DBParticipant(ctx);
     }
 
-    public void getData(Event event) {
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+    public void getData(Evennement evennement) {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url + evennement.getId(), null,
 
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -67,7 +68,7 @@ public class APIParticipant {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        iParticipant.getResponse(participants);
+                        iParticipant.getResponse(null);
                     }
 
                 });
@@ -75,7 +76,7 @@ public class APIParticipant {
         AppController.getInstance().addToRequestQueue(request);
     }
 
-    public void sendParticipant(final Event event, final String telephone, final String status) {
+    public void sendParticipant(final Evennement evennement, final String telephone, final String status) {
 
         String url = "";
 
@@ -103,7 +104,7 @@ public class APIParticipant {
 
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("telephone", telephone);
-                map.put("id", event.getId().toString());
+                map.put("id", evennement.getId().toString());
 
                 return map;
             }

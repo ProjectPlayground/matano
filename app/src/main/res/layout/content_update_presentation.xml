@@ -31,7 +31,8 @@
                 style="@style/editText1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textMultiLine" />
+                android:inputType="textMultiLine"
+                android:lines="12" />
         </LinearLayout>
 
         <LinearLayout
@@ -41,6 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimary"
+                android:onClick="updatePresentation"
                 android:text="@string/btn_modifier"
                 android:textColor="@android:color/white" />
         </LinearLayout>

@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import net.apkode.matano.R;
-import net.apkode.matano.model.Event;
+import net.apkode.matano.model.Evennement;
 
 public class PresentationFragment extends Fragment {
 
@@ -57,26 +57,23 @@ public class PresentationFragment extends Fragment {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            Event event = (Event) bundle.getSerializable("Event");
+            Evennement evennement = (Evennement) bundle.getSerializable("Evennement");
 
-            txtTitre.setText(event.getTitre());
-            txtLieu.setText(event.getLieu());
-            txtHoraire.setText(event.getHoraire());
-            txtTarif.setText(event.getTarif());
-            txtPresentation.setText(event.getPresentation());
-            txtJour.setText(event.getJour());
+            txtTitre.setText(evennement.getTitre());
+            txtLieu.setText(evennement.getLieu());
+            txtHoraire.setText(evennement.getHoraire());
+            txtTarif.setText(evennement.getTarif());
+            txtPresentation.setText(evennement.getPresentation());
+            txtJour.setText(evennement.getJour());
 
             Glide.with(cover.getContext())
-                    .load(event.getImage())
+                    .load(evennement.getImage())
                     .crossFade()
                     .fitCenter()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     // .placeholder(view.getResources().getDrawable(R.mipmap.cover1))
                     .into(cover);
-
         }
-
-
     }
 
     @Override

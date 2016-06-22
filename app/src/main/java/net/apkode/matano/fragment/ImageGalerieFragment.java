@@ -28,7 +28,7 @@ import net.apkode.matano.adapter.ImageGalerieAdapter;
 import net.apkode.matano.api.APIImageGalerie;
 import net.apkode.matano.helper.UtilisateurLocalStore;
 import net.apkode.matano.interfaces.IImageGalerie;
-import net.apkode.matano.model.Event;
+import net.apkode.matano.model.Evennement;
 import net.apkode.matano.model.ImageGalerie;
 
 import java.io.ByteArrayOutputStream;
@@ -40,17 +40,22 @@ import java.util.List;
 
 
 public class ImageGalerieFragment extends Fragment implements IImageGalerie {
+    private static boolean isImageGaleriePassed = false;
     private final int REQUEST_IMAGE_CAPTURE = 1;
     private APIImageGalerie apiImageGalerie;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private UtilisateurLocalStore utilisateurLocalStore;
     private LinearLayout linearLayoutBtn;
+    private List<ImageGalerie> imageGaleriesListe = new ArrayList<>();
+    private Evennement evennement;
 
     public ImageGalerieFragment() {
     }
 
     public static ImageGalerieFragment newInstance() {
+        isImageGaleriePassed = true;
+
         ImageGalerieFragment imageGalerieFragment = new ImageGalerieFragment();
         return imageGalerieFragment;
     }
@@ -82,17 +87,31 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        recyclerView.setAdapter(new ImageGalerieAdapter(imageGaleriesListe));
+
         progressBar = (ProgressBar) view.findViewById(R.id.loading);
 
         linearLayoutBtn = (LinearLayout) view.findViewById(R.id.btn);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            Event event = (Event) bundle.getSerializable("Event");
+            evennement = (Evennement) bundle.getSerializable("Evennement");
 
-            if (event != null) {
-                apiImageGalerie.getData(event);
-                recyclerView.setAdapter(new ImageGalerieAdapter(new ArrayList<ImageGalerie>()));
+            if (evennement != null) {
+                if (isImageGaleriePassed) {
+                    Log.e("e", "first time");
+                    apiImageGalerie.getData(evennement);
+                    isImageGaleriePassed = false;
+                } else {
+                    if (imageGaleriesListe.size() == 0) {
+                        apiImageGalerie.getData(evennement);
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        linearLayoutBtn.setVisibility(View.VISIBLE);
+                        Log.e("e", "fassed");
+                    }
+                }
+
             }
         }
 
@@ -110,26 +129,39 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
 
     @Override
     public void getResponse(final List<ImageGalerie> imageGaleries) {
-        progressBar.setVisibility(View.GONE);
-        linearLayoutBtn.setVisibility(View.VISIBLE);
-        recyclerView.setAdapter(new ImageGalerieAdapter(imageGaleries));
-        recyclerView.addOnItemTouchListener(new ImageGalerieAdapter.RecyclerTouchListener(getActivity(), recyclerView, new ImageGalerieAdapter.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                Bundle bundle1 = new Bundle();
-                bundle1.putSerializable("ImageGalerie", (Serializable) imageGaleries);
-                bundle1.putInt("position", position);
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                ImageGalerieSlideshow imageGalerieSlideshow = ImageGalerieSlideshow.newInstance();
-                imageGalerieSlideshow.setArguments(bundle1);
-                imageGalerieSlideshow.show(fragmentTransaction, "slideshow");
-            }
+        if (imageGaleries == null) {
+            Log.e("e", "actualites == null");
+            apiImageGalerie.getData(evennement);
+        } else {
+            if (imageGaleries.size() == 0) {
+//            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.GONE);
+                linearLayoutBtn.setVisibility(View.VISIBLE);
+            } else {
+                progressBar.setVisibility(View.GONE);
+                linearLayoutBtn.setVisibility(View.VISIBLE);
+                imageGaleriesListe = imageGaleries;
+                recyclerView.setAdapter(new ImageGalerieAdapter(imageGaleriesListe));
+                recyclerView.addOnItemTouchListener(new ImageGalerieAdapter.RecyclerTouchListener(getActivity(), recyclerView, new ImageGalerieAdapter.ClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        Bundle bundle1 = new Bundle();
+                        bundle1.putSerializable("ImageGalerie", (Serializable) imageGaleries);
+                        bundle1.putInt("position", position);
+                        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                        ImageGalerieSlideshow imageGalerieSlideshow = ImageGalerieSlideshow.newInstance();
+                        imageGalerieSlideshow.setArguments(bundle1);
+                        imageGalerieSlideshow.show(fragmentTransaction, "slideshow");
+                    }
 
-            @Override
-            public void onLongClick(View view, int position) {
+                    @Override
+                    public void onLongClick(View view, int position) {
+
+                    }
+                }));
 
             }
-        }));
+        }
 
     }
 
@@ -140,7 +172,6 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.e("e", "resultCode " + resultCode);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == 1) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");

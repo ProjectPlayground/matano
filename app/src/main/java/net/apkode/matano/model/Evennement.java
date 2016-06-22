@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by brabo on 6/2/16.
  */
-public class Event implements Serializable {
+public class Evennement implements Serializable {
     private Integer id;
     private String categorie;
     private String rubrique;
@@ -20,7 +20,7 @@ public class Event implements Serializable {
     private String video;
     private String imagefull;
 
-    public Event(Integer id, String categorie, String rubrique, String titre, String tarif, String lieu, String presentation, String image, String horaire, String lien, String jour, String video, String imagefull) {
+    public Evennement(Integer id, String categorie, String rubrique, String titre, String tarif, String lieu, String presentation, String image, String horaire, String lien, String jour, String video, String imagefull) {
         this.id = id;
         this.categorie = categorie;
         this.rubrique = rubrique;
@@ -36,7 +36,7 @@ public class Event implements Serializable {
         this.imagefull = imagefull;
     }
 
-    public Event() {
+    public Evennement() {
     }
 
     public Integer getId() {

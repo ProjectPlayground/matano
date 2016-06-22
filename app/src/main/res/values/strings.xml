@@ -45,4 +45,7 @@
     <string name="contact_title_profil">PROFIL INFO</string>
     <string name="contact_title_contact">CONTACT INFO</string>
     <string name="contact_presentation">Présentation</string>
+    <string name="title_activity_feedback">Feedback</string>
+    <string name="error_update">Vérifier les informations saisies</string>
+    <string name="ok_update">Les informations ont été correctement mises à jour</string>
 </resources>

@@ -29,13 +29,13 @@ import net.apkode.matano.fragment.CommentaireFragment;
 import net.apkode.matano.fragment.ImageGalerieFragment;
 import net.apkode.matano.fragment.ParticipantFragment;
 import net.apkode.matano.fragment.PresentationFragment;
-import net.apkode.matano.model.Event;
+import net.apkode.matano.model.Evennement;
 
 
-public class EventActivity extends AppCompatActivity {
+public class EvennementActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
-    private Event event;
+    private Evennement evennement;
     private BottomBar mBottomBar;
 
     private PresentationFragment presentationFragment;
@@ -52,15 +52,15 @@ public class EventActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event);
+        setContentView(R.layout.activity_evennement);
 
-        event = (Event) getIntent().getSerializableExtra("Event");
+        evennement = (Evennement) getIntent().getSerializableExtra("Evennement");
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable("Event", event);
+        bundle.putSerializable("Evennement", evennement);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("#" + event.getRubrique());
+        toolbar.setTitle("#" + evennement.getRubrique());
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -135,7 +135,7 @@ public class EventActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.event, menu);
+        getMenuInflater().inflate(R.menu.evennement, menu);
         return true;
     }
 
@@ -144,16 +144,16 @@ public class EventActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_share) {
-            if (event != null) {
-                String presentation = event.getPresentation();
-                String titre = event.getTitre();
-                String categorie = event.getCategorie();
-                String rubrique = event.getRubrique();
-                String image = event.getImage();
-                String imagefull = event.getImagefull();
-                String horaire = event.getHoraire();
-                String lieu = event.getLieu();
-                String tarif = event.getTarif();
+            if (evennement != null) {
+                String presentation = evennement.getPresentation();
+                String titre = evennement.getTitre();
+                String categorie = evennement.getCategorie();
+                String rubrique = evennement.getRubrique();
+                String image = evennement.getImage();
+                String imagefull = evennement.getImagefull();
+                String horaire = evennement.getHoraire();
+                String lieu = evennement.getLieu();
+                String tarif = evennement.getTarif();
 
                 String description = "Categorie : " + categorie + "\n" + "Rubrique : " + rubrique + "\n" + "Lieu : " + lieu + "\n" + "Horaire : " + horaire + "\n" + "Tarif : +" + tarif + "\n" + "Detail : " + presentation;
 
@@ -174,15 +174,15 @@ public class EventActivity extends AppCompatActivity {
     }
 
     public void startEventPhoto(View view) {
-        Intent intent = new Intent(getApplicationContext(), EventPhoto.class);
-        intent.putExtra("photo", event.getImagefull());
+        Intent intent = new Intent(getApplicationContext(), EvennementPhoto.class);
+        intent.putExtra("photo", evennement.getImagefull());
         startActivity(intent);
 
     }
 
     public void startEventVideo(View view) {
-        Intent intent = new Intent(getApplicationContext(), EventVideo.class);
-        intent.putExtra("video", event.getVideo());
+        Intent intent = new Intent(getApplicationContext(), EvennementVideo.class);
+        intent.putExtra("video", evennement.getVideo());
         startActivity(intent);
 
     }

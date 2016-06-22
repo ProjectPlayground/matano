@@ -13,7 +13,7 @@ import com.android.volley.toolbox.StringRequest;
 import net.apkode.matano.db.DBImageGalerie;
 import net.apkode.matano.helper.AppController;
 import net.apkode.matano.interfaces.IImageGalerie;
-import net.apkode.matano.model.Event;
+import net.apkode.matano.model.Evennement;
 import net.apkode.matano.model.ImageGalerie;
 
 import org.json.JSONArray;
@@ -29,7 +29,8 @@ import java.util.Map;
 
 public class APIImageGalerie {
     private static final String COLUMN_ID = "id";
-    private final static String url = "http://niameyzze.apkode.net/image-galeries.php?id=";
+    //private final static String url = "http://niameyzze.apkode.net/image-galeries.php?id=";
+    private final static String url = "https://matano-api.herokuapp.com/images/evenements/";
     private final static String urlImage = "http://niameyzze.apkode.net/send-commentaire.php";
     private IImageGalerie iImageGalerie;
     private List<ImageGalerie> imageGaleries;
@@ -41,8 +42,8 @@ public class APIImageGalerie {
         dbImageGalerie = new DBImageGalerie(ctx);
     }
 
-    public void getData(Event event) {
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+    public void getData(Evennement evennement) {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url + evennement.getId(), null,
 
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -55,7 +56,8 @@ public class APIImageGalerie {
                                         jsonObject.getString("nom"),
                                         jsonObject.getString("prenom"),
                                         jsonObject.getString("telephone"),
-                                        jsonObject.getString("image")
+                                        jsonObject.getString("image"),
+                                        jsonObject.getString("imagegalerie")
                                 ));
 
                             } catch (JSONException e) {
@@ -68,7 +70,7 @@ public class APIImageGalerie {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        iImageGalerie.getResponse(imageGaleries);
+                        iImageGalerie.getResponse(null);
                     }
 
                 });

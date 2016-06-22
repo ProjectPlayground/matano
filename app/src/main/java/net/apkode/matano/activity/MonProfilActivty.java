@@ -28,19 +28,11 @@ public class MonProfilActivty extends AppCompatActivity {
 
         utilisateurLocalStore = new UtilisateurLocalStore(this);
 
-        Utilisateur utilisateur = utilisateurLocalStore.getUtilisateur();
-
         txtUpdateTelephone = (TextView) findViewById(R.id.txtUpdateTelephone);
         txtUpdateNom = (TextView) findViewById(R.id.txtUpdateNom);
         txtUpdatePrenom = (TextView) findViewById(R.id.txtUpdatePrenom);
         txtUpdateEmail = (TextView) findViewById(R.id.txtUpdateEmail);
         txtUpdatePresentation = (TextView) findViewById(R.id.txtUpdatePresentation);
-
-        txtUpdateTelephone.setText(utilisateur.getTelephone());
-        txtUpdateNom.setText(utilisateur.getNom());
-        txtUpdatePrenom.setText(utilisateur.getPrenom());
-        txtUpdateEmail.setText(utilisateur.getEmail());
-        txtUpdatePresentation.setText(utilisateur.getPresentation());
 
     }
 
@@ -53,8 +45,38 @@ public class MonProfilActivty extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        Utilisateur utilisateur = utilisateurLocalStore.getUtilisateur();
 
+        txtUpdateTelephone.setText(utilisateur.getTelephone());
+        txtUpdateNom.setText(utilisateur.getNom());
+        txtUpdatePrenom.setText(utilisateur.getPrenom());
+        txtUpdateEmail.setText(utilisateur.getEmail());
+        txtUpdatePresentation.setText(utilisateur.getPresentation());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
 
     public void startUpdateContact(View view) {
         startActivity(new Intent(getApplicationContext(), UpdateContact.class));
