@@ -73,12 +73,24 @@ public class MesEvennementsActivity extends AppCompatActivity implements IEvenne
         if (evennements == null) {
             apiEvennement.getMyData(utilisateur.getId());
         } else {
-            progressBar.setVisibility(View.GONE);
+            try{
+                progressBar.setVisibility(View.GONE);
+            }catch (Exception e){
+                e.getMessage();
+            }
             if (evennements.size() == 0) {
-                Toast.makeText(getApplicationContext(), getString(R.string.error_mes_evenements), Toast.LENGTH_LONG).show();
+                try{
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_mes_evenements), Toast.LENGTH_LONG).show();
+                }catch (Exception e){
+                    e.getMessage();
+                }
             } else {
                 evennementsListe = evennements;
-                recyclerView.setAdapter(new EvennementAdapter(evennementsListe));
+                try{
+                    recyclerView.setAdapter(new EvennementAdapter(evennementsListe));
+                }catch (Exception e){
+                    e.getMessage();
+                }
             }
         }
     }

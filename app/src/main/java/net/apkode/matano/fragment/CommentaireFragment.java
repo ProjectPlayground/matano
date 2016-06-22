@@ -173,39 +173,67 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
     public void getResponse(List<Commentaire> commentaires) {
         if (commentaires == null) {
             apiCommentaire.getData(evennement);
-            linearLayoutBtn.setVisibility(View.VISIBLE);
+           try {
+               linearLayoutBtn.setVisibility(View.VISIBLE);
+           }catch (Exception e){
+               e.getMessage();
+           }
         } else {
             if (commentaires.size() == 0) {
-                //    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
-                progressBar.setVisibility(View.GONE);
-                linearLayoutBtn.setVisibility(View.VISIBLE);
+                try {
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+                    progressBar.setVisibility(View.GONE);
+                    linearLayoutBtn.setVisibility(View.VISIBLE);
+                }catch (Exception e){
+                    e.getMessage();
+                }
             } else {
-                progressBar.setVisibility(View.GONE);
-                commentairesListe = commentaires;
-                recyclerView.setAdapter(new CommentaireAdapter(commentairesListe));
-                linearLayoutBtn.setVisibility(View.VISIBLE);
+               try {
+                   progressBar.setVisibility(View.GONE);
+                   commentairesListe = commentaires;
+                   recyclerView.setAdapter(new CommentaireAdapter(commentairesListe));
+                   linearLayoutBtn.setVisibility(View.VISIBLE);
+               }catch (Exception e){
+                   e.getMessage();
+               }
             }
         }
     }
 
     @Override
     public void sendResponse(String response) {
-        progressBarCommentaire.setVisibility(View.GONE);
+       try {
+           progressBarCommentaire.setVisibility(View.GONE);
+       }catch (Exception e){
+           e.getMessage();
+       }
         if (response == null) {
-            Toast.makeText(getContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+           try {
+               Toast.makeText(getContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+           }catch (Exception e){
+               e.getMessage();
+           }
         } else {
             if (response.equals("0")) {
-                Toast.makeText(getContext(), getString(R.string.error_commentaire), Toast.LENGTH_LONG).show();
+               try {
+                   Toast.makeText(getContext(), getString(R.string.error_commentaire), Toast.LENGTH_LONG).show();
+               }catch (Exception e){
+                   e.getMessage();
+               }
             } else if (response.equals("1")) {
-                Utilisateur utilisateur = utilisateurLocalStore.getUtilisateur();
+                try {
+                    Utilisateur utilisateur = utilisateurLocalStore.getUtilisateur();
 
-                Date date = new Date();
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    Date date = new Date();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-                commentairesListe.add(new Commentaire(99, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getTelephone(), simpleDateFormat.format(date), utilisateur.getImage(), commentaire));
+                    commentairesListe.add(new Commentaire(99, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getTelephone(), simpleDateFormat.format(date), utilisateur.getImage(), commentaire));
 
-                commentaireAdapter.notifyItemInserted(commentairesListe.size() - 1);
-                recyclerView.scrollToPosition(commentairesListe.size() - 1);
+                    commentaireAdapter.notifyItemInserted(commentairesListe.size() - 1);
+                    recyclerView.scrollToPosition(commentairesListe.size() - 1);
+                }catch (Exception e){
+                    e.getMessage();
+                }
             }
         }
     }

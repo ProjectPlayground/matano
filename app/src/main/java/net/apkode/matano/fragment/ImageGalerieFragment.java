@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.ImageGalerieAdapter;
@@ -86,6 +87,25 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        recyclerView.addOnItemTouchListener(new ImageGalerieAdapter.RecyclerTouchListener(getActivity(), recyclerView, new ImageGalerieAdapter.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Bundle bundle1 = new Bundle();
+                bundle1.putSerializable("ImageGalerie", (Serializable) imageGaleriesListe);
+                bundle1.putInt("position", position);
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                ImageGalerieSlideshow imageGalerieSlideshow = ImageGalerieSlideshow.newInstance();
+                imageGalerieSlideshow.setArguments(bundle1);
+                imageGalerieSlideshow.show(fragmentTransaction, "slideshow");
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+
+
         recyclerView.setAdapter(new ImageGalerieAdapter(imageGaleriesListe));
 
         progressBar = (ProgressBar) view.findViewById(R.id.loading);
@@ -130,32 +150,22 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
             apiImageGalerie.getData(evennement);
         } else {
             if (imageGaleries.size() == 0) {
-//            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
-                progressBar.setVisibility(View.GONE);
-                linearLayoutBtn.setVisibility(View.VISIBLE);
+                try {
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+                    progressBar.setVisibility(View.GONE);
+                    linearLayoutBtn.setVisibility(View.VISIBLE);
+                }catch (Exception e){
+                    e.getMessage();
+                }
             } else {
-                progressBar.setVisibility(View.GONE);
-                linearLayoutBtn.setVisibility(View.VISIBLE);
-                imageGaleriesListe = imageGaleries;
-                recyclerView.setAdapter(new ImageGalerieAdapter(imageGaleriesListe));
-                recyclerView.addOnItemTouchListener(new ImageGalerieAdapter.RecyclerTouchListener(getActivity(), recyclerView, new ImageGalerieAdapter.ClickListener() {
-                    @Override
-                    public void onClick(View view, int position) {
-                        Bundle bundle1 = new Bundle();
-                        bundle1.putSerializable("ImageGalerie", (Serializable) imageGaleries);
-                        bundle1.putInt("position", position);
-                        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                        ImageGalerieSlideshow imageGalerieSlideshow = ImageGalerieSlideshow.newInstance();
-                        imageGalerieSlideshow.setArguments(bundle1);
-                        imageGalerieSlideshow.show(fragmentTransaction, "slideshow");
-                    }
-
-                    @Override
-                    public void onLongClick(View view, int position) {
-
-                    }
-                }));
-
+                try {
+                    progressBar.setVisibility(View.GONE);
+                    linearLayoutBtn.setVisibility(View.VISIBLE);
+                    imageGaleriesListe = imageGaleries;
+                    recyclerView.setAdapter(new ImageGalerieAdapter(imageGaleriesListe));
+                }catch (Exception e){
+                    e.getMessage();
+                }
             }
         }
 

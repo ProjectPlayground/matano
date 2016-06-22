@@ -140,16 +140,31 @@ public class InscriptionActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void responseInscription(String response) {
-        progress.hide();
+       try{
+           progress.hide();
+       }catch (Exception e){
+           e.getMessage();
+       }
         if (response == null) {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_reseau), Toast.LENGTH_SHORT).show();
+            try{
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_reseau), Toast.LENGTH_SHORT).show();
+            }catch (Exception e){
+                e.getMessage();
+            }
         } else {
             if (response.equals("0")) {
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_inscription), Toast.LENGTH_SHORT).show();
+                try{
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_inscription), Toast.LENGTH_SHORT).show();
+                }catch (Exception e){
+                    e.getMessage();
+                }
             } else {
-                Log.e("e", "id " + response);
-                utilisateurNew.setId(Integer.parseInt(response));
-                utilisateurLocalStore.storeUtilisateur(utilisateurNew);
+               try {
+                   utilisateurNew.setId(Integer.parseInt(response));
+                   utilisateurLocalStore.storeUtilisateur(utilisateurNew);
+               }catch (Exception e){
+                   e.getMessage();
+               }
                 finish();
                 startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
             }

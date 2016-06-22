@@ -228,10 +228,18 @@ public class ParticipantFragment extends Fragment implements IParticipant {
             }
         }
         if (existe.equals("0")) {
-            btnSendParticipant.setText(getString(R.string.participate1));
+           try {
+               btnSendParticipant.setText(getString(R.string.participate1));
+           }catch (Exception e){
+               e.getMessage();
+           }
         } else {
-            btnSendParticipant.setText(getString(R.string.participate0));
-            btnSendParticipant.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+            try {
+                btnSendParticipant.setText(getString(R.string.participate0));
+                btnSendParticipant.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+            }catch (Exception e){
+                e.getMessage();
+            }
         }
     }
 

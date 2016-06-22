@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.ActualiteAdapter;
@@ -132,12 +133,20 @@ public class ActualiteFragment extends Fragment implements IActualite {
             apiActualite.getData(evennement);
         } else {
             if (actualites.size() == 0) {
-                //     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
-                progressBar.setVisibility(View.GONE);
+               try {
+                   Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+                   progressBar.setVisibility(View.GONE);
+               }catch (Exception e){
+                   e.getMessage();
+               }
             } else {
-                progressBar.setVisibility(View.GONE);
-                actualitesListe = actualites;
-                recyclerView.setAdapter(new ActualiteAdapter(actualitesListe));
+                try {
+                    progressBar.setVisibility(View.GONE);
+                    actualitesListe = actualites;
+                    recyclerView.setAdapter(new ActualiteAdapter(actualitesListe));
+                }catch (Exception e){
+                    e.getMessage();
+                }
             }
         }
 

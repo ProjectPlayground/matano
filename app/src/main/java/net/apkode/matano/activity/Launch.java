@@ -45,7 +45,11 @@ public class Launch extends AppCompatActivity implements IEvennement {
 
     @Override
     public void getResponses(List<Evennement> evennements) {
-        apiEvennement.compareAndCharge(evennements);
+       try {
+           apiEvennement.compareAndCharge(evennements);
+       }catch (Exception e){
+           e.getMessage();
+       }
         finish();
         startActivity(new Intent(this, EvennementsActivity.class));
     }

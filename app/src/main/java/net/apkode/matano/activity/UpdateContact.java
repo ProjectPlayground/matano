@@ -75,14 +75,30 @@ public class UpdateContact extends AppCompatActivity implements IUtilisateur {
 
     @Override
     public void responseUpdate(String response) {
-        progress.hide();
+        try {
+            progress.hide();
+        }catch (Exception e){
+            e.getMessage();
+        }
         if (response == null) {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_reseau), Toast.LENGTH_SHORT).show();
+            try {
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_reseau), Toast.LENGTH_SHORT).show();
+            }catch (Exception e){
+                e.getMessage();
+            }
         } else {
             if (response.equals("0")) {
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_update), Toast.LENGTH_SHORT).show();
+               try {
+                   Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_update), Toast.LENGTH_SHORT).show();
+               }catch (Exception e){
+                   e.getMessage();
+               }
             } else if (response.equals("1")) {
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.ok_update), Toast.LENGTH_SHORT).show();
+                try {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.ok_update), Toast.LENGTH_SHORT).show();
+                } catch (Exception e){
+                    e.getMessage();
+                }
                 utilisateurLocalStore.clearUtilisateur();
                 utilisateurLocalStore.storeUtilisateur(utilisateurUpdate);
                 utilisateurLocalStore.setUtilisateurLogin(true);

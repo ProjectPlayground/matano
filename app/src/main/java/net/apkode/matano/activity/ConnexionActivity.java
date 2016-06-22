@@ -110,12 +110,24 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void responseConnexion(String response) {
-        progress.hide();
+        try{
+            progress.hide();
+        }catch (Exception e){
+            e.getMessage();
+        }
         if (response == null) {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_reseau), Toast.LENGTH_SHORT).show();
+           try{
+               Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_reseau), Toast.LENGTH_SHORT).show();
+           }catch (Exception e){
+               e.getMessage();
+           }
         } else {
             if (response.equals("0")) {
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_connexion), Toast.LENGTH_SHORT).show();
+              try {
+                  Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_connexion), Toast.LENGTH_SHORT).show();
+              }catch (Exception e){
+                  e.getMessage();
+              }
             } else if (response.equals("1")) {
                 apiUtilisateur.getUtilisateur(telephone);
             }
@@ -125,7 +137,11 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void responseGetUtilisateur(Utilisateur utilisateur) {
         if (utilisateur == null) {
-            Toast.makeText(getApplicationContext(), getString(R.string.error_connexion), Toast.LENGTH_LONG).show();
+            try{
+                Toast.makeText(getApplicationContext(), getString(R.string.error_connexion), Toast.LENGTH_LONG).show();
+            }catch (Exception e){
+                e.getMessage();
+            }
         } else {
             utilisateurLocalStore.clearUtilisateur();
             utilisateurLocalStore.storeUtilisateur(utilisateur);
