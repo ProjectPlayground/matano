@@ -9,6 +9,7 @@ import net.apkode.matano.R;
 import net.apkode.matano.holder.EvennementHolder;
 import net.apkode.matano.model.Evennement;
 
+import java.text.ParseException;
 import java.util.List;
 
 
@@ -28,7 +29,11 @@ public class EvennementAdapter extends RecyclerView.Adapter<EvennementHolder> {
     @Override
     public void onBindViewHolder(EvennementHolder evennementHolder, int position) {
         Evennement evennement = list.get(position);
-        evennementHolder.bind(evennement);
+        try {
+            evennementHolder.bind(evennement);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         evennementHolder.itemView.setTag(evennement);
     }
 

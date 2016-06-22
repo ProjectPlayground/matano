@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.EvennementAdapter;
@@ -72,9 +73,13 @@ public class MesEvennementsActivity extends AppCompatActivity implements IEvenne
         if (evennements == null) {
             apiEvennement.getMyData(utilisateur.getId());
         } else {
-            evennementsListe = evennements;
             progressBar.setVisibility(View.GONE);
-            recyclerView.setAdapter(new EvennementAdapter(evennementsListe));
+            if (evennements.size() == 0) {
+                Toast.makeText(getApplicationContext(), getString(R.string.error_mes_evenements), Toast.LENGTH_LONG).show();
+            } else {
+                evennementsListe = evennements;
+                recyclerView.setAdapter(new EvennementAdapter(evennementsListe));
+            }
         }
     }
 }

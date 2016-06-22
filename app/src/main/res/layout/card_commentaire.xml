@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/activity_mini"
+    android:layout_margin="@dimen/activity_nano"
     app:cardBackgroundColor="@android:color/white"
     app:cardCornerRadius="2dp"
-    app:cardElevation="2dp">
+    app:cardElevation="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,13 +47,13 @@
                         android:textColor="@android:color/black" />
                     <TextView
                         android:id="@+id/txtJourCommentaire"
-                        android:layout_gravity="end"
-                        android:textAlignment="textEnd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="end"
                         android:layout_marginBottom="@dimen/activity_micro"
                         android:text="11/02/2016"
-                        android:textColor="@color/colorPrimary"/>
+                        android:textAlignment="textEnd"
+                        android:textSize="13sp" />
                 </LinearLayout>
 
 

@@ -9,6 +9,7 @@ import net.apkode.matano.R;
 import net.apkode.matano.holder.ActualiteHolder;
 import net.apkode.matano.model.Actualite;
 
+import java.text.ParseException;
 import java.util.List;
 
 public class ActualiteAdapter extends RecyclerView.Adapter<ActualiteHolder> {
@@ -27,7 +28,11 @@ public class ActualiteAdapter extends RecyclerView.Adapter<ActualiteHolder> {
     @Override
     public void onBindViewHolder(ActualiteHolder actualiteHolder, int position) {
         Actualite actualite = list.get(position);
-        actualiteHolder.bind(actualite);
+        try {
+            actualiteHolder.bind(actualite);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         actualiteHolder.itemView.setTag(actualite);
     }
 

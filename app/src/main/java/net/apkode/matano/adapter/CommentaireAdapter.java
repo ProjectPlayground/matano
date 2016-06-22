@@ -9,6 +9,7 @@ import net.apkode.matano.R;
 import net.apkode.matano.holder.CommentaireHolder;
 import net.apkode.matano.model.Commentaire;
 
+import java.text.ParseException;
 import java.util.List;
 
 
@@ -29,7 +30,11 @@ public class CommentaireAdapter extends RecyclerView.Adapter<CommentaireHolder> 
     @Override
     public void onBindViewHolder(CommentaireHolder commentaireHolder, int position) {
         Commentaire commentaire = list.get(position);
-        commentaireHolder.bind(commentaire);
+        try {
+            commentaireHolder.bind(commentaire);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         commentaireHolder.itemView.setTag(commentaire);
     }
 

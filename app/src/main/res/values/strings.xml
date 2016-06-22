@@ -48,4 +48,6 @@
     <string name="title_activity_feedback">Feedback</string>
     <string name="error_update">Vérifier les informations saisies</string>
     <string name="ok_update">Les informations ont été correctement mises à jour</string>
+    <string name="error_mes_evenements">Vous n\'êtes abonné à aucun évènement</string>
+    <string name="error_participant">Vous êtes déjà désabonné à cet évènement</string>
 </resources>

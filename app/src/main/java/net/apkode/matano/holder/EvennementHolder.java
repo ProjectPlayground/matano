@@ -13,6 +13,8 @@ import net.apkode.matano.activity.EvennementActivity;
 import net.apkode.matano.model.Evennement;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 
 public class EvennementHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -32,12 +34,15 @@ public class EvennementHolder extends RecyclerView.ViewHolder implements View.On
         itemView.setOnClickListener(this);
     }
 
-    public void bind(Evennement evennement) {
+    public void bind(Evennement evennement) throws ParseException {
         txtRubrique.setText("#" + evennement.getRubrique());
         txtTitre.setText(evennement.getTitre());
         txtTarif.setText(evennement.getTarif());
         txtLieu.setText(evennement.getLieu());
-        txtJour.setText(evennement.getJour());
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+        String dateInString = evennement.getJour();
+
+        txtJour.setText((CharSequence) formatter.parse(dateInString));
 
         Integer placeholder = R.mipmap.placeholder_culture;
         switch (evennement.getCategorie()) {

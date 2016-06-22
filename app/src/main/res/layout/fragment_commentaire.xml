@@ -41,23 +41,34 @@
         android:padding="@dimen/activity_mini"
         android:visibility="gone">
 
-        <Button
-            android:id="@+id/btnCommentaire"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="@dimen/activity_mini"
-            android:background="@drawable/button4"
-            android:text="Envoyer"
-            android:textColor="@android:color/white" />
 
-        <EditText
-            android:id="@+id/edtCommentaire"
-            style="@style/editText3"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Ecrire un commentaire ..."
-            android:imeOptions="actionDone"
-            android:inputType="text|textCapSentences" />
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/edtCommentaire"
+                style="@style/editText3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/btnCommentaire"
+                android:hint="Ecrire un commentaire ..."
+                android:imeOptions="actionDone"
+                android:inputType="text|textCapSentences" />
+
+            <Button
+                android:id="@+id/btnCommentaire"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/activity_mini"
+                android:background="@drawable/button4"
+                android:text="Envoyer"
+                android:textColor="@android:color/white" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 

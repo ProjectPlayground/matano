@@ -15,6 +15,7 @@ import net.apkode.matano.helper.AppController;
 import net.apkode.matano.interfaces.IParticipant;
 import net.apkode.matano.model.Evennement;
 import net.apkode.matano.model.Participant;
+import net.apkode.matano.model.Utilisateur;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,8 +30,8 @@ public class APIParticipant {
     private static final String COLUMN_ID = "id";
     // private final static String url = "http://niameyzze.apkode.net/participants.php?id=";
     private final static String url = "https://matano-api.herokuapp.com/participants/evenements/";
-    private final static String urlSuppression = "http://niameyzze.apkode.net/delete-participant.php";
-    private final static String urlAjout = "http://niameyzze.apkode.net/send-participant.php";
+    private final static String urlDeleteParticipant = "http://matano-api.herokuapp.com/participants/evenements/";
+    private final static String urlCreateParticipant = "https://matano-api.herokuapp.com/participants";
     private IParticipant iParticipant;
     private List<Participant> participants;
     private DBParticipant dbParticipant;
@@ -41,6 +42,9 @@ public class APIParticipant {
         dbParticipant = new DBParticipant(ctx);
     }
 
+    /**
+     * @param evennement
+     */
     public void getData(Evennement evennement) {
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url + evennement.getId(), null,
 
@@ -76,39 +80,59 @@ public class APIParticipant {
         AppController.getInstance().addToRequestQueue(request);
     }
 
-    public void sendParticipant(final Evennement evennement, final String telephone, final String status) {
-
-        String url = "";
-
-        if (status.equals("suppression")) {
-            url = urlSuppression;
-        } else if (status.equals("ajout")) {
-            url = urlAjout;
-        }
-
-        StringRequest request = new StringRequest(Request.Method.POST, url,
+    /**
+     *
+     * @param evennement
+     * @param utilisateur
+     */
+    public void createPartiticpant(final Evennement evennement, final Utilisateur utilisateur) {
+        StringRequest request = new StringRequest(Request.Method.POST, urlCreateParticipant,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        iParticipant.sendResponse(response);
+                        iParticipant.sendResponseCreateParticipant(response);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        iParticipant.sendResponse(error.getMessage());
+                        iParticipant.sendResponseCreateParticipant(null);
                     }
                 }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
 
                 Map<String, String> map = new HashMap<String, String>();
-                map.put("telephone", telephone);
-                map.put("id", evennement.getId().toString());
+
+                map.put("evenement.id", evennement.getId().toString());
+                map.put("utilisateur.id", utilisateur.getId().toString());
 
                 return map;
             }
         };
+
+        AppController.getInstance().addToRequestQueue(request);
+    }
+
+    /**
+     * @param evennement
+     * @param utilisateur
+     */
+    public void deletePartiticpant(final Evennement evennement, final Utilisateur utilisateur) {
+
+        StringRequest request = new StringRequest(Request.Method.GET, urlDeleteParticipant + evennement.getId() + "/utilisateurs/" + utilisateur.getId(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        iParticipant.sendResponseDeleteParticipant(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        iParticipant.sendResponseDeleteParticipant(null);
+                    }
+                });
 
         AppController.getInstance().addToRequestQueue(request);
     }

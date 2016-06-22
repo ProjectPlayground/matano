@@ -7,5 +7,7 @@ import java.util.List;
 public interface IParticipant {
     void getResponse(List<Participant> participants);
 
-    void sendResponse(String response);
+    void sendResponseCreateParticipant(String response);
+
+    void sendResponseDeleteParticipant(String response);
 }

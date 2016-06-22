@@ -11,6 +11,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import net.apkode.matano.R;
 import net.apkode.matano.model.Commentaire;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 public class CommentaireHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private TextView txtNomCommentaire;
     private TextView txtPrenomCommentaire;
@@ -29,10 +32,10 @@ public class CommentaireHolder extends RecyclerView.ViewHolder implements View.O
         itemView.setOnClickListener(this);
     }
 
-    public void bind(Commentaire commentaire) {
+    public void bind(Commentaire commentaire) throws ParseException {
         txtNomCommentaire.setText(commentaire.getNom());
         txtPrenomCommentaire.setText(commentaire.getPrenom());
-        txtJourCommentaire.setText(commentaire.getJour());
+
         txtCommentaire.setText(commentaire.getCommentaire());
 
         Glide.with(imvImageCommentaire.getContext())
@@ -42,6 +45,11 @@ public class CommentaireHolder extends RecyclerView.ViewHolder implements View.O
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(imvImageCommentaire.getResources().getDrawable(R.mipmap.placeholder_femme))
                 .into(imvImageCommentaire);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+        String dateInString = commentaire.getJour();
+
+        txtJourCommentaire.setText((CharSequence) formatter.parse(dateInString));
     }
 
     @Override

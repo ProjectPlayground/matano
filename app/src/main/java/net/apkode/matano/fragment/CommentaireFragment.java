@@ -105,7 +105,6 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
                         progressBar.setVisibility(View.GONE);
                         linearLayoutBtn.setVisibility(View.VISIBLE);
                     }
-
                 }
 
                 Button btnCommentaire = (Button) view.findViewById(R.id.btnCommentaire);
