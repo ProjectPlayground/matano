@@ -2,9 +2,7 @@ package net.apkode.matano.model;
 
 import java.io.Serializable;
 
-/**
- * Created by brabo on 6/2/16.
- */
+
 public class Evenement implements Serializable {
     private Integer id;
     private String categorie;

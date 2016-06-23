@@ -276,7 +276,6 @@ public class APIEvenement {
      * @param eventsServer
      */
     public void compareAndCharge(List<Evenement> eventsServer) {
-        // Log.e("e", "eventsServer "+eventsServer.size());
         Cursor cursor = dbEvenement.getDatasCursor();
         Integer lastIdLocal;
         if (cursor.getCount() == 0) {
@@ -286,7 +285,6 @@ public class APIEvenement {
             lastIdLocal = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
         }
 
-        //Log.e("e","local "+cursor.getCount());
 
         Integer lastIdServer;
         if (eventsServer.size() == 0) {

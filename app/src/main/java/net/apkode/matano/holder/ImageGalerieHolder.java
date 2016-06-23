@@ -21,7 +21,7 @@ public class ImageGalerieHolder extends RecyclerView.ViewHolder {
 
     public void bind(ImageGalerie imageGalerie) {
 
-        Glide.with(thumbnail.getContext()).load(imageGalerie.getImage())
+        Glide.with(thumbnail.getContext()).load(imageGalerie.getImagegalerie())
                 .thumbnail(0.5f)
                 .crossFade()
                 .placeholder(R.color.grey300)

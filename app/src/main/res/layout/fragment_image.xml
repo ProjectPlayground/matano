@@ -36,7 +36,7 @@
             android:visibility="gone">
 
             <Button
-                android:id="@+id/btnSendPhoto"
+                android:id="@+id/btnSendAndSharePhoto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/button4"

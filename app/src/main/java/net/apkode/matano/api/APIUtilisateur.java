@@ -1,7 +1,6 @@
 package net.apkode.matano.api;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -137,7 +136,6 @@ public class APIUtilisateur {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.e("e", "response " + response);
                         try {
                             utilisateurNew = new Utilisateur(
                                     response.getInt("id"),
@@ -158,7 +156,6 @@ public class APIUtilisateur {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("e", "error " + error.getMessage());
                         iUtilisateur.responseGetUtilisateur(null);
                     }
                 });

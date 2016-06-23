@@ -15,14 +15,13 @@ import net.apkode.matano.helper.AppController;
 import net.apkode.matano.interfaces.IImageGalerie;
 import net.apkode.matano.model.Evenement;
 import net.apkode.matano.model.ImageGalerie;
+import net.apkode.matano.model.Utilisateur;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class APIImageGalerie {
     private static final String COLUMN_ID = "id";
     //private final static String url = "http://niameyzze.apkode.net/image-galeries.php?id=";
     private final static String url = "https://matano-api.herokuapp.com/images/evenements/";
-    private final static String urlImage = "http://niameyzze.apkode.net/send-commentaire.php";
+    private final static String urlImage = "https://matano-api.herokuapp.com/images";
     private IImageGalerie iImageGalerie;
     private List<ImageGalerie> imageGaleries;
     private DBImageGalerie dbImageGalerie;
@@ -78,27 +77,29 @@ public class APIImageGalerie {
         AppController.getInstance().addToRequestQueue(request);
     }
 
-    public void sendImage(final File image, final String telephone) {
+    public void sendImageGalerie(final String imageGalerie, final Evenement evenement, final Utilisateur utilisateur) {
+
         StringRequest request = new StringRequest(Request.Method.POST, urlImage,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        iImageGalerie.sendResponse(response);
+                        iImageGalerie.responseSendImageGalerie(response);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        iImageGalerie.sendResponse(error.getMessage());
+                        iImageGalerie.responseSendImageGalerie(null);
                     }
                 }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
 
                 Map<String, String> map = new HashMap<String, String>();
-                // map.put("image", image);
-                map.put("telephone", telephone);
-                map.put("jour", new Date().toString());
+
+                map.put("imagegalerie", imageGalerie);
+                map.put("evenement.id", evenement.getId().toString());
+                map.put("utilisateur.id", utilisateur.getId().toString());
 
                 return map;
             }

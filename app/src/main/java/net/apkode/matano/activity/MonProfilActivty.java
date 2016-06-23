@@ -4,7 +4,6 @@ package net.apkode.matano.activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -12,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -145,29 +143,15 @@ public class MonProfilActivty extends AppCompatActivity implements IUtilisateur 
     }
 
     public void startSharePhoto(View view) {
+        final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getTempFile(getApplicationContext())));
+        startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+    }
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("En envoyant votre photo, vous acceptez qu'elle soit publiée sur les réseaux sociaux d'orange ?");
-
-        alertDialogBuilder.setPositiveButton("Partager", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface arg0, int arg1) {
-
-                final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getTempFile(getApplicationContext())));
-                startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
-            }
-        });
-
-        alertDialogBuilder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-
+    public void startPickPhoto(View view) {
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, GALERIE_CAPTURE_IMAGE_REQUEST_CODE);
     }
 
     private File getTempFile(Context context) {
@@ -177,30 +161,6 @@ public class MonProfilActivty extends AppCompatActivity implements IUtilisateur 
             path.mkdir();
         }
         return new File(path, "image.tmp");
-    }
-
-
-    public void startPickPhoto(View view) {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("En envoyant votre photo, vous acceptez qu'elle soit publiée sur les réseaux sociaux d'orange ?");
-
-        alertDialogBuilder.setPositiveButton("Partager", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface arg0, int arg1) {
-                Intent intent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, GALERIE_CAPTURE_IMAGE_REQUEST_CODE);
-            }
-        });
-
-        alertDialogBuilder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
     }
 
     @Override
@@ -227,7 +187,7 @@ public class MonProfilActivty extends AppCompatActivity implements IUtilisateur 
     public Uri getCaptureUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "OrangeNigerEvent", null);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Matano", null);
         return Uri.parse(path);
     }
 
@@ -252,10 +212,11 @@ public class MonProfilActivty extends AppCompatActivity implements IUtilisateur 
         try {
             params.put("image", image);
         } catch (FileNotFoundException e) {
+            e.getMessage();
         }
 
 
-        ApiRestClient.post("utilisateurs-images.php", params, new JsonHttpResponseHandler() {
+        ApiRestClient.post("upload-utilisateurs-images.php", params, new JsonHttpResponseHandler() {
             @Override
             public void onStart() {
                 super.onStart();
@@ -301,6 +262,12 @@ public class MonProfilActivty extends AppCompatActivity implements IUtilisateur 
 
     @Override
     public void responseUpdate(String response) {
+
+        try {
+            progress.dismiss();
+        } catch (Exception e) {
+            e.getMessage();
+        }
 
         if (response == null) {
             try {
