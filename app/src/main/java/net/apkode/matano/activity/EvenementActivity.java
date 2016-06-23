@@ -77,16 +77,16 @@ public class EvenementActivity extends AppCompatActivity {
         presentationFragment = PresentationFragment.newInstance();
         presentationFragment.setArguments(bundle);
 
-        commentaireFragment = CommentaireFragment.newInstance();
+        commentaireFragment = CommentaireFragment.newInstance(this);
         commentaireFragment.setArguments(bundle);
 
-        participantFragment = ParticipantFragment.newInstance();
+        participantFragment = ParticipantFragment.newInstance(this);
         participantFragment.setArguments(bundle);
 
-        imageGalerieFragment = ImageGalerieFragment.newInstance();
+        imageGalerieFragment = ImageGalerieFragment.newInstance(this);
         imageGalerieFragment.setArguments(bundle);
 
-        actualiteFragment = ActualiteFragment.newInstance();
+        actualiteFragment = ActualiteFragment.newInstance(this);
         actualiteFragment.setArguments(bundle);
 
         mBottomBar = BottomBar.attach(this, savedInstanceState);

@@ -32,9 +32,6 @@ public class EvenementsFragment extends Fragment implements IEvenement {
     private List<Evenement> evenementsSport = new ArrayList<>();
     private RecyclerView recyclerView;
     private APIEvenement apiEvenement;
-    private EvennementAdapter cultureAdapter;
-    private EvennementAdapter educationAdapter;
-    private EvennementAdapter sportAdpater;
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -56,7 +53,6 @@ public class EvenementsFragment extends Fragment implements IEvenement {
     public void onAttach(Context context) {
         super.onAttach(context);
         apiEvenement = new APIEvenement(this, context);
-        // getDataFromApi();
     }
 
     @Override
@@ -79,14 +75,14 @@ public class EvenementsFragment extends Fragment implements IEvenement {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        cultureAdapter = new EvennementAdapter(evenementsCulture);
-        educationAdapter = new EvennementAdapter(evenementsEducation);
-        sportAdpater = new EvennementAdapter(evenementsSport);
+        EvennementAdapter cultureAdapter = new EvennementAdapter(evenementsCulture);
+        EvennementAdapter educationAdapter = new EvennementAdapter(evenementsEducation);
+        EvennementAdapter sportAdpater = new EvennementAdapter(evenementsSport);
 
         progressBar = (ProgressBar) view.findViewById(R.id.loading);
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
-
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
         swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override

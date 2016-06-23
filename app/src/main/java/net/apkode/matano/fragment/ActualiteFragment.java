@@ -4,13 +4,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.ActualiteAdapter;
@@ -25,18 +25,20 @@ import java.util.List;
 
 public class ActualiteFragment extends Fragment implements IActualite {
     private static boolean isActualitePassed = false;
+    private static Context context;
     private APIActualite apiActualite;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private List<Actualite> actualitesListe = new ArrayList<>();
     private Evenement evenement;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public ActualiteFragment() {
     }
 
-    public static ActualiteFragment newInstance() {
+    public static ActualiteFragment newInstance(Context ctx) {
         isActualitePassed = true;
-
+        context = ctx;
         ActualiteFragment actualiteFragment = new ActualiteFragment();
         return actualiteFragment;
     }
@@ -71,6 +73,17 @@ public class ActualiteFragment extends Fragment implements IActualite {
 
         progressBar = (ProgressBar) view.findViewById(R.id.loading);
 
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        refreshLayout();
+                    }
+                }
+        );
+
         Bundle bundle = getArguments();
         if (bundle != null) {
             evenement = (Evenement) bundle.getSerializable("Evenement");
@@ -81,7 +94,7 @@ public class ActualiteFragment extends Fragment implements IActualite {
                     isActualitePassed = false;
                 } else {
                     if (actualitesListe.size() == 0) {
-                        apiActualite.getData(evenement);
+                        new APIActualite(this, context).getData(evenement);
                     } else {
                         progressBar.setVisibility(View.GONE);
                     }
@@ -130,26 +143,20 @@ public class ActualiteFragment extends Fragment implements IActualite {
     @Override
     public void getResponse(List<Actualite> actualites) {
         if (actualites == null) {
-            apiActualite.getData(evenement);
+            new APIActualite(this, context).getData(evenement);
         } else {
-            if (actualites.size() == 0) {
-               try {
-                   Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
-                   progressBar.setVisibility(View.GONE);
-               }catch (Exception e){
-                   e.getMessage();
-               }
-            } else {
-                try {
-                    progressBar.setVisibility(View.GONE);
-                    actualitesListe = actualites;
-                    recyclerView.setAdapter(new ActualiteAdapter(actualitesListe));
-                }catch (Exception e){
-                    e.getMessage();
-                }
+            actualitesListe = actualites;
+            try {
+                progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
+                recyclerView.setAdapter(new ActualiteAdapter(actualitesListe));
+            } catch (Exception e) {
+                e.getMessage();
             }
         }
+    }
 
-
+    private void refreshLayout() {
+        new APIActualite(this, context).getData(evenement);
     }
 }

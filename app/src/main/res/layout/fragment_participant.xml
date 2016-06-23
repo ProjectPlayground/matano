@@ -1,57 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swiperefresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <ProgressBar
-        android:id="@+id/progressBarParticipant"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:indeterminateTint="@color/colorPrimary"
-        android:indeterminateTintMode="src_atop"
-        android:visibility="gone" />
-
-    <ProgressBar
-        android:id="@+id/loading"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_centerInParent="true"
-        android:indeterminateTint="@color/colorPrimary"
-        android:indeterminateTintMode="src_atop" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/btn"
-        android:layout_below="@+id/progressBarParticipant"
-        android:fadeScrollbars="true"
-        android:scrollbars="vertical" />
+        android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/grey300"
-        android:orientation="horizontal"
-        android:padding="@dimen/activity_mini"
-        android:visibility="gone">
+        <ProgressBar
+            android:id="@+id/progressBarParticipant"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:indeterminateTint="@color/colorPrimary"
+            android:indeterminateTintMode="src_atop"
+            android:visibility="gone" />
 
-        <Button
-            android:id="@+id/btnSendParticipant"
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:indeterminateTint="@color/colorPrimary"
+            android:indeterminateTintMode="src_atop" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/button4"
-            android:text="Participer"
-            android:textColor="@android:color/white" />
+            android:layout_above="@+id/btn"
+            android:layout_below="@+id/progressBarParticipant"
+            android:fadeScrollbars="true"
+            android:scrollbars="vertical" />
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/grey300"
+            android:orientation="horizontal"
+            android:padding="@dimen/activity_mini"
+            android:visibility="gone">
 
-</RelativeLayout>
+            <Button
+                android:id="@+id/btnSendParticipant"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/button4"
+                android:text="Participer"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>
+
 
 
 

@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +22,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.ImageGalerieAdapter;
@@ -41,6 +41,7 @@ import java.util.List;
 
 public class ImageGalerieFragment extends Fragment implements IImageGalerie {
     private static boolean isImageGaleriePassed = false;
+    private static Context context;
     private final int REQUEST_IMAGE_CAPTURE = 1;
     private APIImageGalerie apiImageGalerie;
     private RecyclerView recyclerView;
@@ -49,13 +50,14 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
     private LinearLayout linearLayoutBtn;
     private List<ImageGalerie> imageGaleriesListe = new ArrayList<>();
     private Evenement evenement;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public ImageGalerieFragment() {
     }
 
-    public static ImageGalerieFragment newInstance() {
+    public static ImageGalerieFragment newInstance(Context ctx) {
         isImageGaleriePassed = true;
-
+        context = ctx;
         ImageGalerieFragment imageGalerieFragment = new ImageGalerieFragment();
         return imageGalerieFragment;
     }
@@ -112,6 +114,17 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
 
         linearLayoutBtn = (LinearLayout) view.findViewById(R.id.btn);
 
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        refreshLayout();
+                    }
+                }
+        );
+
         Bundle bundle = getArguments();
         if (bundle != null) {
             evenement = (Evenement) bundle.getSerializable("Evenement");
@@ -122,7 +135,7 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
                     isImageGaleriePassed = false;
                 } else {
                     if (imageGaleriesListe.size() == 0) {
-                        apiImageGalerie.getData(evenement);
+                        new APIImageGalerie(this, context).getData(evenement);
                     } else {
                         progressBar.setVisibility(View.GONE);
                         linearLayoutBtn.setVisibility(View.VISIBLE);
@@ -147,28 +160,18 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
     @Override
     public void getResponse(final List<ImageGalerie> imageGaleries) {
         if (imageGaleries == null) {
-            apiImageGalerie.getData(evenement);
+            new APIImageGalerie(this, context).getData(evenement);
         } else {
-            if (imageGaleries.size() == 0) {
-                try {
-                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
-                    progressBar.setVisibility(View.GONE);
-                    linearLayoutBtn.setVisibility(View.VISIBLE);
-                }catch (Exception e){
-                    e.getMessage();
-                }
-            } else {
-                try {
-                    progressBar.setVisibility(View.GONE);
-                    linearLayoutBtn.setVisibility(View.VISIBLE);
-                    imageGaleriesListe = imageGaleries;
-                    recyclerView.setAdapter(new ImageGalerieAdapter(imageGaleriesListe));
-                }catch (Exception e){
-                    e.getMessage();
-                }
+            imageGaleriesListe = imageGaleries;
+            try {
+                progressBar.setVisibility(View.GONE);
+                linearLayoutBtn.setVisibility(View.VISIBLE);
+                swipeRefreshLayout.setRefreshing(false);
+                recyclerView.setAdapter(new ImageGalerieAdapter(imageGaleriesListe));
+            } catch (Exception e) {
+                e.getMessage();
             }
         }
-
     }
 
     @Override
@@ -225,6 +228,10 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
 
         String telephone = utilisateurLocalStore.getUtilisateur().getTelephone();
         apiImageGalerie.sendImage(image, telephone);
+    }
+
+    private void refreshLayout() {
+        new APIImageGalerie(this, context).getData(evenement);
     }
 
 }

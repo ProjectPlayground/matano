@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ import java.util.List;
 
 public class ParticipantFragment extends Fragment implements IParticipant {
     private static boolean isParticipantPassed = false;
+    private static Context context;
     private APIParticipant apiParticipant;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
@@ -39,14 +41,14 @@ public class ParticipantFragment extends Fragment implements IParticipant {
     private Evenement evenement;
     private Utilisateur utilisateur;
     private ParticipantAdapter participantAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public ParticipantFragment() {
     }
 
-    public static ParticipantFragment newInstance() {
-
+    public static ParticipantFragment newInstance(Context ctx) {
         isParticipantPassed = true;
-
+        context = ctx;
         ParticipantFragment participantFragment = new ParticipantFragment();
         return participantFragment;
     }
@@ -88,6 +90,17 @@ public class ParticipantFragment extends Fragment implements IParticipant {
 
         utilisateur = utilisateurLocalStore.getUtilisateur();
 
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        refreshLayout();
+                    }
+                }
+        );
+
         Bundle bundle = getArguments();
         if (bundle != null) {
             evenement = (Evenement) bundle.getSerializable("Evenement");
@@ -99,7 +112,7 @@ public class ParticipantFragment extends Fragment implements IParticipant {
                     isParticipantPassed = false;
                 } else {
                     if (participantsListe.size() == 0) {
-                        apiParticipant.getData(evenement);
+                        new APIParticipant(this, context).getData(evenement);
                     } else {
                         progressBar.setVisibility(View.GONE);
                         linearLayoutBtn.setVisibility(View.VISIBLE);
@@ -161,59 +174,111 @@ public class ParticipantFragment extends Fragment implements IParticipant {
         super.onDetach();
     }
 
+
     @Override
     public void getResponse(List<Participant> participants) {
         if (participants == null) {
-            apiParticipant.getData(evenement);
+            new APIParticipant(this, context).getData(evenement);
         } else {
-            if (participants.size() == 0) {
-                //       Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+            participantsListe = participants;
+            checkIsParticipant(participants);
+            try {
                 progressBar.setVisibility(View.GONE);
                 linearLayoutBtn.setVisibility(View.VISIBLE);
-            } else {
-                progressBar.setVisibility(View.GONE);
-                participantsListe = participants;
+                swipeRefreshLayout.setRefreshing(false);
                 recyclerView.setAdapter(new ParticipantAdapter(participantsListe));
-                linearLayoutBtn.setVisibility(View.VISIBLE);
-                checkIsParticipant(participants);
+            } catch (Exception e) {
+                e.getMessage();
             }
         }
-
     }
 
     @Override
     public void sendResponseCreateParticipant(String response) {
-        progressBarParticipant.setVisibility(View.GONE);
+
+        try {
+            progressBarParticipant.setVisibility(View.GONE);
+        } catch (Exception e) {
+            e.getMessage();
+        }
+
         if (response == null) {
-            Toast.makeText(getContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+
+            try {
+                Toast.makeText(getContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                e.getMessage();
+            }
+
         } else {
             if (response.equals("0")) {
-                Toast.makeText(getContext(), getString(R.string.error_commentaire), Toast.LENGTH_LONG).show();
+
+                try {
+                    Toast.makeText(getContext(), getString(R.string.error_send_create_participant), Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+
             } else if (response.equals("1")) {
+
                 Utilisateur utilisateur = utilisateurLocalStore.getUtilisateur();
-                participantsListe.add(new Participant(99, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getTelephone(), utilisateur.getImage()));
-                participantAdapter.notifyItemInserted(participantsListe.size() - 1);
-                recyclerView.scrollToPosition(participantsListe.size() - 1);
-                btnSendParticipant.setText(getString(R.string.participate0));
-                btnSendParticipant.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+
+                try {
+
+                    Toast.makeText(getContext(), getString(R.string.succes_send_create_participant), Toast.LENGTH_LONG).show();
+                    participantsListe.add(new Participant(99, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getTelephone(), utilisateur.getImage()));
+                    participantAdapter.notifyItemInserted(participantsListe.size() - 1);
+                    recyclerView.scrollToPosition(participantsListe.size() - 1);
+                    btnSendParticipant.setText(getString(R.string.participate0));
+                    btnSendParticipant.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+
             }
         }
     }
 
     @Override
     public void sendResponseDeleteParticipant(String response) {
-        progressBarParticipant.setVisibility(View.GONE);
+        try {
+            progressBarParticipant.setVisibility(View.GONE);
+        } catch (Exception e) {
+            e.getMessage();
+        }
+
         if (response == null) {
-            Toast.makeText(getContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+
+            try {
+                Toast.makeText(getContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                e.getMessage();
+            }
+
         } else {
             if (response.equals("0")) {
-                Toast.makeText(getContext(), getString(R.string.error_participant), Toast.LENGTH_LONG).show();
-            } else if (response.equals("1")) {
-                participantsListe.remove(participantsListe.size() - 1);
-                recyclerView.scrollToPosition(participantsListe.size() - 1);
 
-                btnSendParticipant.setText(getString(R.string.participate1));
-                btnSendParticipant.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                try {
+                    Toast.makeText(getContext(), getString(R.string.error_send_delete_participant), Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+
+            } else if (response.equals("1")) {
+
+                try {
+
+                    Toast.makeText(getContext(), getString(R.string.succes_send_delete_participant), Toast.LENGTH_LONG).show();
+
+                    participantsListe.remove(participantsListe.size() - 1);
+                    recyclerView.scrollToPosition(participantsListe.size() - 1);
+
+                    btnSendParticipant.setText(getString(R.string.participate1));
+                    btnSendParticipant.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+
             }
         }
     }
@@ -227,12 +292,13 @@ public class ParticipantFragment extends Fragment implements IParticipant {
                 existe = "1";
             }
         }
+
         if (existe.equals("0")) {
-           try {
-               btnSendParticipant.setText(getString(R.string.participate1));
-           }catch (Exception e){
-               e.getMessage();
-           }
+            try {
+                btnSendParticipant.setText(getString(R.string.participate1));
+            } catch (Exception e) {
+                e.getMessage();
+            }
         } else {
             try {
                 btnSendParticipant.setText(getString(R.string.participate0));
@@ -241,6 +307,10 @@ public class ParticipantFragment extends Fragment implements IParticipant {
                 e.getMessage();
             }
         }
+    }
+
+    private void refreshLayout() {
+        new APIParticipant(this, context).getData(evenement);
     }
 
 }

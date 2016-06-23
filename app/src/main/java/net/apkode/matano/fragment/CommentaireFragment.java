@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -33,6 +34,7 @@ import java.util.List;
 
 public class CommentaireFragment extends Fragment implements ICommentaire {
     private static boolean isCommentairePassed = false;
+    private static Context context;
     private APICommentaire apiCommentaire;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
@@ -44,13 +46,14 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
     private Evenement evenement;
     private CommentaireAdapter commentaireAdapter;
     private String commentaire;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public CommentaireFragment() {
     }
 
-    public static CommentaireFragment newInstance() {
-
+    public static CommentaireFragment newInstance(Context ctx) {
         isCommentairePassed = true;
+        context = ctx;
         CommentaireFragment commentaireFragment = new CommentaireFragment();
         return commentaireFragment;
     }
@@ -89,6 +92,17 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
 
         linearLayoutBtn = (LinearLayout) view.findViewById(R.id.btn);
 
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        refreshLayout();
+                    }
+                }
+        );
+
         Bundle bundle = getArguments();
         if (bundle != null) {
             evenement = (Evenement) bundle.getSerializable("Evenement");
@@ -100,7 +114,7 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
                     isCommentairePassed = false;
                 } else {
                     if (commentairesListe.size() == 0) {
-                        apiCommentaire.getData(evenement);
+                        new APICommentaire(this, context).getData(evenement);
                     } else {
                         progressBar.setVisibility(View.GONE);
                         linearLayoutBtn.setVisibility(View.VISIBLE);
@@ -118,8 +132,6 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
                         if (commentaire.equals("")) {
                             Toast.makeText(getContext(), getString(R.string.error_commentaire), Toast.LENGTH_LONG).show();
                         } else {
-                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(edtCommentaire.getWindowToken(), 0);
                             edtCommentaire.setText("");
                             progressBarCommentaire.setVisibility(View.VISIBLE);
                             sendCommentaire(commentaire, evenement);
@@ -172,68 +184,62 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
     @Override
     public void getResponse(List<Commentaire> commentaires) {
         if (commentaires == null) {
-            apiCommentaire.getData(evenement);
-           try {
-               linearLayoutBtn.setVisibility(View.VISIBLE);
-           }catch (Exception e){
-               e.getMessage();
-           }
+            new APICommentaire(this, context).getData(evenement);
         } else {
-            if (commentaires.size() == 0) {
-                try {
-                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
-                    progressBar.setVisibility(View.GONE);
-                    linearLayoutBtn.setVisibility(View.VISIBLE);
-                }catch (Exception e){
-                    e.getMessage();
-                }
-            } else {
-               try {
-                   progressBar.setVisibility(View.GONE);
-                   commentairesListe = commentaires;
-                   recyclerView.setAdapter(new CommentaireAdapter(commentairesListe));
-                   linearLayoutBtn.setVisibility(View.VISIBLE);
-               }catch (Exception e){
-                   e.getMessage();
-               }
+            commentairesListe = commentaires;
+            try {
+                linearLayoutBtn.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
+                recyclerView.setAdapter(new CommentaireAdapter(commentairesListe));
+            } catch (Exception e) {
+                e.getMessage();
             }
         }
     }
 
     @Override
     public void sendResponse(String response) {
-       try {
-           progressBarCommentaire.setVisibility(View.GONE);
-       }catch (Exception e){
-           e.getMessage();
-       }
+
+        try {
+            progressBarCommentaire.setVisibility(View.GONE);
+        } catch (Exception e) {
+            e.getMessage();
+        }
+
+
         if (response == null) {
-           try {
-               Toast.makeText(getContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
-           }catch (Exception e){
-               e.getMessage();
-           }
+
+            try {
+                Toast.makeText(getContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                e.getMessage();
+            }
+
         } else {
+
             if (response.equals("0")) {
                try {
-                   Toast.makeText(getContext(), getString(R.string.error_commentaire), Toast.LENGTH_LONG).show();
+                   Toast.makeText(getContext(), getString(R.string.error_send_commentaire), Toast.LENGTH_LONG).show();
                }catch (Exception e){
                    e.getMessage();
                }
+
             } else if (response.equals("1")) {
+
+                Utilisateur utilisateur = utilisateurLocalStore.getUtilisateur();
+
+                Date date = new Date();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
                 try {
-                    Utilisateur utilisateur = utilisateurLocalStore.getUtilisateur();
-
-                    Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
                     commentairesListe.add(new Commentaire(99, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getTelephone(), simpleDateFormat.format(date), utilisateur.getImage(), commentaire));
-
                     commentaireAdapter.notifyItemInserted(commentairesListe.size() - 1);
                     recyclerView.scrollToPosition(commentairesListe.size() - 1);
                 }catch (Exception e){
                     e.getMessage();
                 }
+
             }
         }
     }
@@ -241,5 +247,9 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
     private void sendCommentaire(String commentaire, Evenement evenement) {
         Utilisateur utilisateur = utilisateurLocalStore.getUtilisateur();
         apiCommentaire.sendCommentaire(evenement, commentaire, utilisateur);
+    }
+
+    private void refreshLayout() {
+        new APICommentaire(this, context).getData(evenement);
     }
 }

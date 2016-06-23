@@ -60,7 +60,6 @@ public class APIActualite {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        actualites = null;
                         iActualite.getResponse(null);
                     }
 
