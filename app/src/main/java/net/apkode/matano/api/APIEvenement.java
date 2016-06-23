@@ -2,7 +2,6 @@ package net.apkode.matano.api;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -96,7 +95,6 @@ public class APIEvenement {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e("e", "lengh " + response.length());
                         for (int i = 0; i < response.length(); i++) {
                             try {
                                 JSONObject jsonObject = response.getJSONObject(i);

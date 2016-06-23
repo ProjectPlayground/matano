@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,7 +105,7 @@ public class EvenementsFragment extends Fragment implements IEvenement {
                     isEvenementPassed = false;
                 } else {
                     if (evenementsCulture.size() == 0) {
-                        apiEvenement.getDataCulture();
+                        new APIEvenement(this, context).getDataCulture();
                     } else {
                         progressBar.setVisibility(View.GONE);
                     }
@@ -119,7 +118,7 @@ public class EvenementsFragment extends Fragment implements IEvenement {
                     isEvenementPassed = false;
                 } else {
                     if (evenementsEducation.size() == 0) {
-                        apiEvenement.getDataEducation();
+                        new APIEvenement(this, context).getDataEducation();
                     } else {
                         progressBar.setVisibility(View.GONE);
                     }
@@ -132,7 +131,7 @@ public class EvenementsFragment extends Fragment implements IEvenement {
                     isEvenementPassed = false;
                 } else {
                     if (evenementsSport.size() == 0) {
-                        apiEvenement.getDataSport();
+                        new APIEvenement(this, context).getDataSport();
                     } else {
                         progressBar.setVisibility(View.GONE);
                     }
@@ -184,9 +183,8 @@ public class EvenementsFragment extends Fragment implements IEvenement {
 
     @Override
     public void getResponsesCulture(List<Evenement> evenements) {
-        Log.e("e", "size " + evenements.size());
         if (evenements == null) {
-            apiEvenement.getDataCulture();
+            new APIEvenement(this, context).getDataCulture();
         } else {
             evenementsCulture = evenements;
 
@@ -205,7 +203,7 @@ public class EvenementsFragment extends Fragment implements IEvenement {
     @Override
     public void getResponsesEducation(List<Evenement> evenements) {
         if (evenements == null) {
-            apiEvenement.getDataCulture();
+            new APIEvenement(this, context).getDataEducation();
         } else {
             evenementsEducation = evenements;
 
@@ -225,7 +223,7 @@ public class EvenementsFragment extends Fragment implements IEvenement {
     @Override
     public void getResponsesSport(List<Evenement> evenements) {
         if (evenements == null) {
-            apiEvenement.getDataCulture();
+            new APIEvenement(this, context).getDataSport();
         } else {
             evenementsSport = evenements;
 
@@ -250,14 +248,14 @@ public class EvenementsFragment extends Fragment implements IEvenement {
     private void refreshLayout() {
         switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
             case 1:
-                apiEvenement.getDataCulture();
+                new APIEvenement(this, context).getDataCulture();
                 break;
             case 2:
-                apiEvenement.getDataEducation();
+                new APIEvenement(this, context).getDataEducation();
                 break;
 
             case 3:
-                apiEvenement.getDataSport();
+                new APIEvenement(this, context).getDataSport();
                 break;
         }
     }
