@@ -1,15 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="net.apkode.matano.activity.ParametresActivty"
     tools:showIn="@layout/activity_parametres">
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@mipmap/ic_action_lock_open"
+            android:onClick="modifierPassword"
+            android:text="@string/btn_modifier_password" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@mipmap/ic_action_autorenew"
+            android:onClick="supprimerDonnees"
+            android:text="@string/btn_supprimer_donnees"
+            android:visibility="gone" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@mipmap/ic_action_delete"
+            android:onClick="supprimerCompte"
+            android:text="@string/btn_supprimer_compte" />
+
+    </LinearLayout>
+
+</ScrollView>

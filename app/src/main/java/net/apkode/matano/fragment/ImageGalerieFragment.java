@@ -28,7 +28,7 @@ import net.apkode.matano.adapter.ImageGalerieAdapter;
 import net.apkode.matano.api.APIImageGalerie;
 import net.apkode.matano.helper.UtilisateurLocalStore;
 import net.apkode.matano.interfaces.IImageGalerie;
-import net.apkode.matano.model.Evennement;
+import net.apkode.matano.model.Evenement;
 import net.apkode.matano.model.ImageGalerie;
 
 import java.io.ByteArrayOutputStream;
@@ -48,7 +48,7 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
     private UtilisateurLocalStore utilisateurLocalStore;
     private LinearLayout linearLayoutBtn;
     private List<ImageGalerie> imageGaleriesListe = new ArrayList<>();
-    private Evennement evennement;
+    private Evenement evenement;
 
     public ImageGalerieFragment() {
     }
@@ -114,15 +114,15 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            evennement = (Evennement) bundle.getSerializable("Evennement");
+            evenement = (Evenement) bundle.getSerializable("Evenement");
 
-            if (evennement != null) {
+            if (evenement != null) {
                 if (isImageGaleriePassed) {
-                    apiImageGalerie.getData(evennement);
+                    apiImageGalerie.getData(evenement);
                     isImageGaleriePassed = false;
                 } else {
                     if (imageGaleriesListe.size() == 0) {
-                        apiImageGalerie.getData(evennement);
+                        apiImageGalerie.getData(evenement);
                     } else {
                         progressBar.setVisibility(View.GONE);
                         linearLayoutBtn.setVisibility(View.VISIBLE);
@@ -147,7 +147,7 @@ public class ImageGalerieFragment extends Fragment implements IImageGalerie {
     @Override
     public void getResponse(final List<ImageGalerie> imageGaleries) {
         if (imageGaleries == null) {
-            apiImageGalerie.getData(evennement);
+            apiImageGalerie.getData(evenement);
         } else {
             if (imageGaleries.size() == 0) {
                 try {

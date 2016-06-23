@@ -10,4 +10,6 @@ public interface IUtilisateur {
     void responseConnexion(String response);
 
     void responseGetUtilisateur(Utilisateur utilisateur);
+
+    void responseDeleteCompte(String response);
 }

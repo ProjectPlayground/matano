@@ -10,12 +10,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import net.apkode.matano.R;
 
-public class EvennementPhoto extends AppCompatActivity {
+public class EvenementPhoto extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_evennement_photo);
+        setContentView(R.layout.activity_evenement_photo);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

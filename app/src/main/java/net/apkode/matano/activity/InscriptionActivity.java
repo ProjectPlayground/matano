@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -165,8 +164,8 @@ public class InscriptionActivity extends AppCompatActivity implements View.OnCli
                }catch (Exception e){
                    e.getMessage();
                }
-                finish();
                 startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
+                finish();
             }
         }
     }
@@ -178,6 +177,11 @@ public class InscriptionActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void responseGetUtilisateur(Utilisateur utilisateur) {
+
+    }
+
+    @Override
+    public void responseDeleteCompte(String response) {
 
     }
 }

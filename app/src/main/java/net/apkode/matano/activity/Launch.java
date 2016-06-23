@@ -10,14 +10,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import net.apkode.matano.R;
-import net.apkode.matano.api.APIEvennement;
-import net.apkode.matano.interfaces.IEvennement;
-import net.apkode.matano.model.Evennement;
+import net.apkode.matano.helper.Sleep;
+import net.apkode.matano.interfaces.ISleep;
 
-import java.util.List;
-
-public class Launch extends AppCompatActivity implements IEvennement {
-    private APIEvennement apiEvennement;
+public class Launch extends AppCompatActivity implements ISleep {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,26 +33,13 @@ public class Launch extends AppCompatActivity implements IEvennement {
         TextView nom = (TextView) findViewById(R.id.nom);
         nom.setTypeface(custom_font);
 
-        apiEvennement = new APIEvennement(this, getApplicationContext());
-        apiEvennement.getData();
+        new Sleep(this, this).execute();
     }
 
 
-
     @Override
-    public void getResponses(List<Evennement> evennements) {
-       try {
-           apiEvennement.compareAndCharge(evennements);
-       }catch (Exception e){
-           e.getMessage();
-       }
+    public void getResponse() {
+        startActivity(new Intent(getApplicationContext(), EvenementsActivity.class));
         finish();
-        startActivity(new Intent(this, EvennementsActivity.class));
     }
-
-    @Override
-    public void getResponse(List<Evennement> evennements) {
-
-    }
-
 }

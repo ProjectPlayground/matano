@@ -25,6 +25,7 @@ public class APIUtilisateur {
     private final static String urlConnexion = "https://matano-api.herokuapp.com/connexion";
     private final static String urlGetUtilisateurByTelephone = "https://matano-api.herokuapp.com/utilisateurs/telephones/";
     private final static String urlUpdate = "https://matano-api.herokuapp.com/utilisateurs/update";
+    private final static String urlDeleteCompte = "https://matano-api.herokuapp.com/utilisateurs/";
     private IUtilisateur iUtilisateur;
     private Utilisateur utilisateurNew;
 
@@ -159,6 +160,24 @@ public class APIUtilisateur {
                     public void onErrorResponse(VolleyError error) {
                         Log.e("e", "error " + error.getMessage());
                         iUtilisateur.responseGetUtilisateur(null);
+                    }
+                });
+
+        AppController.getInstance().addToRequestQueue(request);
+    }
+
+    public void deleteCompte(Utilisateur utilisateur) {
+        StringRequest request = new StringRequest(Request.Method.GET, urlDeleteCompte + utilisateur.getId() + "/delete-account",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        iUtilisateur.responseDeleteCompte(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        iUtilisateur.responseDeleteCompte(null);
                     }
                 });
 

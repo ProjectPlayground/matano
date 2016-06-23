@@ -13,7 +13,7 @@ import net.apkode.matano.db.DBCommentaire;
 import net.apkode.matano.helper.AppController;
 import net.apkode.matano.interfaces.ICommentaire;
 import net.apkode.matano.model.Commentaire;
-import net.apkode.matano.model.Evennement;
+import net.apkode.matano.model.Evenement;
 import net.apkode.matano.model.Utilisateur;
 
 import org.json.JSONArray;
@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 public class APICommentaire {
-    private static final String COLUMN_ID = "id";
     //private final static String url = "http://niameyzze.apkode.net/commentaires.php?id=";
     private final static String url = "https://matano-api.herokuapp.com/commentaires/evenements/";
     private final static String urlCommentaire = "https://matano-api.herokuapp.com/commentaires";
@@ -40,8 +39,8 @@ public class APICommentaire {
         dbCommentaire = new DBCommentaire(ctx);
     }
 
-    public void getData(Evennement evennement) {
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url + evennement.getId(), null,
+    public void getData(Evenement evenement) {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url + evenement.getId(), null,
 
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -78,7 +77,7 @@ public class APICommentaire {
         AppController.getInstance().addToRequestQueue(request);
     }
 
-    public void sendCommentaire(final Evennement evennement, final String commentaire, final Utilisateur utilisateur) {
+    public void sendCommentaire(final Evenement evenement, final String commentaire, final Utilisateur utilisateur) {
 
         StringRequest request = new StringRequest(Request.Method.POST, urlCommentaire,
                 new Response.Listener<String>() {
@@ -99,7 +98,7 @@ public class APICommentaire {
                 Map<String, String> map = new HashMap<String, String>();
 
                 map.put("commentaire", commentaire);
-                map.put("evenement.id", evennement.getId().toString());
+                map.put("evenement.id", evenement.getId().toString());
                 map.put("utilisateur.id", utilisateur.getId().toString());
 
                 return map;

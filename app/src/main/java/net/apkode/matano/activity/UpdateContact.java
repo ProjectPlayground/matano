@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -49,13 +48,12 @@ public class UpdateContact extends AppCompatActivity implements IUtilisateur {
     protected void onStart() {
         super.onStart();
         if (!utilisateurLocalStore.isLoggedIn()) {
-            finish();
             startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
+            finish();
         }
     }
 
     public void updateContact(View view) {
-        Log.e("e", "updateContact");
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(edtUpdateTelephone.getWindowToken(), 0);
 
@@ -118,6 +116,11 @@ public class UpdateContact extends AppCompatActivity implements IUtilisateur {
 
     @Override
     public void responseGetUtilisateur(Utilisateur utilisateur) {
+
+    }
+
+    @Override
+    public void responseDeleteCompte(String response) {
 
     }
 }

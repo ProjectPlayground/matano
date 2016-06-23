@@ -12,27 +12,27 @@ import android.widget.Toast;
 
 import net.apkode.matano.R;
 import net.apkode.matano.adapter.EvennementAdapter;
-import net.apkode.matano.api.APIEvennement;
+import net.apkode.matano.api.APIEvenement;
 import net.apkode.matano.helper.UtilisateurLocalStore;
-import net.apkode.matano.interfaces.IEvennement;
-import net.apkode.matano.model.Evennement;
+import net.apkode.matano.interfaces.IEvenement;
+import net.apkode.matano.model.Evenement;
 import net.apkode.matano.model.Utilisateur;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MesEvennementsActivity extends AppCompatActivity implements IEvennement {
+public class MesEvenementsActivity extends AppCompatActivity implements IEvenement {
     private UtilisateurLocalStore utilisateurLocalStore;
-    private APIEvennement apiEvennement;
+    private APIEvenement apiEvenement;
     private RecyclerView recyclerView;
-    private List<Evennement> evennementsListe = new ArrayList<>();
+    private List<Evenement> evennementsListe = new ArrayList<>();
     private ProgressBar progressBar;
     private Utilisateur utilisateur;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mes_evennements);
+        setContentView(R.layout.activity_mes_evenements);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -40,11 +40,11 @@ public class MesEvennementsActivity extends AppCompatActivity implements IEvenne
         progressBar = (ProgressBar) findViewById(R.id.loading);
 
         utilisateurLocalStore = new UtilisateurLocalStore(this);
-        apiEvennement = new APIEvennement(this, getApplicationContext());
+        apiEvenement = new APIEvenement(this, getApplicationContext());
 
         utilisateur = utilisateurLocalStore.getUtilisateur();
 
-        apiEvennement.getMyData(utilisateur.getId());
+        apiEvenement.getMyData(utilisateur.getId());
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -57,35 +57,50 @@ public class MesEvennementsActivity extends AppCompatActivity implements IEvenne
     protected void onStart() {
         super.onStart();
         if (!utilisateurLocalStore.isLoggedIn()) {
-            finish();
             startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
+            finish();
         }
     }
 
     @Override
-    public void getResponses(List<Evennement> evennements) {
+    public void getResponses(List<Evenement> evenements) {
 
     }
 
     @Override
-    public void getResponse(List<Evennement> evennements) {
+    public void getResponsesCulture(List<Evenement> evenements) {
 
-        if (evennements == null) {
-            apiEvennement.getMyData(utilisateur.getId());
+    }
+
+    @Override
+    public void getResponsesEducation(List<Evenement> evenements) {
+
+    }
+
+    @Override
+    public void getResponsesSport(List<Evenement> evenements) {
+
+    }
+
+    @Override
+    public void getResponse(List<Evenement> evenements) {
+
+        if (evenements == null) {
+            apiEvenement.getMyData(utilisateur.getId());
         } else {
             try{
                 progressBar.setVisibility(View.GONE);
             }catch (Exception e){
                 e.getMessage();
             }
-            if (evennements.size() == 0) {
+            if (evenements.size() == 0) {
                 try{
                     Toast.makeText(getApplicationContext(), getString(R.string.error_mes_evenements), Toast.LENGTH_LONG).show();
                 }catch (Exception e){
                     e.getMessage();
                 }
             } else {
-                evennementsListe = evennements;
+                evennementsListe = evenements;
                 try{
                     recyclerView.setAdapter(new EvennementAdapter(evennementsListe));
                 }catch (Exception e){

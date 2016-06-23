@@ -17,7 +17,7 @@ import net.apkode.matano.adapter.ActualiteAdapter;
 import net.apkode.matano.api.APIActualite;
 import net.apkode.matano.interfaces.IActualite;
 import net.apkode.matano.model.Actualite;
-import net.apkode.matano.model.Evennement;
+import net.apkode.matano.model.Evenement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class ActualiteFragment extends Fragment implements IActualite {
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private List<Actualite> actualitesListe = new ArrayList<>();
-    private Evennement evennement;
+    private Evenement evenement;
 
     public ActualiteFragment() {
     }
@@ -73,15 +73,15 @@ public class ActualiteFragment extends Fragment implements IActualite {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            evennement = (Evennement) bundle.getSerializable("Evennement");
+            evenement = (Evenement) bundle.getSerializable("Evenement");
 
-            if (evennement != null) {
+            if (evenement != null) {
                 if (isActualitePassed) {
-                    apiActualite.getData(evennement);
+                    apiActualite.getData(evenement);
                     isActualitePassed = false;
                 } else {
                     if (actualitesListe.size() == 0) {
-                        apiActualite.getData(evennement);
+                        apiActualite.getData(evenement);
                     } else {
                         progressBar.setVisibility(View.GONE);
                     }
@@ -130,7 +130,7 @@ public class ActualiteFragment extends Fragment implements IActualite {
     @Override
     public void getResponse(List<Actualite> actualites) {
         if (actualites == null) {
-            apiActualite.getData(evennement);
+            apiActualite.getData(evenement);
         } else {
             if (actualites.size() == 0) {
                try {

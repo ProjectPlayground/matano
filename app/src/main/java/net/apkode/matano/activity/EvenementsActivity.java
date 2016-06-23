@@ -13,32 +13,32 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import net.apkode.matano.R;
-import net.apkode.matano.adapter.EvennementSectionsPagerAdapter;
+import net.apkode.matano.adapter.EvennementsAdapter;
 import net.apkode.matano.helper.UtilisateurLocalStore;
 
-public class EvennementsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class EvenementsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private UtilisateurLocalStore utilisateurLocalStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_evennemens);
+        setContentView(R.layout.activity_evenemens);
 
         utilisateurLocalStore = new UtilisateurLocalStore(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        EvennementSectionsPagerAdapter evennementSectionsPagerAdapter = new EvennementSectionsPagerAdapter(getSupportFragmentManager(), getApplicationContext());
+        EvennementsAdapter evennementsAdapter = new EvennementsAdapter(getSupportFragmentManager(), getApplicationContext());
         ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(evennementSectionsPagerAdapter);
+        mViewPager.setAdapter(evennementsAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
-            tab.setCustomView(evennementSectionsPagerAdapter.getTabView(i));
+            tab.setCustomView(evennementsAdapter.getTabView(i));
         }
 
 
@@ -57,8 +57,8 @@ public class EvennementsActivity extends AppCompatActivity implements Navigation
     protected void onStart() {
         super.onStart();
         if (!utilisateurLocalStore.isLoggedIn()) {
-            finish();
             startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
+            finish();
         }
     }
 
@@ -78,9 +78,9 @@ public class EvennementsActivity extends AppCompatActivity implements Navigation
         int id = item.getItemId();
 
         if (id == R.id.btn_navigation_menu_evenements) {
-            startActivity(new Intent(this, EvennementsActivity.class));
+            startActivity(new Intent(this, EvenementsActivity.class));
         } else if (id == R.id.btn_navigation_menu_mes_evenements) {
-            startActivity(new Intent(this, MesEvennementsActivity.class));
+            startActivity(new Intent(this, MesEvenementsActivity.class));
         } else if (id == R.id.btn_navigation_menu_profil) {
             startActivity(new Intent(this, MonProfilActivty.class));
         } else if (id == R.id.btn_navigation_menu_feedback) {

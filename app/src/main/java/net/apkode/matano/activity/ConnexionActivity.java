@@ -79,8 +79,8 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
                 }
                 break;
             case R.id.btnInscription:
-                finish();
                 startActivity(new Intent(getApplicationContext(), InscriptionActivity.class));
+                finish();
                 break;
         }
     }
@@ -146,9 +146,14 @@ public class ConnexionActivity extends AppCompatActivity implements View.OnClick
             utilisateurLocalStore.clearUtilisateur();
             utilisateurLocalStore.storeUtilisateur(utilisateur);
             utilisateurLocalStore.setUtilisateurLogin(true);
-            finish();
             startActivity(new Intent(getApplicationContext(), Launch.class));
+            finish();
         }
+    }
+
+    @Override
+    public void responseDeleteCompte(String response) {
+
     }
 
 }

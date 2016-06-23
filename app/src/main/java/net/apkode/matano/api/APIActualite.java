@@ -11,7 +11,7 @@ import net.apkode.matano.db.DBActualite;
 import net.apkode.matano.helper.AppController;
 import net.apkode.matano.interfaces.IActualite;
 import net.apkode.matano.model.Actualite;
-import net.apkode.matano.model.Evennement;
+import net.apkode.matano.model.Evenement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,8 +35,8 @@ public class APIActualite {
         actualites = new ArrayList<>();
     }
 
-    public void getData(Evennement evennement) {
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url + evennement.getId(), null,
+    public void getData(Evenement evenement) {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url + evenement.getId(), null,
 
                 new Response.Listener<JSONArray>() {
                     @Override

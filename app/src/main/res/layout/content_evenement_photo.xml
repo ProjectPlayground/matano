@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:background="@android:color/black"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".activity.EvennementPhoto"
-    tools:showIn="@layout/activity_evennement_photo">
+    tools:context=".activity.EvenementPhoto"
+    tools:showIn="@layout/activity_evenement_photo">
 
     <ImageView
         android:id="@+id/eventPhotoFull"

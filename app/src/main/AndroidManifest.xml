@@ -32,47 +32,47 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.EvennementsActivity"
+            android:name=".activity.EvenementsActivity"
             android:label="@string/title_activity_events"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.EvennementActivity"
+            android:name=".activity.EvenementActivity"
             android:label="@string/title_activity_event"
             android:launchMode="singleTop"
-            android:parentActivityName=".activity.EvennementsActivity"
+            android:parentActivityName=".activity.EvenementsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.EvennementsActivity" />
+                android:value=".activity.EvenementsActivity" />
         </activity>
         <activity
-            android:name=".activity.EvennementVideo"
+            android:name=".activity.EvenementVideo"
             android:label="@string/title_activity_event_video"
-            android:parentActivityName=".activity.EvennementActivity"
+            android:parentActivityName=".activity.EvenementActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.EvennementActivity" />
+                android:value=".activity.EvenementActivity" />
         </activity>
         <activity
-            android:name=".activity.EvennementPhoto"
+            android:name=".activity.EvenementPhoto"
             android:label="@string/title_activity_event_photo"
-            android:parentActivityName=".activity.EvennementActivity"
+            android:parentActivityName=".activity.EvenementActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.EvennementActivity" />
+                android:value=".activity.EvenementActivity" />
         </activity>
         <activity
             android:name=".activity.MonProfilActivty"
             android:label="@string/title_activity_profil_activty"
             android:launchMode="singleTop"
-            android:parentActivityName=".activity.EvennementsActivity"
+            android:parentActivityName=".activity.EvenementsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.EvennementsActivity" />
+                android:value=".activity.EvenementsActivity" />
         </activity>
         <activity
             android:name=".activity.InscriptionActivity"
@@ -87,40 +87,39 @@
         <activity
             android:name=".activity.ParticipantActivity"
             android:label="@string/title_activity_participant"
-            android:parentActivityName=".activity.EvennementActivity"
+            android:parentActivityName=".activity.EvenementActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.EvennementActivity" />
+                android:value=".activity.EvenementActivity" />
         </activity>
         <activity
-            android:name=".activity.MesEvennementsActivity"
+            android:name=".activity.MesEvenementsActivity"
             android:label="@string/title_activity_mes_events"
-            android:parentActivityName=".activity.EvennementsActivity"
+            android:parentActivityName=".activity.EvenementsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.EvennementsActivity" />
+                android:value=".activity.EvenementsActivity" />
         </activity>
         <activity
             android:name=".activity.ParametresActivty"
             android:label="@string/title_activity_parametres_activty"
-            android:parentActivityName=".activity.EvennementsActivity"
+            android:parentActivityName=".activity.EvenementsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.EvennementsActivity" />
+                android:value=".activity.EvenementsActivity" />
         </activity>
         <activity
             android:name=".activity.AboutActivity"
             android:label="@string/title_activity_about"
-            android:parentActivityName=".activity.EvennementsActivity"
+            android:parentActivityName=".activity.EvenementsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.EvennementsActivity" />
+                android:value=".activity.EvenementsActivity" />
         </activity>
-
         <activity
             android:name=".activity.UpdateContact"
             android:label="@string/title_activity_update_contact"
@@ -151,11 +150,20 @@
         <activity
             android:name=".activity.FeedbackActivity"
             android:label="@string/title_activity_feedback"
-            android:parentActivityName=".activity.EvennementsActivity"
+            android:parentActivityName=".activity.EvenementsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.EvennementsActivity" />
+                android:value=".activity.EvenementsActivity" />
+        </activity>
+        <activity
+            android:name=".activity.UpdatePassword"
+            android:label="@string/title_activity_update_password"
+            android:parentActivityName=".activity.ParametresActivty"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.apkode.matano.activity.ParametresActivty" />
         </activity>
     </application>
 

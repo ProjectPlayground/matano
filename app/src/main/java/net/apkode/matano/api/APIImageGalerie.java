@@ -13,7 +13,7 @@ import com.android.volley.toolbox.StringRequest;
 import net.apkode.matano.db.DBImageGalerie;
 import net.apkode.matano.helper.AppController;
 import net.apkode.matano.interfaces.IImageGalerie;
-import net.apkode.matano.model.Evennement;
+import net.apkode.matano.model.Evenement;
 import net.apkode.matano.model.ImageGalerie;
 
 import org.json.JSONArray;
@@ -42,8 +42,8 @@ public class APIImageGalerie {
         dbImageGalerie = new DBImageGalerie(ctx);
     }
 
-    public void getData(Evennement evennement) {
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url + evennement.getId(), null,
+    public void getData(Evenement evenement) {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url + evenement.getId(), null,
 
                 new Response.Listener<JSONArray>() {
                     @Override

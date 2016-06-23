@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import net.apkode.matano.R;
-import net.apkode.matano.model.Evennement;
+import net.apkode.matano.model.Evenement;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,15 +60,15 @@ public class PresentationFragment extends Fragment {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            Evennement evennement = (Evennement) bundle.getSerializable("Evennement");
+            Evenement evenement = (Evenement) bundle.getSerializable("Evenement");
 
-            txtTitre.setText(evennement.getTitre());
-            txtLieu.setText(evennement.getLieu());
-            txtHoraire.setText(evennement.getHoraire());
-            txtTarif.setText(evennement.getTarif());
-            txtPresentation.setText(evennement.getPresentation());
+            txtTitre.setText(evenement.getTitre());
+            txtLieu.setText(evenement.getLieu());
+            txtHoraire.setText(evenement.getHoraire());
+            txtTarif.setText(evenement.getTarif());
+            txtPresentation.setText(evenement.getPresentation());
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
-            String dateInString = evennement.getJour();
+            String dateInString = evenement.getJour();
 
             try {
                 txtJour.setText((CharSequence) formatter.parse(dateInString));
@@ -78,7 +78,7 @@ public class PresentationFragment extends Fragment {
 
 
             Glide.with(cover.getContext())
-                    .load(evennement.getImage())
+                    .load(evenement.getImage())
                     .crossFade()
                     .fitCenter()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)

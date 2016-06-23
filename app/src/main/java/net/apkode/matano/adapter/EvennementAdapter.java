@@ -6,35 +6,35 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import net.apkode.matano.R;
-import net.apkode.matano.holder.EvennementHolder;
-import net.apkode.matano.model.Evennement;
+import net.apkode.matano.holder.EvenementHolder;
+import net.apkode.matano.model.Evenement;
 
 import java.text.ParseException;
 import java.util.List;
 
 
-public class EvennementAdapter extends RecyclerView.Adapter<EvennementHolder> {
-    List<Evennement> list;
+public class EvennementAdapter extends RecyclerView.Adapter<EvenementHolder> {
+    List<Evenement> list;
 
-    public EvennementAdapter(List<Evennement> list) {
+    public EvennementAdapter(List<Evenement> list) {
         this.list = list;
     }
 
     @Override
-    public EvennementHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_evennement, viewGroup, false);
-        return new EvennementHolder(view);
+    public EvenementHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_evenement, viewGroup, false);
+        return new EvenementHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(EvennementHolder evennementHolder, int position) {
-        Evennement evennement = list.get(position);
+    public void onBindViewHolder(EvenementHolder evenementHolder, int position) {
+        Evenement evenement = list.get(position);
         try {
-            evennementHolder.bind(evennement);
+            evenementHolder.bind(evenement);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        evennementHolder.itemView.setTag(evennement);
+        evenementHolder.itemView.setTag(evenement);
     }
 
     @Override

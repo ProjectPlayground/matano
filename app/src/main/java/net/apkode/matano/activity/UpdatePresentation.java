@@ -48,8 +48,8 @@ public class UpdatePresentation extends AppCompatActivity implements IUtilisateu
     protected void onStart() {
         super.onStart();
         if (!utilisateurLocalStore.isLoggedIn()) {
-            finish();
             startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
+            finish();
         }
     }
 
@@ -116,6 +116,11 @@ public class UpdatePresentation extends AppCompatActivity implements IUtilisateu
 
     @Override
     public void responseGetUtilisateur(Utilisateur utilisateur) {
+
+    }
+
+    @Override
+    public void responseDeleteCompte(String response) {
 
     }
 }

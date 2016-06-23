@@ -50,4 +50,24 @@
     <string name="ok_update">Les informations ont été correctement mises à jour</string>
     <string name="error_mes_evenements">Vous n\'êtes abonné à aucun évènement</string>
     <string name="error_participant">Vous êtes déjà désabonné à cet évènement</string>
+    <string name="btn_modifier_password">Modifier mon mot de passe</string>
+    <string name="btn_supprimer_compte">Supprimer mon compte</string>
+    <string name="btn_supprimer_donnees">Supprimer mes données enregistrées</string>
+    <string name="title_activity_update_password">Modifier mot de passe</string>
+    <string name="supprimer_compte">En validant vous toutes vos données seront automatiquement supprimées sans aucune possibilité de récupération. Voulez vous vraiment supprimer votre compte ?</string>
+    <string name="error_supprimer_compte">Erreur, veuillez réessayer</string>
+    <string name="ancien_password">Ancien mot de passe</string>
+    <string name="nouveau_password">Nouveau mot de passe</string>
+    <string name="error_password">Ancien mot de passe incorrect</string>
+    <string name="error_update_password">Oups erreur . Veuillez réessayer à nouveau</string>
+    <string name="update_password">Votre mot de passe a été modifié</string>
+    <string name="delete_database">Les données ont été supprimées</string>
+    <string name="feedback">Aidez nous à améiiorer l\'application en nous envoyons vos remarques et suggestions</string>
+    <string name="error_send_feedback">Oups erreur, veuillez réessayer à nouveau</string>
+    <string name="success_send_feedback">Votre message a été envoyé</string>
+    <string name="btn_envoyer">Envoyer</string>
+    <string name="version">Version 0.1</string>
+    <string name="developpe">Designed by </string>
+    <string name="apkode">APKode</string>
+    <string name="email_apkode">matano@apkode.net</string>
 </resources>

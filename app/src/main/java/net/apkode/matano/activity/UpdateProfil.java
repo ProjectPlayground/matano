@@ -57,8 +57,8 @@ public class UpdateProfil extends AppCompatActivity implements IUtilisateur {
     protected void onStart() {
         super.onStart();
         if (!utilisateurLocalStore.isLoggedIn()) {
-            finish();
             startActivity(new Intent(getApplicationContext(), ConnexionActivity.class));
+            finish();
         }
     }
 
@@ -126,6 +126,11 @@ public class UpdateProfil extends AppCompatActivity implements IUtilisateur {
 
     @Override
     public void responseGetUtilisateur(Utilisateur utilisateur) {
+
+    }
+
+    @Override
+    public void responseDeleteCompte(String response) {
 
     }
 }

@@ -13,13 +13,13 @@ import android.view.View;
 import android.widget.ImageView;
 
 import net.apkode.matano.R;
-import net.apkode.matano.fragment.EvennementsFragment;
+import net.apkode.matano.fragment.EvenementsFragment;
 
-public class EvennementSectionsPagerAdapter extends FragmentPagerAdapter {
+public class EvennementsAdapter extends FragmentPagerAdapter {
     private Context context;
     private int icons[] = {R.mipmap.ic_culture, R.mipmap.ic_education, R.mipmap.ic_sport};
 
-    public EvennementSectionsPagerAdapter(FragmentManager fm, Context ctx) {
+    public EvennementsAdapter(FragmentManager fm, Context ctx) {
         super(fm);
         this.context = ctx;
     }
@@ -34,7 +34,7 @@ public class EvennementSectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return EvennementsFragment.newInstance(position + 1, context);
+        return EvenementsFragment.newInstance(position + 1, context);
     }
 
     @Override

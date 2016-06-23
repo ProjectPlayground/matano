@@ -22,7 +22,7 @@ import net.apkode.matano.api.APICommentaire;
 import net.apkode.matano.helper.UtilisateurLocalStore;
 import net.apkode.matano.interfaces.ICommentaire;
 import net.apkode.matano.model.Commentaire;
-import net.apkode.matano.model.Evennement;
+import net.apkode.matano.model.Evenement;
 import net.apkode.matano.model.Utilisateur;
 
 import java.text.SimpleDateFormat;
@@ -41,7 +41,7 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
     private UtilisateurLocalStore utilisateurLocalStore;
     private LinearLayout linearLayoutBtn;
     private List<Commentaire> commentairesListe = new ArrayList<>();
-    private Evennement evennement;
+    private Evenement evenement;
     private CommentaireAdapter commentaireAdapter;
     private String commentaire;
 
@@ -91,16 +91,16 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            evennement = (Evennement) bundle.getSerializable("Evennement");
+            evenement = (Evenement) bundle.getSerializable("Evenement");
 
-            if (evennement != null) {
+            if (evenement != null) {
 
                 if (isCommentairePassed) {
-                    apiCommentaire.getData(evennement);
+                    apiCommentaire.getData(evenement);
                     isCommentairePassed = false;
                 } else {
                     if (commentairesListe.size() == 0) {
-                        apiCommentaire.getData(evennement);
+                        apiCommentaire.getData(evenement);
                     } else {
                         progressBar.setVisibility(View.GONE);
                         linearLayoutBtn.setVisibility(View.VISIBLE);
@@ -122,7 +122,7 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
                             imm.hideSoftInputFromWindow(edtCommentaire.getWindowToken(), 0);
                             edtCommentaire.setText("");
                             progressBarCommentaire.setVisibility(View.VISIBLE);
-                            sendCommentaire(commentaire, evennement);
+                            sendCommentaire(commentaire, evenement);
                         }
                         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(edtCommentaire.getWindowToken(), 0);
@@ -172,7 +172,7 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
     @Override
     public void getResponse(List<Commentaire> commentaires) {
         if (commentaires == null) {
-            apiCommentaire.getData(evennement);
+            apiCommentaire.getData(evenement);
            try {
                linearLayoutBtn.setVisibility(View.VISIBLE);
            }catch (Exception e){
@@ -238,8 +238,8 @@ public class CommentaireFragment extends Fragment implements ICommentaire {
         }
     }
 
-    private void sendCommentaire(String commentaire, Evennement evennement) {
+    private void sendCommentaire(String commentaire, Evenement evenement) {
         Utilisateur utilisateur = utilisateurLocalStore.getUtilisateur();
-        apiCommentaire.sendCommentaire(evennement, commentaire, utilisateur);
+        apiCommentaire.sendCommentaire(evenement, commentaire, utilisateur);
     }
 }

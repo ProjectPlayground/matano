@@ -19,7 +19,7 @@ import net.apkode.matano.adapter.ParticipantAdapter;
 import net.apkode.matano.api.APIParticipant;
 import net.apkode.matano.helper.UtilisateurLocalStore;
 import net.apkode.matano.interfaces.IParticipant;
-import net.apkode.matano.model.Evennement;
+import net.apkode.matano.model.Evenement;
 import net.apkode.matano.model.Participant;
 import net.apkode.matano.model.Utilisateur;
 
@@ -36,7 +36,7 @@ public class ParticipantFragment extends Fragment implements IParticipant {
     private Button btnSendParticipant;
     private LinearLayout linearLayoutBtn;
     private List<Participant> participantsListe = new ArrayList<>();
-    private Evennement evennement;
+    private Evenement evenement;
     private Utilisateur utilisateur;
     private ParticipantAdapter participantAdapter;
 
@@ -90,16 +90,16 @@ public class ParticipantFragment extends Fragment implements IParticipant {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            evennement = (Evennement) bundle.getSerializable("Evennement");
+            evenement = (Evenement) bundle.getSerializable("Evenement");
 
-            if (evennement != null) {
+            if (evenement != null) {
 
                 if (isParticipantPassed) {
-                    apiParticipant.getData(evennement);
+                    apiParticipant.getData(evenement);
                     isParticipantPassed = false;
                 } else {
                     if (participantsListe.size() == 0) {
-                        apiParticipant.getData(evennement);
+                        apiParticipant.getData(evenement);
                     } else {
                         progressBar.setVisibility(View.GONE);
                         linearLayoutBtn.setVisibility(View.VISIBLE);
@@ -112,9 +112,9 @@ public class ParticipantFragment extends Fragment implements IParticipant {
                         String text = btnSendParticipant.getText().toString();
                         progressBarParticipant.setVisibility(View.VISIBLE);
                         if (text.equals("Participer")) {
-                            apiParticipant.createPartiticpant(evennement, utilisateur);
+                            apiParticipant.createPartiticpant(evenement, utilisateur);
                         } else if (text.equals("Ne pas participer")) {
-                            apiParticipant.deletePartiticpant(evennement, utilisateur);
+                            apiParticipant.deletePartiticpant(evenement, utilisateur);
                         }
                         progressBarParticipant.setVisibility(View.VISIBLE);
 
@@ -164,7 +164,7 @@ public class ParticipantFragment extends Fragment implements IParticipant {
     @Override
     public void getResponse(List<Participant> participants) {
         if (participants == null) {
-            apiParticipant.getData(evennement);
+            apiParticipant.getData(evenement);
         } else {
             if (participants.size() == 0) {
                 //       Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_reseau), Toast.LENGTH_LONG).show();

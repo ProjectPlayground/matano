@@ -13,7 +13,7 @@ import com.android.volley.toolbox.StringRequest;
 import net.apkode.matano.db.DBParticipant;
 import net.apkode.matano.helper.AppController;
 import net.apkode.matano.interfaces.IParticipant;
-import net.apkode.matano.model.Evennement;
+import net.apkode.matano.model.Evenement;
 import net.apkode.matano.model.Participant;
 import net.apkode.matano.model.Utilisateur;
 
@@ -43,10 +43,10 @@ public class APIParticipant {
     }
 
     /**
-     * @param evennement
+     * @param evenement
      */
-    public void getData(Evennement evennement) {
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url + evennement.getId(), null,
+    public void getData(Evenement evenement) {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url + evenement.getId(), null,
 
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -82,10 +82,10 @@ public class APIParticipant {
 
     /**
      *
-     * @param evennement
+     * @param evenement
      * @param utilisateur
      */
-    public void createPartiticpant(final Evennement evennement, final Utilisateur utilisateur) {
+    public void createPartiticpant(final Evenement evenement, final Utilisateur utilisateur) {
         StringRequest request = new StringRequest(Request.Method.POST, urlCreateParticipant,
                 new Response.Listener<String>() {
                     @Override
@@ -104,7 +104,7 @@ public class APIParticipant {
 
                 Map<String, String> map = new HashMap<String, String>();
 
-                map.put("evenement.id", evennement.getId().toString());
+                map.put("evenement.id", evenement.getId().toString());
                 map.put("utilisateur.id", utilisateur.getId().toString());
 
                 return map;
@@ -115,12 +115,12 @@ public class APIParticipant {
     }
 
     /**
-     * @param evennement
+     * @param evenement
      * @param utilisateur
      */
-    public void deletePartiticpant(final Evennement evennement, final Utilisateur utilisateur) {
+    public void deletePartiticpant(final Evenement evenement, final Utilisateur utilisateur) {
 
-        StringRequest request = new StringRequest(Request.Method.GET, urlDeleteParticipant + evennement.getId() + "/utilisateurs/" + utilisateur.getId(),
+        StringRequest request = new StringRequest(Request.Method.GET, urlDeleteParticipant + evenement.getId() + "/utilisateurs/" + utilisateur.getId(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
