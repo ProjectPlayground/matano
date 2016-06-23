@@ -9,13 +9,15 @@ public class Participant implements Serializable {
     private String prenom;
     private String telephone;
     private String image;
+    private String presentation;
 
-    public Participant(Integer id, String nom, String prenom, String telephone, String image) {
+    public Participant(Integer id, String nom, String prenom, String telephone, String image, String presentation) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
         this.telephone = telephone;
         this.image = image;
+        this.presentation = presentation;
     }
 
     public Participant() {
@@ -59,5 +61,13 @@ public class Participant implements Serializable {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getPresentation() {
+        return presentation;
+    }
+
+    public void setPresentation(String presentation) {
+        this.presentation = presentation;
     }
 }

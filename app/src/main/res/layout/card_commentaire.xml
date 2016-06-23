@@ -24,8 +24,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center_vertical"
-                android:background="@color/black_trans80"
-                android:src="@mipmap/placeholder_homme" />
+                android:background="@color/black_trans80" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -52,7 +51,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:layout_marginBottom="@dimen/activity_micro"
-                        android:text="11/02/2016"
                         android:textAlignment="textEnd"
                         android:textSize="13sp" />
                 </LinearLayout>

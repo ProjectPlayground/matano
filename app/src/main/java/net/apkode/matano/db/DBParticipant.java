@@ -21,9 +21,10 @@ public class DBParticipant extends SQLiteOpenHelper {
     private static final String COLUMN_PRENOM = "prenom";
     private static final String COLUMN_TELEPHONE = "telephone";
     private static final String COLUMN_IMAGE = "image";
+    private static final String COLUMN_PRESENTATION = "presentation";
 
     private static final String TABLE_DROP = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
-    private static final String TABLE_CREATE = "CREATE TABLE " + TABLE_NAME + " (" + COLUMN_ID + " INTEGER PRIMARY KEY , " + COLUMN_NOM + " TEXT, " + COLUMN_PRENOM + " TEXT, " + COLUMN_TELEPHONE + " TEXT, " + COLUMN_IMAGE + " TEXT );";
+    private static final String TABLE_CREATE = "CREATE TABLE " + TABLE_NAME + " (" + COLUMN_ID + " INTEGER PRIMARY KEY , " + COLUMN_NOM + " TEXT, " + COLUMN_PRENOM + " TEXT, " + COLUMN_TELEPHONE + " TEXT, " + COLUMN_IMAGE + " TEXT, " + COLUMN_PRESENTATION + " TEXT );";
 
     private List<Participant> participants = new ArrayList<>();
 
@@ -48,7 +49,7 @@ public class DBParticipant extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void createData(Integer id, String nom, String prenom, String telephone, String image) {
+    public void createData(Integer id, String nom, String prenom, String telephone, String image, String commentaire) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -57,6 +58,7 @@ public class DBParticipant extends SQLiteOpenHelper {
         contentValues.put("prenom", prenom);
         contentValues.put("telephone", telephone);
         contentValues.put("image", image);
+        contentValues.put("commentaire", commentaire);
 
         db.insert(TABLE_NAME, null, contentValues);
     }
@@ -71,7 +73,8 @@ public class DBParticipant extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(COLUMN_NOM)),
                     cursor.getString(cursor.getColumnIndex(COLUMN_PRENOM)),
                     cursor.getString(cursor.getColumnIndex(COLUMN_TELEPHONE)),
-                    cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE))
+                    cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE)),
+                    cursor.getString(cursor.getColumnIndex(COLUMN_PRESENTATION))
             ));
         }
         cursor.close();

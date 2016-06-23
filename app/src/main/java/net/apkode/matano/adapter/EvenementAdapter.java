@@ -13,10 +13,10 @@ import java.text.ParseException;
 import java.util.List;
 
 
-public class EvennementAdapter extends RecyclerView.Adapter<EvenementHolder> {
+public class EvenementAdapter extends RecyclerView.Adapter<EvenementHolder> {
     List<Evenement> list;
 
-    public EvennementAdapter(List<Evenement> list) {
+    public EvenementAdapter(List<Evenement> list) {
         this.list = list;
     }
 

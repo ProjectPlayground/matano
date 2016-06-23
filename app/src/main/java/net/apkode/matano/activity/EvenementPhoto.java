@@ -11,6 +11,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import net.apkode.matano.R;
 
 public class EvenementPhoto extends AppCompatActivity {
+    private ImageView eventPhotoFull;
+    private String PHOTO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,21 +23,21 @@ public class EvenementPhoto extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-        String PHOTO = getIntent().getStringExtra("photo");
-
-        if (PHOTO != null) {
-            ImageView eventPhotoFull = (ImageView) findViewById(R.id.eventPhotoFull);
-
-            assert eventPhotoFull != null;
-            Glide.with(this)
-                    .load(PHOTO)
-                    .crossFade()
-                    .fitCenter()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(eventPhotoFull);
-        }
-
+        PHOTO = getIntent().getStringExtra("photo");
+        eventPhotoFull = (ImageView) findViewById(R.id.eventPhotoFull);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        Glide.with(this)
+                .load(PHOTO)
+                .crossFade()
+                .fitCenter()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(eventPhotoFull);
+
+        // new PhotoViewAttacher(eventPhotoFull);
+    }
 }

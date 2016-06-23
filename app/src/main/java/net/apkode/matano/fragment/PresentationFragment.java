@@ -16,9 +16,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import net.apkode.matano.R;
 import net.apkode.matano.model.Evenement;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 public class PresentationFragment extends Fragment {
 
     public PresentationFragment() {
@@ -67,15 +64,7 @@ public class PresentationFragment extends Fragment {
             txtHoraire.setText(evenement.getHoraire());
             txtTarif.setText(evenement.getTarif());
             txtPresentation.setText(evenement.getPresentation());
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
-            String dateInString = evenement.getJour();
-
-            try {
-                txtJour.setText((CharSequence) formatter.parse(dateInString));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
+            txtJour.setText(evenement.getJour());
 
             Glide.with(cover.getContext())
                     .load(evenement.getImage())

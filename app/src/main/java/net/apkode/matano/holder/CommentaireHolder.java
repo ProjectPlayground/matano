@@ -12,7 +12,6 @@ import net.apkode.matano.R;
 import net.apkode.matano.model.Commentaire;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 public class CommentaireHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private TextView txtNomCommentaire;
@@ -35,8 +34,8 @@ public class CommentaireHolder extends RecyclerView.ViewHolder implements View.O
     public void bind(Commentaire commentaire) throws ParseException {
         txtNomCommentaire.setText(commentaire.getNom());
         txtPrenomCommentaire.setText(commentaire.getPrenom());
-
         txtCommentaire.setText(commentaire.getCommentaire());
+        txtJourCommentaire.setText(commentaire.getJour());
 
         Glide.with(imvImageCommentaire.getContext())
                 .load(commentaire.getImage())
@@ -44,11 +43,6 @@ public class CommentaireHolder extends RecyclerView.ViewHolder implements View.O
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imvImageCommentaire);
-
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
-        String dateInString = commentaire.getJour();
-
-        txtJourCommentaire.setText((CharSequence) formatter.parse(dateInString));
     }
 
     @Override

@@ -11,7 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import net.apkode.matano.R;
-import net.apkode.matano.adapter.EvennementAdapter;
+import net.apkode.matano.adapter.EvenementAdapter;
 import net.apkode.matano.api.APIEvenement;
 import net.apkode.matano.helper.UtilisateurLocalStore;
 import net.apkode.matano.interfaces.IEvenement;
@@ -49,7 +49,7 @@ public class MesEvenementsActivity extends AppCompatActivity implements IEveneme
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new EvennementAdapter(evennementsListe));
+        recyclerView.setAdapter(new EvenementAdapter(evennementsListe));
 
     }
 
@@ -102,7 +102,7 @@ public class MesEvenementsActivity extends AppCompatActivity implements IEveneme
             } else {
                 evennementsListe = evenements;
                 try{
-                    recyclerView.setAdapter(new EvennementAdapter(evennementsListe));
+                    recyclerView.setAdapter(new EvenementAdapter(evennementsListe));
                 }catch (Exception e){
                     e.getMessage();
                 }

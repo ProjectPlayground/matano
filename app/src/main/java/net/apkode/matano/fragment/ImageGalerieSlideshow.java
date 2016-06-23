@@ -106,11 +106,14 @@ public class ImageGalerieSlideshow extends DialogFragment {
 
             ImageGalerie imageGalerie = imageGaleries.get(position);
 
-            Glide.with(getActivity()).load(imageGalerie.getImage())
+            Glide.with(getActivity()).load(imageGalerie.getImagegalerie())
                     .thumbnail(0.5f)
                     .crossFade()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imageViewPreview);
+
+
+            // new PhotoViewAttacher(imageViewPreview);
 
             container.addView(view);
 

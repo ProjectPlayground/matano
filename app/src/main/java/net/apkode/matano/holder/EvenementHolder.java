@@ -14,7 +14,6 @@ import net.apkode.matano.model.Evenement;
 
 import java.io.Serializable;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 
 public class EvenementHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -39,41 +38,11 @@ public class EvenementHolder extends RecyclerView.ViewHolder implements View.OnC
         txtTitre.setText(evenement.getTitre());
         txtTarif.setText(evenement.getTarif());
         txtLieu.setText(evenement.getLieu());
-
-        Integer placeholder = R.mipmap.placeholder_culture;
-        switch (evenement.getCategorie()) {
-            case "Culture":
-                placeholder = R.mipmap.placeholder_culture;
-                break;
-            case "Education":
-                placeholder = R.mipmap.placeholder_education;
-                break;
-            case "Sport":
-                placeholder = R.mipmap.placeholder_sport;
-                break;
-        }
-
-        /*Glide.with(imvImage.getContext())
-                .load(evenement.getImage())
-             //   .crossFade()
-              //  .fitCenter()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-              //  .placeholder(imvImage.getResources().getDrawable(placeholder))
-                .into(imvImage);*/
-
+        txtJour.setText(evenement.getJour());
 
         Picasso.with(imvImage.getContext())
                 .load(evenement.getImage())
-                //.placeholder(imvImage.getResources().getDrawable(placeholder))
-                //.fit()
-                // .centerCrop()
                 .into(imvImage);
-
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
-        String dateInString = evenement.getJour();
-
-        txtJour.setText((CharSequence) formatter.parse(dateInString));
-
 
     }
 

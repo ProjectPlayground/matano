@@ -75,4 +75,9 @@
     <string name="error_send_delete_participant">Oups erreur ! Veuillez réessayer</string>
     <string name="succes_send_delete_participant">Désinscription success</string>
     <string name="succes_send_create_participant">Inscription success</string>
+    <string name="interrogation">\?</string>
+    <string name="btn_share_photo">Share</string>
+    <string name="btn_pick_photo">Pick</string>
+    <string name="error_update_image">Oups erreur. Veuillez réessayer ou prendre une nouvelle photo</string>
+    <string name="ok_update_image">Votre photo a été correctement mise à jour</string>
 </resources>

@@ -226,7 +226,7 @@ public class ParticipantFragment extends Fragment implements IParticipant {
                 try {
 
                     Toast.makeText(getContext(), getString(R.string.succes_send_create_participant), Toast.LENGTH_LONG).show();
-                    participantsListe.add(new Participant(99, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getTelephone(), utilisateur.getImage()));
+                    participantsListe.add(new Participant(99, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getTelephone(), utilisateur.getImage(), utilisateur.getPresentation()));
                     participantAdapter.notifyItemInserted(participantsListe.size() - 1);
                     recyclerView.scrollToPosition(participantsListe.size() - 1);
                     btnSendParticipant.setText(getString(R.string.participate0));

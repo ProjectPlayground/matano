@@ -26,16 +26,26 @@
             android:padding="@dimen/activity_mini">
 
             <ImageView
-                android:id="@+id/imvImageCommentaire"
+                android:id="@+id/imvImageProfil"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
                 android:layout_gravity="center_vertical"
-                android:src="@mipmap/person" />
+                android:background="@color/black_trans80" />
+
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                android:text="@string/btn_modifier"
+                android:onClick="startSharePhoto"
+                android:text="@string/btn_share_photo"
+                android:textColor="@color/colorPrimary" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:onClick="startPickPhoto"
+                android:text="@string/btn_pick_photo"
                 android:textColor="@color/colorPrimary"/>
         </LinearLayout>
 

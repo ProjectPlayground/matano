@@ -24,10 +24,11 @@ public class EvenementsActivity extends AppCompatActivity implements NavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_evenemens);
 
-        utilisateurLocalStore = new UtilisateurLocalStore(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        utilisateurLocalStore = new UtilisateurLocalStore(this);
 
         EvennementsAdapter evennementsAdapter = new EvennementsAdapter(getSupportFragmentManager(), getApplicationContext());
         ViewPager mViewPager = (ViewPager) findViewById(R.id.container);

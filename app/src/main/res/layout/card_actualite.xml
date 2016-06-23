@@ -19,7 +19,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="01/02/2016"
                 android:textAlignment="textEnd"
                 android:textSize="13sp" />
 
@@ -33,8 +32,7 @@
             <TextView
                 android:id="@+id/txtActualite"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Then the activity that hosts the fragment implements the OnArticleSelectedListener interface and overrides onArticleSelected() to notify fragment B of the evenement from fragment A. To ensure that the host activity implements this interface, fragment A's onAttach() callback method (which the system calls when adding the fragment to the activity) instantiates an instance of OnArticleSelectedListener by casting the Activity that is passed into onAttach():" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
     </LinearLayout>

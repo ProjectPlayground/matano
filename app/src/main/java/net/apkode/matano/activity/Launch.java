@@ -9,11 +9,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+
 import net.apkode.matano.R;
 import net.apkode.matano.helper.Sleep;
 import net.apkode.matano.interfaces.ISleep;
 
 public class Launch extends AppCompatActivity implements ISleep {
+    private TextView nom;
+    private Typeface typeface;
+    private TextView interrogation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +35,25 @@ public class Launch extends AppCompatActivity implements ISleep {
 
         setContentView(R.layout.activity_launch);
 
-        Typeface custom_font = Typeface.createFromAsset(getAssets(), "font/Bauhaus-93_6274.ttf");
-        TextView nom = (TextView) findViewById(R.id.nom);
-        nom.setTypeface(custom_font);
+        typeface = Typeface.createFromAsset(getAssets(), "font/Bauhaus-93_6274.ttf");
+
+        nom = (TextView) findViewById(R.id.nom);
+        interrogation = (TextView) findViewById(R.id.interrogation);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        nom.setTypeface(typeface);
+        interrogation.setTypeface(typeface);
+
+        YoYo.with(Techniques.StandUp)
+                .duration(2000)
+                .playOn(findViewById(R.id.nom));
 
         new Sleep(this, this).execute();
     }
-
 
     @Override
     public void getResponse() {

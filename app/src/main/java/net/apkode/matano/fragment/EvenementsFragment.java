@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import net.apkode.matano.R;
-import net.apkode.matano.adapter.EvennementAdapter;
+import net.apkode.matano.adapter.EvenementAdapter;
 import net.apkode.matano.api.APIEvenement;
 import net.apkode.matano.interfaces.IEvenement;
 import net.apkode.matano.model.Evenement;
@@ -75,9 +75,9 @@ public class EvenementsFragment extends Fragment implements IEvenement {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        EvennementAdapter cultureAdapter = new EvennementAdapter(evenementsCulture);
-        EvennementAdapter educationAdapter = new EvennementAdapter(evenementsEducation);
-        EvennementAdapter sportAdpater = new EvennementAdapter(evenementsSport);
+        EvenementAdapter cultureAdapter = new EvenementAdapter(evenementsCulture);
+        EvenementAdapter educationAdapter = new EvenementAdapter(evenementsEducation);
+        EvenementAdapter sportAdpater = new EvenementAdapter(evenementsSport);
 
         progressBar = (ProgressBar) view.findViewById(R.id.loading);
 
@@ -188,7 +188,7 @@ public class EvenementsFragment extends Fragment implements IEvenement {
                 try {
                     progressBar.setVisibility(View.GONE);
                     swipeRefreshLayout.setRefreshing(false);
-                    recyclerView.setAdapter(new EvennementAdapter(evenementsCulture));
+                    recyclerView.setAdapter(new EvenementAdapter(evenementsCulture));
                 } catch (Exception e) {
                     e.getMessage();
                 }
@@ -207,7 +207,7 @@ public class EvenementsFragment extends Fragment implements IEvenement {
                 try {
                     progressBar.setVisibility(View.GONE);
                     swipeRefreshLayout.setRefreshing(false);
-                    recyclerView.setAdapter(new EvennementAdapter(evenementsEducation));
+                    recyclerView.setAdapter(new EvenementAdapter(evenementsEducation));
                 } catch (Exception e) {
                     e.getMessage();
                 }
@@ -227,7 +227,7 @@ public class EvenementsFragment extends Fragment implements IEvenement {
                 try {
                     progressBar.setVisibility(View.GONE);
                     swipeRefreshLayout.setRefreshing(false);
-                    recyclerView.setAdapter(new EvennementAdapter(evenementsSport));
+                    recyclerView.setAdapter(new EvenementAdapter(evenementsSport));
                 } catch (Exception e) {
                     e.getMessage();
                 }

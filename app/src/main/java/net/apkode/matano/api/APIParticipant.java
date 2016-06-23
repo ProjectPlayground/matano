@@ -59,7 +59,8 @@ public class APIParticipant {
                                         jsonObject.getString("nom"),
                                         jsonObject.getString("prenom"),
                                         jsonObject.getString("telephone"),
-                                        jsonObject.getString("image")
+                                        jsonObject.getString("image"),
+                                        jsonObject.getString("presentation")
                                 ));
 
                             } catch (JSONException e) {
