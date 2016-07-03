@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.squareup.picasso.Picasso;
 
 import net.apkode.matano.R;
 import net.apkode.matano.api.APIUtilisateur;
@@ -102,11 +103,17 @@ public class MonProfilActivty extends AppCompatActivity implements IUtilisateur 
         txtUpdateEmail.setText(utilisateur.getEmail());
         txtUpdatePresentation.setText(utilisateur.getPresentation());
 
-        Glide.with(this)
+       /* Glide.with(this)
                 .load(utilisateur.getImage())
                 .crossFade()
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imvImageProfil);*/
+
+        Picasso.with(this)
+                .load(utilisateur.getImage())
+                .priority(Picasso.Priority.HIGH)
+               // .centerCrop()
                 .into(imvImageProfil);
     }
 
@@ -288,11 +295,17 @@ public class MonProfilActivty extends AppCompatActivity implements IUtilisateur 
                     utilisateurLocalStore.storeUtilisateur(utilisateur);
                     utilisateurLocalStore.setUtilisateurLogin(true);
 
-                    Glide.with(this)
+                   /* Glide.with(this)
                             .load(utilisateur.getImage())
                             .crossFade()
                             .centerCrop()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(imvImageProfil);*/
+
+                    Picasso.with(this)
+                            .load(utilisateur.getImage())
+                            .priority(Picasso.Priority.HIGH)
+                            .centerCrop()
                             .into(imvImageProfil);
 
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.ok_update_image), Toast.LENGTH_SHORT).show();

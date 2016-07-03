@@ -13,7 +13,7 @@ import net.apkode.matano.model.Commentaire;
 
 import java.text.ParseException;
 
-public class CommentaireHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class CommentaireHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
     private TextView txtNomCommentaire;
     private TextView txtPrenomCommentaire;
     private TextView txtJourCommentaire;
@@ -36,6 +36,8 @@ public class CommentaireHolder extends RecyclerView.ViewHolder implements View.O
         txtPrenomCommentaire.setText(commentaire.getPrenom());
         txtCommentaire.setText(commentaire.getCommentaire());
         txtJourCommentaire.setText(commentaire.getJour());
+
+
 
         Glide.with(imvImageCommentaire.getContext())
                 .load(commentaire.getImage())

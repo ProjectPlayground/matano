@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
-
+import com.github.nkzawa.socketio.client.Socket;
 import net.apkode.matano.R;
 import net.apkode.matano.helper.UtilisateurLocalStore;
 
+
 public class AboutActivity extends AppCompatActivity {
     private UtilisateurLocalStore utilisateurLocalStore;
+    private Socket socket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,7 @@ public class AboutActivity extends AppCompatActivity {
         Typeface custom_font = Typeface.createFromAsset(getAssets(), "font/Bauhaus-93_6274.ttf");
         TextView nom = (TextView) findViewById(R.id.nom);
         nom.setTypeface(custom_font);
+
 
     }
 

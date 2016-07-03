@@ -159,7 +159,7 @@ public class EvenementActivity extends AppCompatActivity {
 
                 if (ShareDialog.canShow(ShareLinkContent.class)) {
                     ShareLinkContent content = new ShareLinkContent.Builder()
-                            .setContentUrl(Uri.parse("https://www.facebook.com/Niameyzze227"))
+                            .setContentUrl(Uri.parse("https://www.facebook.com/matano.org"))
                             .setImageUrl(Uri.parse(imagefull))
                             .setContentDescription(description)
                             .setContentTitle(titre)
