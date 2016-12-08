@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:padding="@dimen/activity_mini">
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/tabImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:contentDescription="@string/icon_description" />
+        android:contentDescription="icon"
+        android:tint="@color/colorPrimary" />
 
 </LinearLayout>

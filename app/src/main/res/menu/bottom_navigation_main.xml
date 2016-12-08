@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/ic_bottom_event"
+        android:enabled="true"
+        android:icon="@mipmap/ic_action_action_event"
+        android:title="" />
+    <item
+        android:id="@+id/ic_bottom_new"
+        android:enabled="true"
+        android:icon="@mipmap/ic_action_action_subject"
+        android:title="" />
+    <item
+        android:id="@+id/ic_bottom_profil"
+        android:enabled="true"
+        android:icon="@mipmap/ic_action_action_perm_identity"
+        android:title="" />
+
+</menu>
