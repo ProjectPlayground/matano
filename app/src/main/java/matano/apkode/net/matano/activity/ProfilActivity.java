@@ -20,7 +20,7 @@ public class ProfilActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profil);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.mipmap.ic_action_navigation_close_padding);
+        toolbar.setNavigationIcon(R.mipmap.ic_action_navigation_arrow_back_padding);
 
         setSupportActionBar(toolbar);
 

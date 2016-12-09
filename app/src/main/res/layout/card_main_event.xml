@@ -24,7 +24,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="76dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="@dimen/activity_horizontal_margin">
 
@@ -32,14 +32,48 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:alpha="0.87"
-                android:text="Festival international de la mode" />
+                android:text="Festival international de la mode"
+                android:textSize="13sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:alpha="0.54"
+                android:text="Palais des congres"
+                android:textSize="13sp" />
+        </LinearLayout>
 
-                android:text="Palais des congres" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/gray">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:text="23-01-2916"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="285 participants"
+                android:textAlignment="textEnd"
+                android:textSize="10sp" />
+
         </LinearLayout>
 
     </LinearLayout>

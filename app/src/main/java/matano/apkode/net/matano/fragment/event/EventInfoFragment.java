@@ -4,14 +4,21 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.model.PhotoObject;
 
 public class EventInfoFragment extends Fragment {
     private Context context;
+    private RecyclerView recyclerView;
+    private List<PhotoObject> list = new ArrayList<>();
 
     public EventInfoFragment() {
     }

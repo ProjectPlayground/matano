@@ -31,29 +31,32 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
                 android:layout_weight="1"
-                android:background="@android:color/background_light"
+                android:background="@color/colorPrimary"
                 android:text="Categorie"
-                android:textColor="@android:color/background_dark"
+                android:textColor="@android:color/background_light"
                 android:textSize="13sp" />
 
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
                 android:layout_weight="1"
-                android:background="@android:color/background_light"
+                android:background="@color/colorPrimary"
                 android:text="Pays"
-                android:textColor="@android:color/background_dark"
+                android:textColor="@android:color/background_light"
                 android:textSize="13sp" />
 
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
                 android:layout_weight="1"
-                android:background="@android:color/background_light"
+                android:background="@color/colorPrimary"
                 android:text="Ville"
-                android:textColor="@android:color/background_dark"
+                android:textColor="@android:color/background_light"
                 android:textSize="13sp" />
         </LinearLayout>
 

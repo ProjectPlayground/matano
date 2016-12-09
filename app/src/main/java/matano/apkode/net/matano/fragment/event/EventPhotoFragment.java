@@ -73,6 +73,18 @@ public class EventPhotoFragment extends Fragment {
         photoObjects.add(new PhotoObject());
         photoObjects.add(new PhotoObject());
         photoObjects.add(new PhotoObject());
+        photoObjects.add(new PhotoObject());
+        photoObjects.add(new PhotoObject());
+        photoObjects.add(new PhotoObject());
+        photoObjects.add(new PhotoObject());
+        photoObjects.add(new PhotoObject());
+        photoObjects.add(new PhotoObject());
+        photoObjects.add(new PhotoObject());
+        photoObjects.add(new PhotoObject());
+        photoObjects.add(new PhotoObject());
+        photoObjects.add(new PhotoObject());
+        photoObjects.add(new PhotoObject());
+        photoObjects.add(new PhotoObject());
 
         recyclerView.setAdapter(eventPhotoAdapter);
 
