@@ -9,7 +9,6 @@
     tools:context="matano.apkode.net.matano.activity.MainActivity"
     tools:showIn="@layout/activity_main">
 
-
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
@@ -20,8 +19,7 @@
         app:itemTextColor="@drawable/nav_item_color_state"
         app:menu="@menu/bottom_navigation_main" />
 
-
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -31,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/transparent"
+        android:onClick="closeFragmentBtn"
         android:visibility="gone">
 
         <RelativeLayout
@@ -48,7 +47,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="Fermer"
+                    android:text=""
                     android:textColor="@android:color/background_light" />
 
                 <ImageButton
@@ -57,7 +56,7 @@
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:background="#00000000"
                     android:padding="8dp"
-                    android:src="@mipmap/ic_action_content_clear"
+                    android:src="@mipmap/ic_action_navigation_close_padding"
                     android:tint="@color/colorPrimary" />
 
             </LinearLayout>
@@ -176,6 +175,57 @@
 
         </RelativeLayout>
 
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayoutBtnCategorie"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:onClick="closeFragmentBtn"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:visibility="gone">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewBtnCategorie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="none" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayoutBtnPays"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:onClick="closeFragmentBtn"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:visibility="gone">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewBtnPays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="none" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayoutBtnVille"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:onClick="closeFragmentBtn"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:visibility="gone">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewBtnVille"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="none" />
 
     </FrameLayout>
 

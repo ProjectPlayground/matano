@@ -5,13 +5,21 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.adapter.MainFramelayoutCategorieAdapter;
+import matano.apkode.net.matano.adapter.MainFramelayoutPaysAdapter;
+import matano.apkode.net.matano.adapter.MainFramelayoutVilleAdapter;
 import matano.apkode.net.matano.fragment.MainEventFragment;
 import matano.apkode.net.matano.fragment.MainNewFragment;
 
@@ -20,6 +28,16 @@ public class MainActivity extends AppCompatActivity {
     private MainEventFragment mainEventFragment;
     private MainNewFragment mainNewFragment;
     private FrameLayout frameLayoutMenu;
+    private FrameLayout frameLayoutBtnCategorie;
+    private FrameLayout frameLayoutBtnPays;
+    private FrameLayout frameLayoutBtnVille;
+    private RecyclerView recyclerViewBtnCategorie;
+    private RecyclerView recyclerViewBtnPays;
+    private RecyclerView recyclerViewBtnVille;
+    private List<String> categorieList = new ArrayList<>();
+    private List<String> paysList = new ArrayList<>();
+    private List<String> villeList = new ArrayList<>();
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
         frameLayout = (FrameLayout) findViewById(R.id.fragment_container);
 
         frameLayoutMenu = (FrameLayout) findViewById(R.id.frameLayoutMenu);
+        frameLayoutBtnCategorie = (FrameLayout) findViewById(R.id.frameLayoutBtnCategorie);
+        frameLayoutBtnPays = (FrameLayout) findViewById(R.id.frameLayoutBtnPays);
+        frameLayoutBtnVille = (FrameLayout) findViewById(R.id.frameLayoutBtnVille);
+
 
 
         if (null != frameLayout) {
@@ -71,6 +93,50 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        // Categorie
+        recyclerViewBtnCategorie = (RecyclerView) findViewById(R.id.recyclerViewBtnCategorie);
+        recyclerViewBtnCategorie.setHasFixedSize(true);
+
+        recyclerViewBtnCategorie.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        MainFramelayoutCategorieAdapter mainFramelayoutCategorieAdapter = new MainFramelayoutCategorieAdapter(categorieList);
+
+        categorieList.add("Culture");
+        categorieList.add("Education");
+        categorieList.add("Sport");
+
+        recyclerViewBtnCategorie.setAdapter(mainFramelayoutCategorieAdapter);
+
+        // Pays
+        recyclerViewBtnPays = (RecyclerView) findViewById(R.id.recyclerViewBtnPays);
+        recyclerViewBtnPays.setHasFixedSize(true);
+
+        recyclerViewBtnPays.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        MainFramelayoutPaysAdapter mainFramelayoutPaysAdapter = new MainFramelayoutPaysAdapter(paysList);
+
+        paysList.add("Niger");
+        paysList.add("Senegal");
+
+        recyclerViewBtnPays.setAdapter(mainFramelayoutPaysAdapter);
+
+
+        // Ville
+        recyclerViewBtnVille = (RecyclerView) findViewById(R.id.recyclerViewBtnVille);
+        recyclerViewBtnVille.setHasFixedSize(true);
+
+        recyclerViewBtnVille.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        MainFramelayoutVilleAdapter mainFramelayoutVilleAdapter = new MainFramelayoutVilleAdapter(villeList);
+
+        villeList.add("Niamey");
+        villeList.add("Dosso");
+        villeList.add("Zinder");
+
+        recyclerViewBtnVille.setAdapter(mainFramelayoutVilleAdapter);
+        
+
     }
 
 
@@ -83,13 +149,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            frameLayoutMenu.bringToFront();
             frameLayoutMenu.setVisibility(View.VISIBLE);
             return true;
         }
@@ -98,4 +161,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void showFragmentBtnCategorie(View view) {
+        closeAllFragmentBtn();
+
+        frameLayoutBtnCategorie.bringToFront();
+        frameLayoutBtnCategorie.setVisibility(View.VISIBLE);
+    }
+
+    public void showFragmentBtnPays(View view) {
+        closeAllFragmentBtn();
+
+        frameLayoutBtnPays.bringToFront();
+        frameLayoutBtnPays.setVisibility(View.VISIBLE);
+    }
+
+    public void showFragmentBtnVille(View view) {
+        closeAllFragmentBtn();
+        frameLayoutBtnVille.bringToFront();
+        frameLayoutBtnVille.setVisibility(View.VISIBLE);
+    }
+
+    private void closeAllFragmentBtn() {
+        frameLayoutBtnCategorie.setVisibility(View.GONE);
+        frameLayoutBtnPays.setVisibility(View.GONE);
+        frameLayoutBtnVille.setVisibility(View.GONE);
+        frameLayoutMenu.setVisibility(View.GONE);
+
+    }
+
+    public void closeFragmentBtn(View view) {
+        closeAllFragmentBtn();
+    }
 }
