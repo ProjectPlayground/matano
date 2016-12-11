@@ -7,9 +7,10 @@ import android.view.View;
 import matano.apkode.net.matano.activity.ProfilActivity;
 import matano.apkode.net.matano.model.ParticipantObject;
 
-public class EventParticipantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    public EventParticipantHolder(View itemView) {
+public class EventTopParticipantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+    public EventTopParticipantHolder(View itemView) {
         super(itemView);
     }
 
@@ -19,6 +20,7 @@ public class EventParticipantHolder extends RecyclerView.ViewHolder implements V
 
     @Override
     public void onClick(View view) {
+
         Intent intent = new Intent(view.getContext(), ProfilActivity.class);
         view.getContext().startActivity(intent);
     }

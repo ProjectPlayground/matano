@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.pageradapter.ProfilPagerAdapter;
+import matano.apkode.net.matano.fragmentpageradapter.ProfilPagerAdapter;
 
 public class ProfilActivity extends AppCompatActivity {
     private ViewPager mViewPager;
@@ -44,7 +44,7 @@ public class ProfilActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_profil, menu);
+        // getMenuInflater().inflate(R.menu.menu_profil, menu);
         return true;
     }
 

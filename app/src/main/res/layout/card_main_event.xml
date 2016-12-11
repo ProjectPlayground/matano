@@ -32,15 +32,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:alpha="0.87"
-                android:text="Festival international de la mode"
-                android:textSize="13sp" />
+                android:text="Festival international de la mode" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:alpha="0.54"
-                android:text="Palais des congres"
-                android:textSize="13sp" />
+                android:text="Palais des congres" />
         </LinearLayout>
 
         <LinearLayout
@@ -63,7 +61,7 @@
                 android:layout_weight="1"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:text="23-01-2916"
-                android:textSize="10sp" />
+                android:textSize="13sp" />
 
             <TextView
                 android:layout_width="0dp"
@@ -72,7 +70,7 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:text="285 participants"
                 android:textAlignment="textEnd"
-                android:textSize="10sp" />
+                android:textSize="13sp" />
 
         </LinearLayout>
 

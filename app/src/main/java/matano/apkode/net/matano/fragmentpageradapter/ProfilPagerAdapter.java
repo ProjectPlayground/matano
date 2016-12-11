@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.pageradapter;
+package matano.apkode.net.matano.fragmentpageradapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

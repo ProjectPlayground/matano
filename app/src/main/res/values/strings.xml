@@ -98,4 +98,5 @@
     <string name="username">\?bachir.rabo</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="useename">\?bassirou.rabo</string>
+    <string name="action_share">Share</string>
 </resources>

@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.pageradapter;
+package matano.apkode.net.matano.fragmentpageradapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.fragment.event.EventDefaultFragment;
 import matano.apkode.net.matano.fragment.event.EventInfoFragment;
+import matano.apkode.net.matano.fragment.event.EventNewFragment;
 import matano.apkode.net.matano.fragment.event.EventParticipantFragment;
 import matano.apkode.net.matano.fragment.event.EventPhotoFragment;
 import matano.apkode.net.matano.fragment.event.EventPrivateFragment;
@@ -24,7 +25,7 @@ import matano.apkode.net.matano.fragment.event.EventPrivateFragment;
 public class EventPagerAdapter extends FragmentPagerAdapter {
     Toolbar toolbar;
     private Context context;
-    private int icons[] = {R.mipmap.ic_action_action_list_padding, R.mipmap.ic_action_action_account_child_padding, R.mipmap.ic_action_image_image_padding, R.mipmap.ic_action_communication_chat_padding};
+    private int icons[] = {R.mipmap.ic_action_notification_event_note_padding, R.mipmap.ic_action_action_list_padding, R.mipmap.ic_action_image_image_padding, R.mipmap.ic_action_action_account_child_padding, R.mipmap.ic_action_communication_chat_padding};
 
 
     public EventPagerAdapter(FragmentManager fm, Context ctx, Toolbar toolbar) {
@@ -49,10 +50,12 @@ public class EventPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new EventInfoFragment().newInstance(context);
             case 2:
-                return new EventParticipantFragment().newInstance(context);
+                return new EventNewFragment().newInstance(context);
             case 3:
                 return new EventPhotoFragment().newInstance(context);
             case 4:
+                return new EventParticipantFragment().newInstance(context);
+            case 5:
                 return new EventPrivateFragment().newInstance(context);
             default:
                 return new EventDefaultFragment().newInstance(context);
@@ -62,7 +65,7 @@ public class EventPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 5;
     }
 
     @Override

@@ -36,4 +36,5 @@ public class EventPhotoAdapter extends RecyclerView.Adapter<EventPhotoHolder> {
     public int getItemCount() {
         return list.size();
     }
+
 }

@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.fragment;
+package matano.apkode.net.matano.fragment.event;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -6,27 +6,32 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.adapter.MainNewAdapter;
+import matano.apkode.net.matano.adapter.event.EventNewAdapter;
 import matano.apkode.net.matano.model.NewObject;
 
 
-public class MainNewFragment extends Fragment {
+public class EventNewFragment extends Fragment {
+    private Context context;
+    private RecyclerView recyclerView;
+    private EventNewAdapter eventNewAdapter;
+    private List<NewObject> newObjects = new ArrayList<>();
 
-    private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private List<NewObject> newObjectList = new ArrayList<>();
-    private MainNewAdapter mAdapter;
+    public EventNewFragment() {
+    }
 
+    public EventNewFragment newInstance(Context ctx) {
+        context = ctx;
+        EventNewFragment eventNewFragment = new EventNewFragment();
+        return eventNewFragment;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -41,45 +46,30 @@ public class MainNewFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main_new, container, false);
+        return inflater.inflate(R.layout.fragment_event_new, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.Lfiltre);
-
-        if (null != linearLayout) {
-            linearLayout.setVisibility(View.GONE);
-        }
-
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-
-        if (null != toolbar) {
-            toolbar.setTitle("Fil d'actualité");
-        }
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        mRecyclerView.setHasFixedSize(true);
+        eventNewAdapter = new EventNewAdapter(newObjects);
 
-        mLayoutManager = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mAdapter = new MainNewAdapter(newObjectList);
-
-        newObjectList.add(new NewObject());
-        newObjectList.add(new NewObject());
-        newObjectList.add(new NewObject());
-        newObjectList.add(new NewObject());
-        newObjectList.add(new NewObject());
-        newObjectList.add(new NewObject());
-        newObjectList.add(new NewObject());
-
-        mRecyclerView.setAdapter(mAdapter);
+        newObjects.add(new NewObject());
+        newObjects.add(new NewObject());
+        newObjects.add(new NewObject());
+        newObjects.add(new NewObject());
+        newObjects.add(new NewObject());
+        newObjects.add(new NewObject());
+        newObjects.add(new NewObject());
 
 
+        recyclerView.setAdapter(eventNewAdapter);
     }
 
     @Override
@@ -116,6 +106,5 @@ public class MainNewFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
-
 
 }

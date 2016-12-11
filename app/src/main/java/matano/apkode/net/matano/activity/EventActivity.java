@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.pageradapter.EventPagerAdapter;
+import matano.apkode.net.matano.fragmentpageradapter.EventPagerAdapter;
 
 
 public class EventActivity extends AppCompatActivity {
@@ -46,7 +46,7 @@ public class EventActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_event, menu);
+        //getMenuInflater().inflate(R.menu.menu_event, menu);
         return true;
     }
 

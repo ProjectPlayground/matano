@@ -5,14 +5,13 @@ import android.view.View;
 
 import matano.apkode.net.matano.model.PhotoObject;
 
-public class EventPhotoHolder extends RecyclerView.ViewHolder {
+public class EventTopPhotoHolder extends RecyclerView.ViewHolder {
 
-    public EventPhotoHolder(View itemView) {
+    public EventTopPhotoHolder(View itemView) {
         super(itemView);
     }
 
     public void bind(PhotoObject photoObject) {
 
     }
-
 }

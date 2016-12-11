@@ -29,7 +29,7 @@ public class MainNewAdapter extends RecyclerView.Adapter<MainNewHolder> {
     public void onBindViewHolder(MainNewHolder mainNewHolder, int position) {
         NewObject newObject = list.get(position);
         mainNewHolder.bind(newObject);
-        mainNewHolder.itemView.setTag(mainNewHolder);
+        mainNewHolder.itemView.setTag(newObject);
 
 
     }
