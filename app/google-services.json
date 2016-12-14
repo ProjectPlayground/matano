@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "194876811926",
+    "firebase_url": "https://matano-5b3d0.firebaseio.com",
+    "project_id": "matano-5b3d0",
+    "storage_bucket": "matano-5b3d0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194876811926:android:c8179a28289c75c0",
+        "android_client_info": {
+          "package_name": "matano.apkode.net.matano"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "194876811926-n6svjjb8n4vve7ufiejd7uilu0i7k429.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "matano.apkode.net.matano",
+            "certificate_hash": "DCB755068DC6255F7AFEA5262A7036EA0F11524A"
+          }
+        },
+        {
+          "client_id": "194876811926-r3e3fbqb5briphs8914l8kescr8jeueu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxS4rtv86ww1VA5_-mPC0YCRPiJcqhI28"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "194876811926-r3e3fbqb5briphs8914l8kescr8jeueu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

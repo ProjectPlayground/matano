@@ -11,17 +11,17 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.model.PhotoObject;
+import matano.apkode.net.matano.model.Photo;
 
 
 public class PhotoPageAdapter extends PagerAdapter {
-    private ArrayList<PhotoObject> photoObjects;
+    private ArrayList<Photo> photos;
     private LayoutInflater layoutInflater;
     private Context context;
     private Activity activity;
 
-    public PhotoPageAdapter(ArrayList<PhotoObject> photoObjects, Activity act, Context ctx) {
-        this.photoObjects = photoObjects;
+    public PhotoPageAdapter(ArrayList<Photo> photos, Activity act, Context ctx) {
+        this.photos = photos;
         this.context = ctx;
         this.activity = act;
     }
@@ -33,7 +33,7 @@ public class PhotoPageAdapter extends PagerAdapter {
 
         View view = layoutInflater.inflate(R.layout.card_photo_galerie, container, false);
 
-        PhotoObject photoObject = photoObjects.get(position);
+        Photo photo = photos.get(position);
 
         ImageView imageViewPreview = (ImageView) view.findViewById(R.id.img);
 
@@ -46,7 +46,7 @@ public class PhotoPageAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return photoObjects.size();
+        return photos.size();
     }
 
     @Override

@@ -16,7 +16,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/img"
+            android:id="@+id/imageViewEventPhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
@@ -29,16 +29,18 @@
             android:padding="@dimen/activity_horizontal_margin">
 
             <TextView
+                android:id="@+id/textViewEventTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:alpha="0.87"
-                android:text="Festival international de la mode" />
+                android:hint="Festival international de la mode" />
 
             <TextView
+                android:id="@+id/textViewEventPresentation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:alpha="0.54"
-                android:text="Palais des congres" />
+                android:hint="Palais des congres" />
         </LinearLayout>
 
         <LinearLayout

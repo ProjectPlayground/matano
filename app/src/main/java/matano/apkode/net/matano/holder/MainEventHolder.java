@@ -1,35 +1,62 @@
 package matano.apkode.net.matano.holder;
 
 
-import android.content.Intent;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.Serializable;
+import com.squareup.picasso.Picasso;
 
-import matano.apkode.net.matano.activity.EventActivity;
-import matano.apkode.net.matano.model.EventObject;
+import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.model.Event;
 
 
-public class MainEventHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-    private TextView txtCategorie;
+public class MainEventHolder extends RecyclerView.ViewHolder {
+    private TextView textViewEventTitle;
+    private TextView textViewEventPresentation;
+    private ImageView imageViewEventPhoto;
+
 
     public MainEventHolder(View itemView) {
         super(itemView);
+        textViewEventTitle = (TextView) itemView.findViewById(R.id.textViewEventTitle);
+        textViewEventPresentation = (TextView) itemView.findViewById(R.id.textViewEventPresentation);
+        imageViewEventPhoto = (ImageView) itemView.findViewById(R.id.imageViewEventPhoto);
     }
 
-    public void bind(EventObject eventObject) {
+
+    public void setTextViewEventTitle(String s) {
+        if (null != s) {
+            if (null != textViewEventTitle) {
+                textViewEventTitle.setText(s);
+            }
+        }
+    }
+
+    public void setTextViewEventPresentation(String s) {
+        if (null != s) {
+            if (null != textViewEventPresentation) {
+                textViewEventPresentation.setText(s);
+            }
+        }
+    }
+
+    public void setImageViewEventPhoto(Context context, String s) {
+        if (null != s) {
+            if (null != imageViewEventPhoto) {
+                Picasso.with(context).load(s).into(imageViewEventPhoto);
+            }
+        }
+    }
+
+
+    public void bind(Event event) {
         //  txtCategorie = (TextView)itemView.findViewById(R.id.txtCategorie);
-        //txtCategorie.setText(eventObject.getCategorie());
-        itemView.setOnClickListener(this);
+        //txtCategorie.setText(event.getCategorie());
+        // itemView.setOnClickListener(this);
     }
 
 
-    @Override
-    public void onClick(View view) {
-        Intent intent = new Intent(view.getContext().getApplicationContext(), EventActivity.class);
-        intent.putExtra("EventObject", (Serializable) view.getTag());
-        view.getContext().startActivity(intent);
-    }
 }

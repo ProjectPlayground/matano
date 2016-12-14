@@ -15,13 +15,13 @@ import java.util.List;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.adapter.profil.ProfilFriendAdapter;
-import matano.apkode.net.matano.model.FriendObject;
+import matano.apkode.net.matano.model.User;
 
 public class ProfilFriendFragment extends Fragment {
     private Context context;
     private RecyclerView recyclerView;
     private ProfilFriendAdapter profilFriendAdapter;
-    private List<FriendObject> friendObjects = new ArrayList<>();
+    private List<User> friends = new ArrayList<>();
 
     public ProfilFriendFragment() {
     }
@@ -56,20 +56,11 @@ public class ProfilFriendFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        profilFriendAdapter = new ProfilFriendAdapter(friendObjects);
+        profilFriendAdapter = new ProfilFriendAdapter(friends);
 
-        friendObjects.add(new FriendObject());
-        friendObjects.add(new FriendObject());
-        friendObjects.add(new FriendObject());
-        friendObjects.add(new FriendObject());
-        friendObjects.add(new FriendObject());
-        friendObjects.add(new FriendObject());
-        friendObjects.add(new FriendObject());
-        friendObjects.add(new FriendObject());
-        friendObjects.add(new FriendObject());
-        friendObjects.add(new FriendObject());
-        friendObjects.add(new FriendObject());
-        friendObjects.add(new FriendObject());
+        friends.add(new User());
+        friends.add(new User());
+        friends.add(new User());
 
         recyclerView.setAdapter(profilFriendAdapter);
 

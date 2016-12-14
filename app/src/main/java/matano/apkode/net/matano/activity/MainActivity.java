@@ -13,6 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,12 +40,27 @@ public class MainActivity extends AppCompatActivity {
     private List<String> categorieList = new ArrayList<>();
     private List<String> paysList = new ArrayList<>();
     private List<String> villeList = new ArrayList<>();
-    
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    goSignIn();
+                }
+            }
+        };
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -53,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         frameLayoutBtnCategorie = (FrameLayout) findViewById(R.id.frameLayoutBtnCategorie);
         frameLayoutBtnPays = (FrameLayout) findViewById(R.id.frameLayoutBtnPays);
         frameLayoutBtnVille = (FrameLayout) findViewById(R.id.frameLayoutBtnVille);
-
 
 
         if (null != frameLayout) {
@@ -135,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         villeList.add("Zinder");
 
         recyclerViewBtnVille.setAdapter(mainFramelayoutVilleAdapter);
-        
+
 
     }
 
@@ -191,5 +208,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void closeFragmentBtn(View view) {
         closeAllFragmentBtn();
+    }
+
+    private void goSignIn() {
+        startActivity(new Intent(this, SignInActivity.class));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 }

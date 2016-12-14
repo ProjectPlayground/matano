@@ -3,7 +3,7 @@ package matano.apkode.net.matano.holder.event;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import matano.apkode.net.matano.model.NewObject;
+import matano.apkode.net.matano.model.Photo;
 
 
 public class EventNewHolder extends RecyclerView.ViewHolder {
@@ -12,7 +12,7 @@ public class EventNewHolder extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
-    public void bind(NewObject newObject) {
+    public void bind(Photo photo) {
 
     }
 

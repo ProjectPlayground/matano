@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import matano.apkode.net.matano.activity.EventActivity;
-import matano.apkode.net.matano.model.EventObject;
+import matano.apkode.net.matano.model.Event;
 
 
 public class ProfilEventHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -14,7 +14,7 @@ public class ProfilEventHolder extends RecyclerView.ViewHolder implements View.O
         super(itemView);
     }
 
-    public void bind(EventObject eventObject) {
+    public void bind(Event event) {
         itemView.setOnClickListener(this);
     }
 

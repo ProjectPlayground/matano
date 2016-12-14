@@ -21,13 +21,13 @@ import matano.apkode.net.matano.adapter.event.EventPhotoAdapter;
 import matano.apkode.net.matano.dialogfragment.PhotoDialog;
 import matano.apkode.net.matano.helper.ClickListener;
 import matano.apkode.net.matano.helper.RecyclerTouchListener;
-import matano.apkode.net.matano.model.PhotoObject;
+import matano.apkode.net.matano.model.Photo;
 
 public class EventPhotoFragment extends Fragment {
     private Context context;
     private RecyclerView recyclerView;
     private EventPhotoAdapter eventPhotoAdapter;
-    private List<PhotoObject> photoObjects = new ArrayList<>();
+    private List<Photo> photos = new ArrayList<>();
 
     public EventPhotoFragment() {
     }
@@ -69,7 +69,7 @@ public class EventPhotoFragment extends Fragment {
             public void onClick(View view, int position) {
 
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("PhotoObject", (Serializable) photoObjects);
+                bundle.putSerializable("Photo", (Serializable) photos);
                 bundle.putInt("position", position);
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -89,32 +89,32 @@ public class EventPhotoFragment extends Fragment {
             }
         }));
 
-        eventPhotoAdapter = new EventPhotoAdapter(photoObjects);
+        eventPhotoAdapter = new EventPhotoAdapter(photos);
 
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
 
         recyclerView.setAdapter(eventPhotoAdapter);
 

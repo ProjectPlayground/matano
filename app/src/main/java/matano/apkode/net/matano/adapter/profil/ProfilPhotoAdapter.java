@@ -9,13 +9,13 @@ import java.util.List;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.holder.profil.ProfilPhotoHolder;
-import matano.apkode.net.matano.model.PhotoObject;
+import matano.apkode.net.matano.model.Photo;
 
 
 public class ProfilPhotoAdapter extends RecyclerView.Adapter<ProfilPhotoHolder> {
-    List<PhotoObject> list;
+    List<Photo> list;
 
-    public ProfilPhotoAdapter(List<PhotoObject> list) {
+    public ProfilPhotoAdapter(List<Photo> list) {
         this.list = list;
     }
 
@@ -27,9 +27,9 @@ public class ProfilPhotoAdapter extends RecyclerView.Adapter<ProfilPhotoHolder> 
 
     @Override
     public void onBindViewHolder(ProfilPhotoHolder profilPhotoHolder, int position) {
-        PhotoObject photoObject = list.get(position);
-        profilPhotoHolder.bind(photoObject);
-        profilPhotoHolder.itemView.setTag(photoObject);
+        Photo photo = list.get(position);
+        profilPhotoHolder.bind(photo);
+        profilPhotoHolder.itemView.setTag(photo);
     }
 
     @Override

@@ -21,13 +21,13 @@ import matano.apkode.net.matano.adapter.profil.ProfilPhotoAdapter;
 import matano.apkode.net.matano.dialogfragment.PhotoDialog;
 import matano.apkode.net.matano.helper.ClickListener;
 import matano.apkode.net.matano.helper.RecyclerTouchListener;
-import matano.apkode.net.matano.model.PhotoObject;
+import matano.apkode.net.matano.model.Photo;
 
 public class ProfilPhotoFragment extends Fragment {
     private Context context;
     private RecyclerView recyclerView;
     private ProfilPhotoAdapter profilPhotoAdapter;
-    private List<PhotoObject> photoObjects = new ArrayList<>();
+    private List<Photo> photos = new ArrayList<>();
 
     public ProfilPhotoFragment() {
     }
@@ -68,7 +68,7 @@ public class ProfilPhotoFragment extends Fragment {
             public void onClick(View view, int position) {
 
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("PhotoObject", (Serializable) photoObjects);
+                bundle.putSerializable("Photo", (Serializable) photos);
                 bundle.putInt("position", position);
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -88,20 +88,20 @@ public class ProfilPhotoFragment extends Fragment {
             }
         }));
 
-        profilPhotoAdapter = new ProfilPhotoAdapter(photoObjects);
+        profilPhotoAdapter = new ProfilPhotoAdapter(photos);
 
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
 
         recyclerView.setAdapter(profilPhotoAdapter);
 

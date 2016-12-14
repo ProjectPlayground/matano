@@ -10,21 +10,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.adapter.MainNewAdapter;
-import matano.apkode.net.matano.model.NewObject;
+import matano.apkode.net.matano.model.Photo;
 
 
 public class MainNewFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
-    private List<NewObject> newObjectList = new ArrayList<>();
+    private List<Photo> newList = new ArrayList<>();
     private MainNewAdapter mAdapter;
 
 
@@ -47,12 +46,12 @@ public class MainNewFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+/*
         LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.Lfiltre);
 
         if (null != linearLayout) {
             linearLayout.setVisibility(View.GONE);
-        }
+        }*/
 
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
 
@@ -67,15 +66,12 @@ public class MainNewFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new MainNewAdapter(newObjectList);
+        mAdapter = new MainNewAdapter(newList);
 
-        newObjectList.add(new NewObject());
-        newObjectList.add(new NewObject());
-        newObjectList.add(new NewObject());
-        newObjectList.add(new NewObject());
-        newObjectList.add(new NewObject());
-        newObjectList.add(new NewObject());
-        newObjectList.add(new NewObject());
+        newList.add(new Photo());
+        newList.add(new Photo());
+        newList.add(new Photo());
+
 
         mRecyclerView.setAdapter(mAdapter);
 

@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.model.PhotoObject;
+import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.pageradapter.PhotoPageAdapter;
 
 
@@ -22,7 +22,7 @@ public class PhotoDialog extends DialogFragment {
     private PhotoPageAdapter photoPageAdapter;
     private int selectedPosition = 0;
     private TextView lblCount;
-    private ArrayList<PhotoObject> photoObjects;
+    private ArrayList<Photo> photos;
     private ImageButton closePhotoDialog;
 
     public static PhotoDialog newInstance() {
@@ -49,10 +49,10 @@ public class PhotoDialog extends DialogFragment {
         }
 
 
-        photoObjects = (ArrayList<PhotoObject>) getArguments().getSerializable("PhotoObject");
+        photos = (ArrayList<Photo>) getArguments().getSerializable("Photo");
         selectedPosition = getArguments().getInt("position");
 
-        photoPageAdapter = new PhotoPageAdapter(photoObjects, getActivity(), getContext());
+        photoPageAdapter = new PhotoPageAdapter(photos, getActivity(), getContext());
         viewPager.setAdapter(photoPageAdapter);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -83,7 +83,7 @@ public class PhotoDialog extends DialogFragment {
     }
 
     private void displayMetaInfo(int position) {
-        lblCount.setText((position + 1) + "/" + photoObjects.size());
+        lblCount.setText((position + 1) + "/" + photos.size());
 
         //  ImageGalerie imageGalerie = imageGaleries.get(position);
     }

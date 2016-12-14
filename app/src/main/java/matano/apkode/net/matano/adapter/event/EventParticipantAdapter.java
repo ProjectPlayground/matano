@@ -9,13 +9,13 @@ import java.util.List;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.holder.event.EventParticipantHolder;
-import matano.apkode.net.matano.model.ParticipantObject;
+import matano.apkode.net.matano.model.User;
 
 
 public class EventParticipantAdapter extends RecyclerView.Adapter<EventParticipantHolder> {
-    List<ParticipantObject> list;
+    List<User> list;
 
-    public EventParticipantAdapter(List<ParticipantObject> list) {
+    public EventParticipantAdapter(List<User> list) {
         this.list = list;
     }
 
@@ -27,9 +27,9 @@ public class EventParticipantAdapter extends RecyclerView.Adapter<EventParticipa
 
     @Override
     public void onBindViewHolder(EventParticipantHolder eventParticipantHolder, int position) {
-        ParticipantObject participantObject = list.get(position);
-        eventParticipantHolder.bind(participantObject);
-        eventParticipantHolder.itemView.setTag(participantObject);
+        User user = list.get(position);
+        eventParticipantHolder.bind(user);
+        eventParticipantHolder.itemView.setTag(user);
     }
 
     @Override

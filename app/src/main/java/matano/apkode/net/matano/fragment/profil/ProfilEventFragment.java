@@ -15,13 +15,13 @@ import java.util.List;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.adapter.profil.ProfilEventAdapter;
-import matano.apkode.net.matano.model.EventObject;
+import matano.apkode.net.matano.model.Event;
 
 public class ProfilEventFragment extends Fragment {
     private Context context;
     private RecyclerView recyclerView;
     private ProfilEventAdapter profilEventAdapter;
-    private List<EventObject> eventObjects = new ArrayList<>();
+    private List<Event> events = new ArrayList<>();
 
     public ProfilEventFragment() {
     }
@@ -55,20 +55,20 @@ public class ProfilEventFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        profilEventAdapter = new ProfilEventAdapter(eventObjects);
+        profilEventAdapter = new ProfilEventAdapter(events);
 
-        eventObjects.add(new EventObject());
-        eventObjects.add(new EventObject());
-        eventObjects.add(new EventObject());
-        eventObjects.add(new EventObject());
-        eventObjects.add(new EventObject());
-        eventObjects.add(new EventObject());
-        eventObjects.add(new EventObject());
-        eventObjects.add(new EventObject());
-        eventObjects.add(new EventObject());
-        eventObjects.add(new EventObject());
-        eventObjects.add(new EventObject());
-        eventObjects.add(new EventObject());
+        events.add(new Event());
+        events.add(new Event());
+        events.add(new Event());
+        events.add(new Event());
+        events.add(new Event());
+        events.add(new Event());
+        events.add(new Event());
+        events.add(new Event());
+        events.add(new Event());
+        events.add(new Event());
+        events.add(new Event());
+        events.add(new Event());
 
         recyclerView.setAdapter(profilEventAdapter);
 

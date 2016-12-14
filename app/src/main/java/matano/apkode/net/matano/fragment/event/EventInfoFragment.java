@@ -21,15 +21,15 @@ import matano.apkode.net.matano.adapter.event.EventTopPhotoAdapter;
 import matano.apkode.net.matano.dialogfragment.PhotoDialog;
 import matano.apkode.net.matano.helper.ClickListener;
 import matano.apkode.net.matano.helper.RecyclerTouchListener;
-import matano.apkode.net.matano.model.ParticipantObject;
-import matano.apkode.net.matano.model.PhotoObject;
+import matano.apkode.net.matano.model.Photo;
+import matano.apkode.net.matano.model.User;
 
 public class EventInfoFragment extends Fragment {
     private Context context;
     private RecyclerView recyclerViewTopPhoto;
-    private RecyclerView recyclerViewTopParticipant;
-    private List<PhotoObject> photoObjects = new ArrayList<>();
-    private List<ParticipantObject> participantObjects = new ArrayList<>();
+    private RecyclerView recyclerViewTopUser;
+    private List<Photo> photos = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
     private EventTopPhotoAdapter eventTopPhotoAdapter;
     private EventTopParticipantAdapter eventTopParticipantAdapter;
 
@@ -51,8 +51,8 @@ public class EventInfoFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        eventTopPhotoAdapter = new EventTopPhotoAdapter(photoObjects);
-        eventTopParticipantAdapter = new EventTopParticipantAdapter(participantObjects);
+        eventTopPhotoAdapter = new EventTopPhotoAdapter(photos);
+        eventTopParticipantAdapter = new EventTopParticipantAdapter(users);
     }
 
     @Nullable
@@ -66,15 +66,15 @@ public class EventInfoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         recyclerViewTopPhoto = (RecyclerView) view.findViewById(R.id.recyclerViewTopPhoto);
-        recyclerViewTopParticipant = (RecyclerView) view.findViewById(R.id.recyclerViewTopParticipant);
+        recyclerViewTopUser = (RecyclerView) view.findViewById(R.id.recyclerViewTopParticipant);
 
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
-        photoObjects.add(new PhotoObject());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
+        photos.add(new Photo());
 
 
         if (null != recyclerViewTopPhoto) {
@@ -88,7 +88,7 @@ public class EventInfoFragment extends Fragment {
             public void onClick(View view, int position) {
 
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("PhotoObject", (Serializable) photoObjects);
+                bundle.putSerializable("Photo", (Serializable) photos);
                 bundle.putInt("position", position);
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -109,21 +109,21 @@ public class EventInfoFragment extends Fragment {
         }));
 
 
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
+        users.add(new User());
+        users.add(new User());
+        users.add(new User());
+        users.add(new User());
+        users.add(new User());
+        users.add(new User());
+        users.add(new User());
+        users.add(new User());
+        users.add(new User());
+        users.add(new User());
 
-        if (null != recyclerViewTopParticipant) {
-            recyclerViewTopParticipant.setHasFixedSize(true);
-            recyclerViewTopParticipant.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-            recyclerViewTopParticipant.setAdapter(eventTopParticipantAdapter);
+        if (null != recyclerViewTopUser) {
+            recyclerViewTopUser.setHasFixedSize(true);
+            recyclerViewTopUser.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+            recyclerViewTopUser.setAdapter(eventTopParticipantAdapter);
         }
 
 

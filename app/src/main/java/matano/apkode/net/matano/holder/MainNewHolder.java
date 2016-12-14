@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.model.NewObject;
+import matano.apkode.net.matano.model.Photo;
 
 
 public class MainNewHolder extends RecyclerView.ViewHolder {
@@ -15,7 +15,7 @@ public class MainNewHolder extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
-    public void bind(NewObject newObject) {
+    public void bind(Photo photo) {
 
         profilePic = (ImageView) itemView.findViewById(R.id.user_image);
 

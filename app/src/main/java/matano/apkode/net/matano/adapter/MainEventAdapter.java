@@ -10,13 +10,13 @@ import java.util.List;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.holder.MainEventHolder;
-import matano.apkode.net.matano.model.EventObject;
+import matano.apkode.net.matano.model.Event;
 
 public class MainEventAdapter extends RecyclerView.Adapter<MainEventHolder> {
 
-    List<EventObject> list;
+    List<Event> list;
 
-    public MainEventAdapter(List<EventObject> list) {
+    public MainEventAdapter(List<Event> list) {
         this.list = list;
     }
 
@@ -28,9 +28,9 @@ public class MainEventAdapter extends RecyclerView.Adapter<MainEventHolder> {
 
     @Override
     public void onBindViewHolder(MainEventHolder mainEventHolder, int position) {
-        EventObject eventObject = list.get(position);
-        mainEventHolder.bind(eventObject);
-        mainEventHolder.itemView.setTag(eventObject);
+        Event event = list.get(position);
+        mainEventHolder.bind(event);
+        mainEventHolder.itemView.setTag(event);
     }
 
     @Override

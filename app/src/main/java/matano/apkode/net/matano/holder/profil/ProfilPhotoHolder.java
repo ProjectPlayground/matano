@@ -3,7 +3,7 @@ package matano.apkode.net.matano.holder.profil;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import matano.apkode.net.matano.model.PhotoObject;
+import matano.apkode.net.matano.model.Photo;
 
 
 public class ProfilPhotoHolder extends RecyclerView.ViewHolder {
@@ -12,7 +12,7 @@ public class ProfilPhotoHolder extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
-    public void bind(PhotoObject photoObject) {
+    public void bind(Photo photo) {
 
     }
 }

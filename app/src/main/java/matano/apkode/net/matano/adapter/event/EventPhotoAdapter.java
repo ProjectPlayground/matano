@@ -9,13 +9,13 @@ import java.util.List;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.holder.event.EventPhotoHolder;
-import matano.apkode.net.matano.model.PhotoObject;
+import matano.apkode.net.matano.model.Photo;
 
 
 public class EventPhotoAdapter extends RecyclerView.Adapter<EventPhotoHolder> {
-    List<PhotoObject> list;
+    List<Photo> list;
 
-    public EventPhotoAdapter(List<PhotoObject> list) {
+    public EventPhotoAdapter(List<Photo> list) {
         this.list = list;
     }
 
@@ -27,9 +27,9 @@ public class EventPhotoAdapter extends RecyclerView.Adapter<EventPhotoHolder> {
 
     @Override
     public void onBindViewHolder(EventPhotoHolder eventPhotoHolder, int position) {
-        PhotoObject photoObject = list.get(position);
-        eventPhotoHolder.bind(photoObject);
-        eventPhotoHolder.itemView.setTag(photoObject);
+        Photo photo = list.get(position);
+        eventPhotoHolder.bind(photo);
+        eventPhotoHolder.itemView.setTag(photo);
     }
 
     @Override

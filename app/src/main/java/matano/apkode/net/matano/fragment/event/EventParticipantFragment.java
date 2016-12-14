@@ -15,13 +15,13 @@ import java.util.List;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.adapter.event.EventParticipantAdapter;
-import matano.apkode.net.matano.model.ParticipantObject;
+import matano.apkode.net.matano.model.User;
 
 public class EventParticipantFragment extends Fragment {
     private Context context;
     private RecyclerView recyclerView;
     private EventParticipantAdapter eventParticipantAdapter;
-    private List<ParticipantObject> participantObjects = new ArrayList<>();
+    private List<User> participants = new ArrayList<>();
 
     public EventParticipantFragment() {
     }
@@ -54,20 +54,14 @@ public class EventParticipantFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        eventParticipantAdapter = new EventParticipantAdapter(participantObjects);
+        eventParticipantAdapter = new EventParticipantAdapter(participants);
 
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
-        participantObjects.add(new ParticipantObject());
+        participants.add(new User());
+        participants.add(new User());
+        participants.add(new User());
+        participants.add(new User());
+        participants.add(new User());
+
 
         recyclerView.setAdapter(eventParticipantAdapter);
 

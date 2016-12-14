@@ -9,13 +9,13 @@ import java.util.List;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.holder.profil.ProfilFriendHolder;
-import matano.apkode.net.matano.model.FriendObject;
+import matano.apkode.net.matano.model.User;
 
 
 public class ProfilFriendAdapter extends RecyclerView.Adapter<ProfilFriendHolder> {
-    List<FriendObject> list;
+    List<User> list;
 
-    public ProfilFriendAdapter(List<FriendObject> list) {
+    public ProfilFriendAdapter(List<User> list) {
         this.list = list;
     }
 
@@ -27,9 +27,9 @@ public class ProfilFriendAdapter extends RecyclerView.Adapter<ProfilFriendHolder
 
     @Override
     public void onBindViewHolder(ProfilFriendHolder profilFriendHolder, int position) {
-        FriendObject friendObject = list.get(position);
-        profilFriendHolder.bind(friendObject);
-        profilFriendHolder.itemView.setTag(friendObject);
+        User user = list.get(position);
+        profilFriendHolder.bind(user);
+        profilFriendHolder.itemView.setTag(user);
     }
 
     @Override

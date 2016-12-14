@@ -9,13 +9,13 @@ import java.util.List;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.holder.profil.ProfilEventHolder;
-import matano.apkode.net.matano.model.EventObject;
+import matano.apkode.net.matano.model.Event;
 
 
 public class ProfilEventAdapter extends RecyclerView.Adapter<ProfilEventHolder> {
-    List<EventObject> list;
+    List<Event> list;
 
-    public ProfilEventAdapter(List<EventObject> list) {
+    public ProfilEventAdapter(List<Event> list) {
         this.list = list;
     }
 
@@ -27,9 +27,9 @@ public class ProfilEventAdapter extends RecyclerView.Adapter<ProfilEventHolder> 
 
     @Override
     public void onBindViewHolder(ProfilEventHolder profilEventHolder, int position) {
-        EventObject eventObject = list.get(position);
-        profilEventHolder.bind(eventObject);
-        profilEventHolder.itemView.setTag(eventObject);
+        Event event = list.get(position);
+        profilEventHolder.bind(event);
+        profilEventHolder.itemView.setTag(event);
     }
 
     @Override

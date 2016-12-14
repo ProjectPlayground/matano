@@ -15,14 +15,14 @@ import java.util.List;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.adapter.event.EventNewAdapter;
-import matano.apkode.net.matano.model.NewObject;
+import matano.apkode.net.matano.model.Photo;
 
 
 public class EventNewFragment extends Fragment {
     private Context context;
     private RecyclerView recyclerView;
     private EventNewAdapter eventNewAdapter;
-    private List<NewObject> newObjects = new ArrayList<>();
+    private List<Photo> aNews = new ArrayList<>();
 
     public EventNewFragment() {
     }
@@ -58,15 +58,11 @@ public class EventNewFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
-        eventNewAdapter = new EventNewAdapter(newObjects);
+        eventNewAdapter = new EventNewAdapter(aNews);
 
-        newObjects.add(new NewObject());
-        newObjects.add(new NewObject());
-        newObjects.add(new NewObject());
-        newObjects.add(new NewObject());
-        newObjects.add(new NewObject());
-        newObjects.add(new NewObject());
-        newObjects.add(new NewObject());
+        aNews.add(new Photo());
+        aNews.add(new Photo());
+        aNews.add(new Photo());
 
 
         recyclerView.setAdapter(eventNewAdapter);
