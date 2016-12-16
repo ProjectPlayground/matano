@@ -3,29 +3,18 @@ package matano.apkode.net.matano.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.adapter.MainNewAdapter;
-import matano.apkode.net.matano.model.Photo;
+import matano.apkode.net.matano.fragmentpageradapter.MainPagerAdapter;
 
-
-public class MainNewFragment extends Fragment {
-
-    private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private List<Photo> newList = new ArrayList<>();
-    private MainNewAdapter mAdapter;
-
+public class MainFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
@@ -39,37 +28,29 @@ public class MainNewFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main_new, container, false);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
 
         if (null != toolbar) {
-            toolbar.setTitle("Fil d'actualité");
+            toolbar.setTitle("Home");
         }
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        mRecyclerView.setHasFixedSize(true);
+        MainPagerAdapter mainPagerAdapter = new MainPagerAdapter(getFragmentManager(), getContext(), toolbar);
 
-        mLayoutManager = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        ViewPager mViewPager = (ViewPager) view.findViewById(R.id.container);
+        mViewPager.setAdapter(mainPagerAdapter);
 
-        mAdapter = new MainNewAdapter(newList);
-
-        newList.add(new Photo());
-        newList.add(new Photo());
-        newList.add(new Photo());
-
-
-        mRecyclerView.setAdapter(mAdapter);
-
-
+        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
     }
+
 
     @Override
     public void onStart() {

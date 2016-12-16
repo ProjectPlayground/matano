@@ -19,11 +19,12 @@ import matano.apkode.net.matano.fragment.profil.ProfilEventFragment;
 import matano.apkode.net.matano.fragment.profil.ProfilFriendFragment;
 import matano.apkode.net.matano.fragment.profil.ProfilInfoFragment;
 import matano.apkode.net.matano.fragment.profil.ProfilPhotoFragment;
+import matano.apkode.net.matano.fragment.profil.ProfilTicketFragment;
 
 public class ProfilPagerAdapter extends FragmentPagerAdapter {
     Toolbar toolbar;
     private Context context;
-    private int icons[] = {R.mipmap.ic_action_action_account_box_padding, R.mipmap.ic_action_image_image_padding, R.mipmap.ic_action_notification_event_note_padding, R.mipmap.ic_action_action_account_child_padding};
+    private int icons[] = {R.mipmap.ic_action_action_account_box_padding, R.mipmap.ic_action_image_image_padding, R.mipmap.ic_action_notification_event_note_padding, R.mipmap.ic_action_action_account_balance_wallet_padding, R.mipmap.ic_action_action_account_child_padding};
 
 
     public ProfilPagerAdapter(FragmentManager fm, Context ctx, Toolbar toolbar) {
@@ -52,6 +53,8 @@ public class ProfilPagerAdapter extends FragmentPagerAdapter {
             case 3:
                 return new ProfilEventFragment().newInstance(context);
             case 4:
+                return new ProfilTicketFragment().newInstance(context);
+            case 5:
                 return new ProfilFriendFragment().newInstance(context);
             default:
                 return new ProfilDefaultFragment().newInstance(context);
@@ -61,7 +64,7 @@ public class ProfilPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 5;
     }
 
     @Override

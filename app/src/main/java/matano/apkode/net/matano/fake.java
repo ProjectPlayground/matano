@@ -26,5 +26,48 @@ recyclerView.addOnItemTouchListener(new ImageGalerieAdapter.RecyclerTouchListene
         }));
  */
 
+    /*
+    <LinearLayout
+        android:id="@+id/Lfiltre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:onClick="showFragmentBtnCategorie"
+            android:text="Categorie"
+            android:textColor="@android:color/background_light"
+            android:textSize="13sp" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:onClick="showFragmentBtnPays"
+            android:text="Pays"
+            android:textColor="@android:color/background_light"
+            android:textSize="13sp" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:onClick="showFragmentBtnVille"
+            android:text="Ville"
+            android:textColor="@android:color/background_light"
+            android:textSize="13sp" />
+    </LinearLayout>
+     */
 
 }

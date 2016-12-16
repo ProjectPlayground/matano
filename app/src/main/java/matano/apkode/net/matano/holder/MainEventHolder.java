@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.model.Event;
@@ -46,7 +46,11 @@ public class MainEventHolder extends RecyclerView.ViewHolder {
     public void setImageViewEventPhoto(Context context, String s) {
         if (null != s) {
             if (null != imageViewEventPhoto) {
-                Picasso.with(context).load(s).into(imageViewEventPhoto);
+                Glide
+                        .with(context)
+                        .load(s)
+                        //  .centerCrop()
+                        .into(imageViewEventPhoto);
             }
         }
     }

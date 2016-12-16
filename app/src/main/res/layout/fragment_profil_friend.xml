@@ -4,18 +4,43 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/Lfiltre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="Mes amis"
-        android:textAlignment="center"
-        android:textColor="@color/cardview_dark_background" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_followers"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_weight="1"
+            android:background="@color/gray"
+            android:onClick="showFragmentBtnCategorie"
+            android:text="Followers" />
+
+        <Button
+            android:id="@+id/button_followings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_weight="1"
+            android:background="@color/gray"
+            android:onClick="showFragmentBtnPays"
+            android:text="Followings"
+            android:textColor="@color/colorPrimary"
+            android:textSize="13sp" />
+
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:scrollbars="none" />
+
 
 </LinearLayout>

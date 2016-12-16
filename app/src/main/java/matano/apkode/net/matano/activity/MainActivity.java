@@ -23,12 +23,13 @@ import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.adapter.MainFramelayoutCategorieAdapter;
 import matano.apkode.net.matano.adapter.MainFramelayoutPaysAdapter;
 import matano.apkode.net.matano.adapter.MainFramelayoutVilleAdapter;
-import matano.apkode.net.matano.fragment.MainEventFragment;
+import matano.apkode.net.matano.fragment.MainFragment;
 import matano.apkode.net.matano.fragment.MainNewFragment;
+
 
 public class MainActivity extends AppCompatActivity {
     private FrameLayout frameLayout;
-    private MainEventFragment mainEventFragment;
+    private MainFragment mainFragment;
     private MainNewFragment mainNewFragment;
     private FrameLayout frameLayoutMenu;
     private FrameLayout frameLayoutBtnCategorie;
@@ -79,10 +80,10 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            mainEventFragment = new MainEventFragment();
+            mainFragment = new MainFragment();
             mainNewFragment = new MainNewFragment();
 
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, mainEventFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, mainFragment).commit();
 
         }
 
@@ -94,12 +95,13 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (item.getItemId()) {
                     case R.id.ic_bottom_event:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mainEventFragment).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mainFragment).commit();
                         break;
 
                     case R.id.ic_bottom_new:
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mainNewFragment).commit();
                         break;
+
                     case R.id.ic_bottom_profil:
                         Intent intent = new Intent(getApplicationContext(), ProfilActivity.class);
                         startActivity(intent);
@@ -108,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return false;
             }
+
         });
 
 

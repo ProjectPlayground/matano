@@ -4,9 +4,18 @@ import android.app.Application;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+
+import io.fabric.sdk.android.Fabric;
 
 
 public class Fb extends Application {
+
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+    private static final String TWITTER_KEY = "sEj0jBiSTz80lQPVKAkj5a2BY";
+    private static final String TWITTER_SECRET = "J4ZDcAZOeRrJ3e3Is88iKMmSOwdDtcbpM0oVhedXRVypXwOx7B";
+
     private FirebaseDatabase rootDatabase;
     private DatabaseReference refMessage;
 
@@ -21,6 +30,8 @@ public class Fb extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
         rootDatabase = FirebaseDatabase.getInstance();
         refMessage = rootDatabase.getReference("message");
     }
