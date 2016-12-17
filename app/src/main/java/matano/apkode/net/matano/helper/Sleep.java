@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import matano.apkode.net.matano.interfaces.ISleep;
 
 public class Sleep extends AsyncTask {
-    private static final int SPLASH_TIME = 2000;
+    private static final int SPLASH_TIME = 1000;
     private Context context;
     private ISleep iSleep;
 

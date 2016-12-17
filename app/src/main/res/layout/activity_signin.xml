@@ -6,5 +6,83 @@
     android:layout_height="match_parent"
     tools:context="matano.apkode.net.matano.activity.SignInActivity">
 
+    <FrameLayout
+        android:id="@+id/frameLayoutContry"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/radioGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/radio_niger"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="Niger" />
+
+                <RadioButton
+                    android:id="@+id/radio_senegal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="Senegal" />
+            </RadioGroup>
+
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayoutCity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/radioGroupPays"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/radio_niamey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onRadioButtonCityClicked"
+                    android:text="Niamey" />
+
+                <RadioButton
+                    android:id="@+id/radio_dosso"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onRadioButtonCityClicked"
+                    android:text="Dosso" />
+            </RadioGroup>
+
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
 
 </RelativeLayout>

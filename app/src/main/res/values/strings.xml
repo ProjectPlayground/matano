@@ -104,4 +104,5 @@
     <string name="twitter_consumer_key" translatable="false">OcQZwTfTzkQ6BmMZ0ixzOFWXK</string>
     <string name="twitter_consumer_secret" translatable="false">u50dpUqZOYx6wIKy84ZBctwpilHylCKgW0sQS1EXv4tms2BRaS</string>
     <string name="no_network">Erreur réseau, vérifier votre connexion internet</string>
+    <string name="cancel_login">Cancel login</string>
 </resources>
