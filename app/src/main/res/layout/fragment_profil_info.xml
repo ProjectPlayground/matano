@@ -26,7 +26,7 @@
                 app:cardElevation="2dp">
 
                 <ImageView
-                    android:id="@+id/user_image"
+                    android:id="@+id/imageViewPhotoProfil"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:adjustViewBounds="true"
@@ -42,61 +42,61 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/txtFolloersNumber"
+                    android:id="@+id/textViewFollowersNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2,400"
+                    android:hint="2,400"
                     android:textColor="@color/cardview_dark_background"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/txtFollowers"
+                    android:id="@+id/textViewFollowers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
-                    android:layout_toRightOf="@+id/txtFolloersNumber"
-                    android:text="abonnements"
+                    android:layout_toRightOf="@+id/textViewFollowersNumber"
+                    android:hint="abonnements"
                     android:textSize="13sp" />
 
                 <TextView
-                    android:id="@+id/txtFollowingNumber"
+                    android:id="@+id/textViewFollowingsNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/txtFolloersNumber"
-                    android:text="4,179"
+                    android:layout_below="@+id/textViewFollowers"
+                    android:hint="4,179"
                     android:textColor="@color/cardview_dark_background"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/txtFollowing"
+                    android:id="@+id/textViewFollowings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/txtFollowers"
+                    android:layout_below="@+id/textViewFollowers"
                     android:layout_marginLeft="4dp"
-                    android:layout_toRightOf="@+id/txtFolloersNumber"
-                    android:text="abonnés"
+                    android:layout_toRightOf="@+id/textViewFollowingsNumber"
+                    android:hint="abonnés"
                     android:textSize="13sp" />
 
                 <TextView
-                    android:id="@+id/txtPostNumber"
+                    android:id="@+id/textViewPhotosNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/txtFollowingNumber"
-                    android:text="106"
+                    android:layout_below="@+id/textViewFollowingsNumber"
+                    android:hint="106"
                     android:textColor="@color/cardview_dark_background"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/txtPosts"
+                    android:id="@+id/textViewPhotos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/txtFollowing"
+                    android:layout_below="@+id/textViewFollowings"
                     android:layout_marginLeft="4dp"
-                    android:layout_toRightOf="@+id/txtPostNumber"
-                    android:text="posts"
+                    android:layout_toRightOf="@+id/textViewPhotosNumber"
+                    android:hint="posts"
                     android:textSize="13sp" />
 
 
@@ -122,13 +122,14 @@
                 android:tint="@color/colorPrimary" />
 
             <TextView
+                android:id="@+id/textViewUsername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
                 android:layout_toLeftOf="@+id/btnAdd"
                 android:gravity="center_vertical"
-                android:text="@string/useename"
+                android:hint="@string/useename"
                 android:textColor="@color/cardview_dark_background"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -142,10 +143,11 @@
             app:cardElevation="2dp">
 
             <TextView
+                android:id="@+id/textViewPresentation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:text="@string/citation" />
+                android:hint="@string/citation"
+                android:padding="@dimen/activity_horizontal_margin" />
         </android.support.v7.widget.CardView>
 
 
