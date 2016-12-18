@@ -29,13 +29,13 @@ public class Event implements Serializable {
     private String tarification; // gratuit - payant - free
 
     private List<String> tarifs = new ArrayList<>(); // Uid
-    private Map<String, Integer> users = new HashMap<>();  // uId - status (0, 1, 2)
+    private Map<String, String> users = new HashMap<>();  // uId - status (0, 1, 2)
 
 
     public Event() {
     }
 
-    public Event(String title, String category, String subCategory, String contry, String city, String place, String address, Double longitude, Double latitude, Double altitude, Date dateStart, Date dateEnd, String presentation, String photoProfil, String videoProfil, String tarification, List<String> tarifs, Map<String, Integer> users) {
+    public Event(String title, String category, String subCategory, String contry, String city, String place, String address, Double longitude, Double latitude, Double altitude, Date dateStart, Date dateEnd, String presentation, String photoProfil, String videoProfil, String tarification, List<String> tarifs, Map<String, String> users) {
         this.title = title;
         this.category = category;
         this.subCategory = subCategory;
@@ -192,11 +192,11 @@ public class Event implements Serializable {
         this.tarifs = tarifs;
     }
 
-    public Map<String, Integer> getUsers() {
+    public Map<String, String> getUsers() {
         return users;
     }
 
-    public void setUsers(Map<String, Integer> users) {
+    public void setUsers(Map<String, String> users) {
         this.users = users;
     }
 }

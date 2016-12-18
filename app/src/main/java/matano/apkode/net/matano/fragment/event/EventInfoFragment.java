@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,7 +27,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -53,11 +53,12 @@ public class EventInfoFragment extends Fragment {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase database;
     private DatabaseReference mRootRef;
-    private DatabaseReference refUser;
+    private DatabaseReference refEventUser;
     private DatabaseReference refEvent;
     private FirebaseUser user;
     private FirebaseRecyclerAdapter<Event, ProfilEventHolder> adapter;
     private LinearLayoutManager manager;
+
     private ImageView imageViewPhotoProfil;
     private TextView textViewTitle;
     private TextView textViewPlace;
@@ -66,6 +67,11 @@ public class EventInfoFragment extends Fragment {
     private TextView textViewDateEnd;
     private TextView textViewTarification;
     private TextView textViewPresentation;
+    private Button button_participer;
+
+    private String button_participer_tag;
+    private SimpleDateFormat simpleDateFormat;
+
     private String title = null;
     private String category = null;
     private String subCategory = null;
@@ -83,8 +89,8 @@ public class EventInfoFragment extends Fragment {
     private String videoProfil = null; //  idVideo
     private String tarification = null; // gratuit - payant - free
 
-    private List<String> tarifs = new ArrayList<>(); // Uid
-    private Map<String, String> users = new HashMap<>();  // uId - status
+    private List<String> tarifs = null; // Uid
+    private Map<String, String> users = null;  // uId - status
 
 
     public EventInfoFragment() {
@@ -157,6 +163,7 @@ public class EventInfoFragment extends Fragment {
         textViewDateEnd = (TextView) view.findViewById(R.id.textViewDateEnd);
         textViewTarification = (TextView) view.findViewById(R.id.textViewTarification);
         textViewPresentation = (TextView) view.findViewById(R.id.textViewPresentation);
+        button_participer = (Button) view.findViewById(R.id.button_participer);
 
         ButterKnife.bind(this, view);
         return view;
@@ -166,7 +173,7 @@ public class EventInfoFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE);
+        simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE);
 
         refEvent.addValueEventListener(new ValueEventListener() {
             @Override
@@ -228,7 +235,9 @@ public class EventInfoFragment extends Fragment {
                     if (event.getTarification() != null) {
                         tarification = event.getTarification();
                     }
-
+                    if (event.getUsers() != null) {
+                        users = event.getUsers();
+                    }
 
                     if (imageViewPhotoProfil != null) {
                         if (photoProfil != null) {
@@ -274,6 +283,34 @@ public class EventInfoFragment extends Fragment {
                         if (presentation != null) {
                             textViewPresentation.setText(presentation);
                         }
+                    }
+
+
+                    if (button_participer != null) {
+
+                        isUserParticipe(FirebaseAuth.getInstance().getCurrentUser(), button_participer);
+
+                        button_participer.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                button_participer_tag = button_participer.getTag().toString();
+                                switch (button_participer_tag) {
+                                    case "0":
+                                        button_participer_tag = "1";
+                                        button_participer.setTag("1");
+                                        button_participer.setText("Participe");
+                                        break;
+                                    case "1":
+                                        button_participer_tag = "0";
+                                        button_participer.setTag("0");
+                                        button_participer.setText("je participer");
+                                        break;
+                                    case "2":
+                                        break;
+                                }
+                                addUserToEvent(FirebaseAuth.getInstance().getCurrentUser(), button_participer_tag);
+                            }
+                        });
                     }
 
 
@@ -391,5 +428,64 @@ public class EventInfoFragment extends Fragment {
         startActivity(new Intent(getContext(), SignInActivity.class));
         getActivity().finish();
     }
+
+    private void isUserParticipe(FirebaseUser currentUser, final Button button_participer) {
+        refEventUser = refEvent.child("users").child(currentUser.getUid());
+
+        refEventUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    button_participer.setText("Participer");
+                    button_participer.setTag("0");
+                    button_participer.setVisibility(View.VISIBLE);
+                } else {
+                    String status = dataSnapshot.getValue(String.class);
+                    switch (status) {
+                        case "0":
+                            button_participer.setText("Participer");
+                            button_participer.setTag("0");
+                            button_participer.setVisibility(View.VISIBLE);
+                            break;
+                        case "1":
+                            button_participer.setText("Je participe");
+                            button_participer.setTag("1");
+                            button_participer.setVisibility(View.VISIBLE);
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void addUserToEvent(FirebaseUser currentUser, final String button_participer_tag) {
+
+        refEventUser = refEvent.child("users").child(currentUser.getUid());
+
+        refEventUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                refEventUser.setValue(button_participer_tag, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 
 }
