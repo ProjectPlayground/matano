@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hint="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,7 +17,7 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/img"
+                android:id="@+id/imageViewPhotoProfil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
@@ -43,6 +44,7 @@
                         android:tint="@color/colorPrimary" />
 
                     <TextView
+                        android:id="@+id/textViewTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -51,17 +53,6 @@
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:text="208 amis participents" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerViewTopParticipant"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none" />
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
@@ -84,6 +75,14 @@
                         android:tint="@color/colorPrimary" />
 
                     <TextView
+                        android:id="@+id/textViewDateStart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:text="17-01-2016" />
+
+                    <TextView
+                        android:id="@+id/textViewDateEnd"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -113,10 +112,41 @@
                         android:tint="@color/colorPrimary" />
 
                     <TextView
+                        android:id="@+id/textViewPlace"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                        android:text="Palais des congres, 25 rue de la paix, 12350, paris, france" />
+                        hint:text="Palais des congres" />
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/activity_horizontal_margin">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_action_maps_map_padding"
+                        android:tint="@color/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/textViewAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:hint="25 rue de la paix, 12350, paris, france" />
 
                 </LinearLayout>
             </android.support.v7.widget.CardView>
@@ -142,6 +172,7 @@
                         android:tint="@color/colorPrimary" />
 
                     <TextView
+                        android:id="@+id/textViewTarification"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -184,10 +215,11 @@
                         android:tint="@color/colorPrimary" />
 
                     <TextView
+                        android:id="@+id/textViewPresentation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                        android:text="@string/citation" />
+                        android:hint="@string/citation" />
 
                 </LinearLayout>
             </android.support.v7.widget.CardView>

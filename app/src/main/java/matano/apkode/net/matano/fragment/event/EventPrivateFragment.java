@@ -12,12 +12,14 @@ import matano.apkode.net.matano.R;
 
 public class EventPrivateFragment extends Fragment {
     private Context context;
+    private String eventKey;
 
     public EventPrivateFragment() {
     }
 
-    public EventPrivateFragment newInstance(Context ctx) {
+    public EventPrivateFragment newInstance(Context ctx, String key) {
         context = ctx;
+        eventKey = key;
         EventPrivateFragment eventPrivateFragment = new EventPrivateFragment();
         return eventPrivateFragment;
     }

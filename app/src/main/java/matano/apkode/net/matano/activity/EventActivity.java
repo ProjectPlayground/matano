@@ -13,11 +13,8 @@ import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.Fb;
@@ -32,6 +29,7 @@ public class EventActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference refMessage;
     private DatabaseReference mRootRef;
+    private String eventKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +43,7 @@ public class EventActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    //  Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                     goSignIn();
@@ -53,6 +51,11 @@ public class EventActivity extends AppCompatActivity {
             }
         };
 
+        eventKey = getIntent().getStringExtra("eventKey");
+
+        if (null == eventKey) {
+            finish();
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_action_navigation_arrow_back_padding);
@@ -63,7 +66,7 @@ public class EventActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        EventPagerAdapter eventPagerAdapter = new EventPagerAdapter(getSupportFragmentManager(), getApplicationContext(), toolbar);
+        EventPagerAdapter eventPagerAdapter = new EventPagerAdapter(getSupportFragmentManager(), getApplicationContext(), toolbar, eventKey);
 
         ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(eventPagerAdapter);
@@ -83,31 +86,6 @@ public class EventActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-
-        // database = FirebaseDatabase.getInstance();
-        mRootRef = FirebaseDatabase.getInstance().getReference().getRoot();
-
-        refMessage = mRootRef.child("message");
-
-        refMessage.setValue("Hello, Dosso!");
-
-        // Read from the database
-        refMessage.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-                Log.d(TAG, "Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
-
     }
 
     @Override
@@ -135,6 +113,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void goSignIn() {
         startActivity(new Intent(this, SignInActivity.class));
+        finish();
     }
 
 

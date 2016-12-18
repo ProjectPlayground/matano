@@ -21,7 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -61,11 +61,11 @@ public class ProfilInfoFragment extends Fragment {
     private String photoProfl = null;
 
     private Map<String, Boolean> events = null;  // idEvent - boolean
-    private HashSet<String> followers = null;  // Uid
-    private HashSet<String> followings = null;  // Uid
-    private HashSet<String> photos = null;   // idPhoto
-    private HashSet<String> videos = null;   // idVidoe
-    private HashSet<String> tickets = null;   // idTicket
+    private List<String> followers = null;  // Uid
+    private List<String> followings = null;  // Uid
+    private List<String> photos = null;   // idPhoto
+    private List<String> videos = null;   // idVidoe
+    private List<String> tickets = null;   // idTicket
 
     private int eventsNumber = 0;
     private int followersNumber = 0;
@@ -125,6 +125,24 @@ public class ProfilInfoFragment extends Fragment {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     refUser = refUser.child(user.getUid());
+/*
+                    List<String> photos = new ArrayList<>();
+                    photos.add("http://www.newseum.org/wp-content/uploads/2014/08/370x250xhostevent_landing_wedding2.jpg.pagespeed.ic.eyeFV_I2q1.jpg");
+                    photos.add("http://www.newseum.org/wp-content/uploads/2014/08/370x250xhostevent_landing_wedding2.jpg.pagespeed.ic.eyeFV_I2q1.jpg");
+                    photos.add("http://partiezbyleslie.com/wp-content/uploads/2015/07/Event-management.png");
+                    photos.add("http://www.skiheavenly.com/~/media/heavenly/images/732x260%20header%20images/events-heavenly-header.ashx");
+                    photos.add("http://tk-themes.net/html-ivent/images/event/category/cate_2.jpg");
+                    photos.add("http://www.salesfish.com/wp-content/uploads/2011/11/Experiential-Event-Marketing.jpg");
+                    photos.add("http://www.eventcity.co.uk/images/dynamicImages/orig_img50b4cfb0422a6.jpg");
+                    photos.add("http://www.newseum.org/wp-content/uploads/2014/08/370x250xhostevent_landing_wedding2.jpg.pagespeed.ic.eyeFV_I2q1.jpg");
+                    photos.add("http://www.newseum.org/wp-content/uploads/2014/08/370x250xhostevent_landing_wedding2.jpg.pagespeed.ic.eyeFV_I2q1.jpg");
+                    photos.add("http://partiezbyleslie.com/wp-content/uploads/2015/07/Event-management.png");
+                    photos.add("http://www.skiheavenly.com/~/media/heavenly/images/732x260%20header%20images/events-heavenly-header.ashx");
+                    photos.add("http://tk-themes.net/html-ivent/images/event/category/cate_2.jpg");
+                    photos.add("http://www.salesfish.com/wp-content/uploads/2011/11/Experiential-Event-Marketing.jpg");
+                    photos.add("http://www.eventcity.co.uk/images/dynamicImages/orig_img50b4cfb0422a6.jpg");
+
+                    refUser.child("photos").setValue(photos);*/
                     getUserData();
                 } else {
                     // TODO go sign in
@@ -272,13 +290,13 @@ public class ProfilInfoFragment extends Fragment {
 
 
         if (textViewFollowersNumber != null) {
-            textViewFollowersNumber.setText("" + followersNumber);
+            textViewFollowersNumber.setText(followersNumber + " followers");
         }
         if (textViewFollowingsNumber != null) {
-            textViewFollowingsNumber.setText("" + followingsNumber);
+            textViewFollowingsNumber.setText("" + followingsNumber + " followings");
         }
         if (textViewPhotosNumber != null) {
-            textViewPhotosNumber.setText("" + photosNumber);
+            textViewPhotosNumber.setText("" + photosNumber + " posts");
         }
         if (textViewUsername != null) {
             if (username != null) {

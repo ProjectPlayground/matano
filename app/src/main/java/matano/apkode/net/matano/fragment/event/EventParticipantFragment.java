@@ -22,12 +22,14 @@ public class EventParticipantFragment extends Fragment {
     private RecyclerView recyclerView;
     private EventParticipantAdapter eventParticipantAdapter;
     private List<User> participants = new ArrayList<>();
+    private String eventKey;
 
     public EventParticipantFragment() {
     }
 
-    public EventParticipantFragment newInstance(Context ctx) {
+    public EventParticipantFragment newInstance(Context ctx, String key) {
         context = ctx;
+        eventKey = key;
         EventParticipantFragment eventParticipantFragment = new EventParticipantFragment();
         return eventParticipantFragment;
     }

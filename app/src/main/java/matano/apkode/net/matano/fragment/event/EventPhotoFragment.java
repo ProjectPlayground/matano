@@ -28,12 +28,14 @@ public class EventPhotoFragment extends Fragment {
     private RecyclerView recyclerView;
     private EventPhotoAdapter eventPhotoAdapter;
     private List<Photo> photos = new ArrayList<>();
+    private String eventKey;
 
     public EventPhotoFragment() {
     }
 
-    public EventPhotoFragment newInstance(Context ctx) {
+    public EventPhotoFragment newInstance(Context ctx, String key) {
         context = ctx;
+        eventKey = key;
         EventPhotoFragment eventPhotoFragment = new EventPhotoFragment();
         return eventPhotoFragment;
     }

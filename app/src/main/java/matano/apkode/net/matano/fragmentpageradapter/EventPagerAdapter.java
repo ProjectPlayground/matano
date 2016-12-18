@@ -25,13 +25,15 @@ import matano.apkode.net.matano.fragment.event.EventPrivateFragment;
 public class EventPagerAdapter extends FragmentPagerAdapter {
     Toolbar toolbar;
     private Context context;
+    private String eventKey;
     private int icons[] = {R.mipmap.ic_action_notification_event_note_padding, R.mipmap.ic_action_action_list_padding, R.mipmap.ic_action_image_image_padding, R.mipmap.ic_action_action_account_child_padding, R.mipmap.ic_action_communication_chat_padding};
 
 
-    public EventPagerAdapter(FragmentManager fm, Context ctx, Toolbar toolbar) {
+    public EventPagerAdapter(FragmentManager fm, Context ctx, Toolbar toolbar, String key) {
         super(fm);
         this.context = ctx;
         this.toolbar = toolbar;
+        this.eventKey = key;
     }
 
     public View getTabView(int position) {
@@ -48,17 +50,17 @@ public class EventPagerAdapter extends FragmentPagerAdapter {
         switch (position + 1) {
 
             case 1:
-                return new EventInfoFragment().newInstance(context);
+                return new EventInfoFragment().newInstance(context, eventKey);
             case 2:
-                return new EventNewFragment().newInstance(context);
+                return new EventNewFragment().newInstance(context, eventKey);
             case 3:
-                return new EventPhotoFragment().newInstance(context);
+                return new EventPhotoFragment().newInstance(context, eventKey);
             case 4:
-                return new EventParticipantFragment().newInstance(context);
+                return new EventParticipantFragment().newInstance(context, eventKey);
             case 5:
-                return new EventPrivateFragment().newInstance(context);
+                return new EventPrivateFragment().newInstance(context, eventKey);
             default:
-                return new EventDefaultFragment().newInstance(context);
+                return new EventDefaultFragment().newInstance(context, eventKey);
         }
 
     }

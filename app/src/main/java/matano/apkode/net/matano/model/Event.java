@@ -3,9 +3,10 @@ package matano.apkode.net.matano.model;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 @IgnoreExtraProperties
@@ -27,14 +28,14 @@ public class Event implements Serializable {
     private String videoProfil; //  idVideo
     private String tarification; // gratuit - payant - free
 
-    private HashSet<String> tarifs = new HashSet<>(); // Uid
-    private Map<String, Boolean> users = new HashMap<>();  // uId - status
+    private List<String> tarifs = new ArrayList<>(); // Uid
+    private Map<String, Integer> users = new HashMap<>();  // uId - status (0, 1, 2)
 
 
     public Event() {
     }
 
-    public Event(String title, String category, String subCategory, String contry, String city, String place, String address, Double longitude, Double latitude, Double altitude, Date dateStart, Date dateEnd, String presentation, String photoProfil, String videoProfil, String tarification, HashSet<String> tarifs, Map<String, Boolean> users) {
+    public Event(String title, String category, String subCategory, String contry, String city, String place, String address, Double longitude, Double latitude, Double altitude, Date dateStart, Date dateEnd, String presentation, String photoProfil, String videoProfil, String tarification, List<String> tarifs, Map<String, Integer> users) {
         this.title = title;
         this.category = category;
         this.subCategory = subCategory;
@@ -183,19 +184,19 @@ public class Event implements Serializable {
         this.tarification = tarification;
     }
 
-    public HashSet<String> getTarifs() {
+    public List<String> getTarifs() {
         return tarifs;
     }
 
-    public void setTarifs(HashSet<String> tarifs) {
+    public void setTarifs(List<String> tarifs) {
         this.tarifs = tarifs;
     }
 
-    public Map<String, Boolean> getUsers() {
+    public Map<String, Integer> getUsers() {
         return users;
     }
 
-    public void setUsers(Map<String, Boolean> users) {
+    public void setUsers(Map<String, Integer> users) {
         this.users = users;
     }
 }

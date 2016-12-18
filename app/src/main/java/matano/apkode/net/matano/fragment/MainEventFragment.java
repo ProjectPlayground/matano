@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,6 @@ import java.util.Locale;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.activity.EventActivity;
-import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.MainEventHolder;
 import matano.apkode.net.matano.model.Event;
 
@@ -123,11 +121,7 @@ public class MainEventFragment extends Fragment {
 
         adapter = new FirebaseRecyclerAdapter<Event, MainEventHolder>(Event.class, R.layout.card_main_event, MainEventHolder.class, query) {
             @Override
-            protected void populateViewHolder(MainEventHolder mainEventHolder, final Event event, int position) {
-
-
-                Log.e(Utils.TAG, "date debut " + event.getPhotoProfil());
-
+            protected void populateViewHolder(MainEventHolder mainEventHolder, final Event event, final int position) {
                 event.getDateStart();
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE);
                 String date = simpleDateFormat.format(event.getDateStart());
@@ -140,7 +134,7 @@ public class MainEventFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getContext(), EventActivity.class);
-                        intent.putExtra("Event", event);
+                        intent.putExtra("eventKey", getRef(position).getKey());
                         startActivity(intent);
                     }
                 });
@@ -221,7 +215,6 @@ public class MainEventFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override

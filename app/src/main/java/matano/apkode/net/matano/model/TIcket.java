@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-public class TIcket implements Serializable {
+public class Ticket implements Serializable {
     private String code;        // code bare
     private String event;       // idEvent
     private String user;        // idUser
@@ -13,10 +13,10 @@ public class TIcket implements Serializable {
     private Date date;
     private Boolean status;
 
-    public TIcket() {
+    public Ticket() {
     }
 
-    public TIcket(String code, String event, String user, String tarif, Integer quantity, Date date, Boolean status) {
+    public Ticket(String code, String event, String user, String tarif, Integer quantity, Date date, Boolean status) {
         this.code = code;
         this.event = event;
         this.user = user;

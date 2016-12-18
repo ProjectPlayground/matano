@@ -3,9 +3,10 @@ package matano.apkode.net.matano.model;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 
@@ -25,13 +26,13 @@ public class User implements Serializable {
 
     private Map<String, Boolean> events = new HashMap<>();  // idEvent - boolean
 
-    private HashSet<String> followers = new HashSet<>();  // Uid
-    private HashSet<String> followings = new HashSet<>();  // Uid
+    private List<String> followers = new ArrayList<>();  // Uid
+    private List<String> followings = new ArrayList<>();  // Uid
 
-    private HashSet<String> photos = new HashSet<>();   // idPhoto
-    private HashSet<String> videos = new HashSet<>();   // idVidoe
+    private List<String> photos = new ArrayList<>();   // idPhoto
+    private List<String> videos = new ArrayList<>();   // idVidoe
 
-    private HashSet<String> tickets = new HashSet<>();   // idTicket
+    private List<String> tickets = new ArrayList<>();   // idTicket
 
     public User() {
     }
@@ -50,7 +51,7 @@ public class User implements Serializable {
         this.photoProfl = photoProfl;
     }
 
-    public User(String username, String firstName, String lastName, String contry, String city, String email, String telephone, String sexe, Date birthday, String presentation, String photoProfl, Map<String, Boolean> events, HashSet<String> followers, HashSet<String> followings, HashSet<String> photos, HashSet<String> videos, HashSet<String> tickets) {
+    public User(String username, String firstName, String lastName, String contry, String city, String email, String telephone, String sexe, Date birthday, String presentation, String photoProfl, Map<String, Boolean> events, List<String> followers, List<String> followings, List<String> photos, List<String> videos, List<String> tickets) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -166,43 +167,43 @@ public class User implements Serializable {
         this.events = events;
     }
 
-    public HashSet<String> getFollowers() {
+    public List<String> getFollowers() {
         return followers;
     }
 
-    public void setFollowers(HashSet<String> followers) {
+    public void setFollowers(List<String> followers) {
         this.followers = followers;
     }
 
-    public HashSet<String> getFollowings() {
+    public List<String> getFollowings() {
         return followings;
     }
 
-    public void setFollowings(HashSet<String> followings) {
+    public void setFollowings(List<String> followings) {
         this.followings = followings;
     }
 
-    public HashSet<String> getPhotos() {
+    public List<String> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(HashSet<String> photos) {
+    public void setPhotos(List<String> photos) {
         this.photos = photos;
     }
 
-    public HashSet<String> getVideos() {
+    public List<String> getVideos() {
         return videos;
     }
 
-    public void setVideos(HashSet<String> videos) {
+    public void setVideos(List<String> videos) {
         this.videos = videos;
     }
 
-    public HashSet<String> getTickets() {
+    public List<String> getTickets() {
         return tickets;
     }
 
-    public void setTickets(HashSet<String> tickets) {
+    public void setTickets(List<String> tickets) {
         this.tickets = tickets;
     }
 }

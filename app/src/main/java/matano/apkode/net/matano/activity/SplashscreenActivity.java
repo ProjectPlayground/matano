@@ -13,7 +13,7 @@ public class SplashscreenActivity extends AppCompatActivity implements ISleep {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //AuthUI.getInstance().signOut(this);
+        // AuthUI.getInstance().signOut(this);
         setContentView(R.layout.activity_splashscreen);
     }
 

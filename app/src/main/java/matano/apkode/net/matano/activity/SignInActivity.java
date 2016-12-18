@@ -137,6 +137,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void setUserExiste() {
+
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         assert user != null;
@@ -151,6 +152,7 @@ public class SignInActivity extends AppCompatActivity {
                     String firstName = user.getDisplayName();
                     String email = user.getEmail();
                     String photoProfil = null;
+
 
                     Uri photoUrl = user.getPhotoUrl();
 
@@ -193,10 +195,10 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child(user.getUid()).child("contry").exists()) {
+                    setUserCityExist();
+                } else {
                     frameLayoutCity.setVisibility(View.GONE);
                     frameLayoutContry.setVisibility(View.VISIBLE);
-                } else {
-                    setUserCityExist();
                 }
             }
 
@@ -205,7 +207,6 @@ public class SignInActivity extends AppCompatActivity {
 
             }
         });
-
 
     }
 
@@ -219,10 +220,10 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child(user.getUid()).child("city").exists()) {
+                    goMain();
+                } else {
                     frameLayoutContry.setVisibility(View.GONE);
                     frameLayoutCity.setVisibility(View.VISIBLE);
-                } else {
-                    goMain();
                 }
             }
 
