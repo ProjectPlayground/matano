@@ -152,17 +152,69 @@ public class EventParticipantFragment extends Fragment {
 
         adapter = new FirebaseRecyclerAdapter<String, EventParticipantHolder>(String.class, R.layout.card_event_participant, EventParticipantHolder.class, query) {
             @Override
-            protected void populateViewHolder(final EventParticipantHolder eventParticipantHolder, String s, int position) {
+            protected void populateViewHolder(final EventParticipantHolder eventParticipantHolder, final String s, int position) {
                 if (s != null) {
-                    String ref = getRef(position).getKey();
+                    final String ref = getRef(position).getKey();
                     refUser.child(ref).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            User user = dataSnapshot.getValue(User.class);
+                            final User user = dataSnapshot.getValue(User.class);
 
                             if (user != null && user.getUsername() != null && user.getPhotoProfl() != null) {
                                 eventParticipantHolder.setImageViewPhoto(getContext(), user.getPhotoProfl());
                                 eventParticipantHolder.setTextViewUsername(user.getUsername());
+
+                                if (eventParticipantHolder.getImageButtonAddFollowing() != null) {
+
+                                    DatabaseReference reference = mRootRef.child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("followings");
+
+                                    reference.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                            if (dataSnapshot.getChildrenCount() == 0) {
+                                                eventParticipantHolder.getImageButtonAddFollowing().setTag("1");
+                                                eventParticipantHolder.getImageButtonAddFollowing().setVisibility(View.VISIBLE);
+                                                if (!ref.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                                    eventParticipantHolder.getImageButtonAddFollowing().setImageResource(R.mipmap.ic_action_social_person_add_padding);
+                                                }
+                                            } else {
+                                                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+
+                                                    if (ref.equals(snap.getKey())) {
+                                                        eventParticipantHolder.getImageButtonAddFollowing().setTag(null);
+                                                        eventParticipantHolder.getImageButtonAddFollowing().setVisibility(View.VISIBLE);
+                                                        if (!ref.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                                            eventParticipantHolder.getImageButtonAddFollowing().setImageResource(R.mipmap.ic_action_action_done_all_padding);
+                                                        }
+                                                    } else {
+                                                        eventParticipantHolder.getImageButtonAddFollowing().setTag("1");
+                                                        eventParticipantHolder.getImageButtonAddFollowing().setVisibility(View.VISIBLE);
+                                                        if (!ref.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                                            eventParticipantHolder.getImageButtonAddFollowing().setImageResource(R.mipmap.ic_action_social_person_add_padding);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                    eventParticipantHolder.getImageButtonAddFollowing().setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            String a = (String) view.getTag();
+                                            Log.e(Utils.TAG, "a " + a);
+                                            addFollowing(ref, a);
+                                        }
+                                    });
+
+
+                                }
                             }
                         }
 
@@ -174,7 +226,6 @@ public class EventParticipantFragment extends Fragment {
                 }
             }
         };
-
 
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -221,22 +272,18 @@ public class EventParticipantFragment extends Fragment {
                     switch (button_participer.getTag().toString()) {
                         case "9":
                             button_participer.setTag("0");
-                            // button_participer.setText("En attente");
                             break;
                         case "0":
                             button_participer.setTag("9");
-                            // button_participer.setText("Participer");
                             break;
                         case "1":
                             button_participer.setTag("9");
-                            //   button_participer.setText("Participer");
                             break;
                     }
                     setUserToEvent();
                 }
             });
         }
-
 
 
     }
@@ -348,5 +395,29 @@ public class EventParticipantFragment extends Fragment {
             }
         });
     }
+
+
+    private void addFollowing(String uid, String tag) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        assert currentUser != null;
+        String currentUserUid = currentUser.getUid();
+
+        Map hashMap = new HashMap();
+        hashMap.put("user/" + uid + "/followers/" + currentUserUid, tag);
+        hashMap.put("user/" + currentUserUid + "/followings/" + uid, tag);
+
+        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
+                }
+            }
+        });
+
+
+    }
+
 
 }

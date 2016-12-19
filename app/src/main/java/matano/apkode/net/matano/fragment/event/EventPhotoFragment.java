@@ -289,17 +289,13 @@ public class EventPhotoFragment extends Fragment {
 
         final String uuid = UUID.randomUUID().toString();
 
-        Log.e(Utils.TAG, "uuid " + uuid);
-
         StorageReference photoRef = refStoragePhotos.child(uuid);
         photoRef.putFile(selectedImageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUri = taskSnapshot.getDownloadUrl();
-                        Log.e(Utils.TAG, "name " + taskSnapshot.getMetadata().getName());
                         savePhoto(FirebaseAuth.getInstance().getCurrentUser(), downloadUri, uuid);
-                        Log.e(Utils.TAG, "uploadPhoto:onSuccess:" + taskSnapshot.getDownloadUrl());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

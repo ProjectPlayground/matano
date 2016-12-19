@@ -3,6 +3,7 @@ package matano.apkode.net.matano.holder.event;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,11 +15,13 @@ import matano.apkode.net.matano.model.User;
 public class EventParticipantHolder extends RecyclerView.ViewHolder {
     private ImageView imageViewPhoto;
     private TextView textViewUsername;
+    private ImageButton imageButtonAddFollowing;
 
     public EventParticipantHolder(View itemView) {
         super(itemView);
         imageViewPhoto = (ImageView) itemView.findViewById(R.id.imageViewPhoto);
         textViewUsername = (TextView) itemView.findViewById(R.id.textViewUsername);
+        imageButtonAddFollowing = (ImageButton) itemView.findViewById(R.id.imageButtonAddFollowing);
     }
 
     public void bind(User user) {
@@ -48,4 +51,7 @@ public class EventParticipantHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    public ImageButton getImageButtonAddFollowing() {
+        return imageButtonAddFollowing;
+    }
 }

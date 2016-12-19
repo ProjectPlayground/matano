@@ -38,15 +38,15 @@
             android:hint="@string/username" />
 
         <ImageButton
-            android:id="@+id/icon"
+            android:id="@+id/imageButtonAddFollowing"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:background="@android:color/background_light"
             android:gravity="end"
             android:paddingRight="@dimen/activity_horizontal_margin"
-            android:src="@mipmap/ic_action_social_person_add_padding"
-            android:tint="@color/colorPrimary" />
+            android:tint="@color/colorPrimary"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
