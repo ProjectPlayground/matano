@@ -72,7 +72,6 @@ public class EventInfoFragment extends Fragment {
     private TextView textViewPresentation;
     private Button button_participer;
 
-    private String button_participer_tag;
     private SimpleDateFormat simpleDateFormat;
 
     private String title = null;
@@ -291,27 +290,26 @@ public class EventInfoFragment extends Fragment {
 
                     if (button_participer != null) {
 
-                        isUserParticipe(FirebaseAuth.getInstance().getCurrentUser(), button_participer);
+                        isUserParticipe();
 
                         button_participer.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                button_participer_tag = button_participer.getTag().toString();
-                                switch (button_participer_tag) {
+                                switch (button_participer.getTag().toString()) {
+                                    case "9":
+                                        button_participer.setTag("0");
+                                        // button_participer.setText("En attente");
+                                        break;
                                     case "0":
-                                        button_participer_tag = "1";
-                                        button_participer.setTag("1");
-                                        button_participer.setText("Participe");
+                                        button_participer.setTag("9");
+                                        // button_participer.setText("Participer");
                                         break;
                                     case "1":
-                                        button_participer_tag = "0";
-                                        button_participer.setTag("0");
-                                        button_participer.setText("je participer");
-                                        break;
-                                    case "2":
+                                        button_participer.setTag("9");
+                                        //   button_participer.setText("Participer");
                                         break;
                                 }
-                                addUserToEvent(FirebaseAuth.getInstance().getCurrentUser(), button_participer_tag);
+                                setUserToEvent();
                             }
                         });
                     }
@@ -432,7 +430,11 @@ public class EventInfoFragment extends Fragment {
         getActivity().finish();
     }
 
-    private void isUserParticipe(FirebaseUser currentUser, final Button button_participer) {
+    private void isUserParticipe() {
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        assert currentUser != null;
         refEventUser = refEvent.child("users").child(currentUser.getUid());
 
         refEventUser.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -440,13 +442,13 @@ public class EventInfoFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
                     button_participer.setText("Participer");
-                    button_participer.setTag("0");
+                    button_participer.setTag("9");
                     button_participer.setVisibility(View.VISIBLE);
                 } else {
                     String status = dataSnapshot.getValue(String.class);
                     switch (status) {
                         case "0":
-                            button_participer.setText("Participer");
+                            button_participer.setText("En attente");
                             button_participer.setTag("0");
                             button_participer.setVisibility(View.VISIBLE);
                             break;
@@ -467,11 +469,25 @@ public class EventInfoFragment extends Fragment {
 
     }
 
-    private void addUserToEvent(FirebaseUser currentUser, final String button_participer_tag) {
+    private void setUserToEvent() {
 
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        String tag = button_participer.getTag().toString();
+
+        switch (tag) {
+            case "9":
+                tag = null;
+                break;
+            case "0":
+                tag = "0";
+                break;
+        }
+
+        
         Map hashMap = new HashMap();
-        hashMap.put("event/" + getArguments().getString(ARG_EVENT_KEY) + "/users/" + currentUser.getUid(), button_participer_tag);
-        hashMap.put("user/" + currentUser.getUid() + "/events/" + getArguments().getString(ARG_EVENT_KEY), button_participer_tag);
+        hashMap.put("event/" + getArguments().getString(ARG_EVENT_KEY) + "/users/" + currentUser.getUid(), tag);
+        hashMap.put("user/" + currentUser.getUid() + "/events/" + getArguments().getString(ARG_EVENT_KEY), tag);
 
         mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
@@ -482,6 +498,5 @@ public class EventInfoFragment extends Fragment {
             }
         });
     }
-
 
 }
