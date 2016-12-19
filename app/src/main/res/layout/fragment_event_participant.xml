@@ -3,45 +3,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/Lfiltre"
+    <TextView
+        android:id="@+id/textViewParticipantNumer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/button_followers"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="1dp"
-            android:layout_marginTop="1dp"
-            android:layout_weight="1"
-            android:background="@color/gray"
-            android:onClick="showFragmentBtnCategorie"
-            android:text="Followers" />
-
-        <Button
-            android:id="@+id/button_followings"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="1dp"
-            android:layout_marginTop="1dp"
-            android:layout_weight="1"
-            android:background="@color/gray"
-            android:onClick="showFragmentBtnPays"
-            android:text="Followings"
-            android:textColor="@color/colorPrimary"
-            android:textSize="13sp" />
-
-    </LinearLayout>
-
+        android:hint="Participants"
+        android:padding="8dp"
+        android:textAlignment="center"
+        android:textColor="@color/cardview_dark_background" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/btn"
-        android:layout_below="@+id/Lfiltre"
+        android:layout_below="@+id/textViewParticipantNumer"
         android:scrollbars="none" />
 
     <Button

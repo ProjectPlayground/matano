@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -36,6 +38,7 @@ import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.activity.SignInActivity;
 import matano.apkode.net.matano.adapter.event.EventTopParticipantAdapter;
 import matano.apkode.net.matano.adapter.event.EventTopPhotoAdapter;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.profil.ProfilEventHolder;
 import matano.apkode.net.matano.model.Event;
 import matano.apkode.net.matano.model.Photo;
@@ -466,25 +469,18 @@ public class EventInfoFragment extends Fragment {
 
     private void addUserToEvent(FirebaseUser currentUser, final String button_participer_tag) {
 
-        refEventUser = refEvent.child("users").child(currentUser.getUid());
+        Map hashMap = new HashMap();
+        hashMap.put("event/" + getArguments().getString(ARG_EVENT_KEY) + "/users/" + currentUser.getUid(), button_participer_tag);
+        hashMap.put("user/" + currentUser.getUid() + "/events/" + getArguments().getString(ARG_EVENT_KEY), button_participer_tag);
 
-        refEventUser.addListenerForSingleValueEvent(new ValueEventListener() {
+        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                refEventUser.setValue(button_participer_tag, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
+                }
             }
         });
-
     }
 
 

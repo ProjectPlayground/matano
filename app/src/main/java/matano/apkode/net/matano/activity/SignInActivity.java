@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
@@ -20,11 +21,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.model.User;
 
 public class SignInActivity extends AppCompatActivity {
@@ -37,6 +43,9 @@ public class SignInActivity extends AppCompatActivity {
     private DatabaseReference refUser;
     private FrameLayout frameLayoutContry;
     private FrameLayout frameLayoutCity;
+    private FirebaseStorage storage;
+    private StorageReference refStoragePhotos;
+    private StorageReference mRootStorageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +59,11 @@ public class SignInActivity extends AppCompatActivity {
 
         mRootRef = database.getReference();
         refUser = mRootRef.child("user");
+
+        storage = FirebaseStorage.getInstance();
+        mRootStorageRef = storage.getReference();
+
+        refStoragePhotos = mRootStorageRef.child("profil");
 
         frameLayoutContry = (FrameLayout) findViewById(R.id.frameLayoutContry);
         frameLayoutCity = (FrameLayout) findViewById(R.id.frameLayoutCity);
@@ -153,7 +167,6 @@ public class SignInActivity extends AppCompatActivity {
                     String email = user.getEmail();
                     String photoProfil = null;
 
-
                     Uri photoUrl = user.getPhotoUrl();
 
                     if (null != photoUrl) {
@@ -162,16 +175,7 @@ public class SignInActivity extends AppCompatActivity {
 
                     User userNew = new User(username, firstName, null, null, null, email, null, null, null, null, photoProfil, null, null, null, null, null, null);
 
-                    refUser.child(user.getUid()).setValue(userNew, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                            if (null != databaseError) {
-
-                            } else {
-                                setUserContryExist();
-                            }
-                        }
-                    });
+                    uploadAndSavePhoto(userNew, user);
 
                 } else {
                     setUserContryExist();
@@ -183,6 +187,52 @@ public class SignInActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void uploadAndSavePhoto(final User userNew, final FirebaseUser user) {
+
+
+        Map hashMap = new HashMap();
+
+        hashMap.put("user/" + user.getUid(), userNew);
+        hashMap.put("profil/" + user.getUid(), userNew.getPhotoProfl());
+
+        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (null != databaseError) {
+                    Log.e(Utils.TAG, "null != databaseError");
+                } else {
+                    Log.e(Utils.TAG, "null == databaseError");
+                    setUserContryExist();
+                }
+            }
+        });
+
+    }
+
+
+    private void savePhoto(FirebaseUser currentUser, Uri downloadUri, String uuid, User userNew) {
+        Map hashMap = new HashMap();
+
+        hashMap.put("user/" + uuid, userNew);
+        // hashMap.put("profil/"+currentUser.getUid(), downloadUri.toString());
+
+        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (null != databaseError) {
+                    Log.e(Utils.TAG, "null != databaseError");
+                } else {
+                    Log.e(Utils.TAG, "null == databaseError");
+                    setUserContryExist();
+                }
+            }
+        });
+
+
+
+
     }
 
     private void setUserContryExist() {
