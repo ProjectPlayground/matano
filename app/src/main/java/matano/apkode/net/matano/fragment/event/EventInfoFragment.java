@@ -182,8 +182,8 @@ public class EventInfoFragment extends Fragment {
 
                 if (event == null) {
                     // TODO someting
-                } else {
 
+                } else {
                     if (event.getTitle() != null) {
                         title = event.getTitle();
                     }

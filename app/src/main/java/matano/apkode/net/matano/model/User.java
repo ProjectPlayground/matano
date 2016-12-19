@@ -3,10 +3,8 @@ package matano.apkode.net.matano.model;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -24,15 +22,15 @@ public class User implements Serializable {
     private String presentation;
     private String photoProfl;
 
-    private Map<String, Boolean> events = new HashMap<>();  // idEvent - boolean
+    private Map<String, String> events = new HashMap<>();  // idEvent - boolean
 
-    private List<String> followers = new ArrayList<>();  // Uid
-    private List<String> followings = new ArrayList<>();  // Uid
+    private Map<String, String> followers = new HashMap<>();  // Uid
+    private Map<String, String> followings = new HashMap<>();  // Uid
 
-    private List<String> photos = new ArrayList<>();   // idPhoto
-    private List<String> videos = new ArrayList<>();   // idVidoe
+    private Map<String, String> photos = new HashMap<>(); // Uid   // idPhoto
+    private Map<String, String> videos = new HashMap<>();   // idVidoe
 
-    private List<String> tickets = new ArrayList<>();   // idTicket
+    private Map<String, String> tickets = new HashMap<>();   // idTicket
 
     public User() {
     }
@@ -51,7 +49,7 @@ public class User implements Serializable {
         this.photoProfl = photoProfl;
     }
 
-    public User(String username, String firstName, String lastName, String contry, String city, String email, String telephone, String sexe, Date birthday, String presentation, String photoProfl, Map<String, Boolean> events, List<String> followers, List<String> followings, List<String> photos, List<String> videos, List<String> tickets) {
+    public User(String username, String firstName, String lastName, String contry, String city, String email, String telephone, String sexe, Date birthday, String presentation, String photoProfl, Map<String, String> events, Map<String, String> followers, Map<String, String> followings, Map<String, String> photos, Map<String, String> videos, Map<String, String> tickets) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -159,51 +157,51 @@ public class User implements Serializable {
         this.photoProfl = photoProfl;
     }
 
-    public Map<String, Boolean> getEvents() {
+    public Map<String, String> getEvents() {
         return events;
     }
 
-    public void setEvents(Map<String, Boolean> events) {
+    public void setEvents(Map<String, String> events) {
         this.events = events;
     }
 
-    public List<String> getFollowers() {
+    public Map<String, String> getFollowers() {
         return followers;
     }
 
-    public void setFollowers(List<String> followers) {
+    public void setFollowers(Map<String, String> followers) {
         this.followers = followers;
     }
 
-    public List<String> getFollowings() {
+    public Map<String, String> getFollowings() {
         return followings;
     }
 
-    public void setFollowings(List<String> followings) {
+    public void setFollowings(Map<String, String> followings) {
         this.followings = followings;
     }
 
-    public List<String> getPhotos() {
+    public Map<String, String> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(List<String> photos) {
+    public void setPhotos(Map<String, String> photos) {
         this.photos = photos;
     }
 
-    public List<String> getVideos() {
+    public Map<String, String> getVideos() {
         return videos;
     }
 
-    public void setVideos(List<String> videos) {
+    public void setVideos(Map<String, String> videos) {
         this.videos = videos;
     }
 
-    public List<String> getTickets() {
+    public Map<String, String> getTickets() {
         return tickets;
     }
 
-    public void setTickets(List<String> tickets) {
+    public void setTickets(Map<String, String> tickets) {
         this.tickets = tickets;
     }
 }

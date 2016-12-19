@@ -10,7 +10,6 @@ import com.bumptech.glide.Glide;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.model.Photo;
 
-
 public class ProfilPhotoHolder extends RecyclerView.ViewHolder {
     private ImageView imageViewPhoto;
 

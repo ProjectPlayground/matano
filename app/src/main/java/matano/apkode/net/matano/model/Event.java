@@ -3,10 +3,8 @@ package matano.apkode.net.matano.model;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @IgnoreExtraProperties
@@ -28,14 +26,15 @@ public class Event implements Serializable {
     private String videoProfil; //  idVideo
     private String tarification; // gratuit - payant - free
 
-    private List<String> tarifs = new ArrayList<>(); // Uid
+    private Map<String, String> tarifs = new HashMap<>(); // Uid
     private Map<String, String> users = new HashMap<>();  // uId - status (0, 1, 2)
+    private Map<String, String> photos = new HashMap<>(); // Uid
 
 
     public Event() {
     }
 
-    public Event(String title, String category, String subCategory, String contry, String city, String place, String address, Double longitude, Double latitude, Double altitude, Date dateStart, Date dateEnd, String presentation, String photoProfil, String videoProfil, String tarification, List<String> tarifs, Map<String, String> users) {
+    public Event(String title, String category, String subCategory, String contry, String city, String place, String address, Double longitude, Double latitude, Double altitude, Date dateStart, Date dateEnd, String presentation, String photoProfil, String videoProfil, String tarification, Map<String, String> tarifs, Map<String, String> users, Map<String, String> photos) {
         this.title = title;
         this.category = category;
         this.subCategory = subCategory;
@@ -54,6 +53,7 @@ public class Event implements Serializable {
         this.tarification = tarification;
         this.tarifs = tarifs;
         this.users = users;
+        this.photos = photos;
     }
 
     public String getTitle() {
@@ -184,11 +184,11 @@ public class Event implements Serializable {
         this.tarification = tarification;
     }
 
-    public List<String> getTarifs() {
+    public Map<String, String> getTarifs() {
         return tarifs;
     }
 
-    public void setTarifs(List<String> tarifs) {
+    public void setTarifs(Map<String, String> tarifs) {
         this.tarifs = tarifs;
     }
 
@@ -198,5 +198,13 @@ public class Event implements Serializable {
 
     public void setUsers(Map<String, String> users) {
         this.users = users;
+    }
+
+    public Map<String, String> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(Map<String, String> photos) {
+        this.photos = photos;
     }
 }

@@ -21,7 +21,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -60,12 +59,12 @@ public class ProfilInfoFragment extends Fragment {
     private String presentation = null;
     private String photoProfl = null;
 
-    private Map<String, Boolean> events = null;  // idEvent - boolean
-    private List<String> followers = null;  // Uid
-    private List<String> followings = null;  // Uid
-    private List<String> photos = null;   // idPhoto
-    private List<String> videos = null;   // idVidoe
-    private List<String> tickets = null;   // idTicket
+    private Map<String, String> events = null;  // idEvent - boolean
+    private Map<String, String> followers = null;  // Uid
+    private Map<String, String> followings = null;  // Uid
+    private Map<String, String> photos = null;   // idPhoto
+    private Map<String, String> videos = null;   // idVidoe
+    private Map<String, String> tickets = null;   // idTicket
 
     private int eventsNumber = 0;
     private int followersNumber = 0;

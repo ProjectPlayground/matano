@@ -82,6 +82,10 @@ public class MainEventFragment extends Fragment {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
 
+        manager = new LinearLayoutManager(getActivity());
+
+        mRecyclerView.setLayoutManager(manager);
+
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
@@ -113,10 +117,6 @@ public class MainEventFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        manager = new LinearLayoutManager(getActivity());
-
-        mRecyclerView.setLayoutManager(manager);
-
         Query query = refEvent;
 
         adapter = new FirebaseRecyclerAdapter<Event, MainEventHolder>(Event.class, R.layout.card_main_event, MainEventHolder.class, query) {
@@ -128,7 +128,7 @@ public class MainEventFragment extends Fragment {
 
                 mainEventHolder.setTextViewEventTitle(event.getTitle());
                 mainEventHolder.setTextViewEventPresentation(event.getPresentation());
-                mainEventHolder.setImageViewEventPhoto(context, event.getPhotoProfil());
+                mainEventHolder.setImageViewEventPhoto(getContext(), event.getPhotoProfil());
 
                 mainEventHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

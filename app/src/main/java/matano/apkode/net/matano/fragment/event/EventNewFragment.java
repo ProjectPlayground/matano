@@ -1,29 +1,75 @@
 package matano.apkode.net.matano.fragment.event;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.adapter.event.EventNewAdapter;
+import matano.apkode.net.matano.config.Utils;
+import matano.apkode.net.matano.holder.event.EventNewHolder;
 import matano.apkode.net.matano.model.Photo;
+import matano.apkode.net.matano.model.User;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class EventNewFragment extends Fragment {
+    private static final String ARG_PHOTO_KEY = null;
+    private static final int RC_PHOTO_PICKER = 2;
     private Context context;
     private RecyclerView recyclerView;
     private EventNewAdapter eventNewAdapter;
     private List<Photo> aNews = new ArrayList<>();
     private String eventKey;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseDatabase database;
+    private DatabaseReference mRootRef;
+    private DatabaseReference refEvent;
+    private DatabaseReference refUser;
+    private DatabaseReference refPhoto;
+    private FirebaseStorage storage;
+    private StorageReference refStoragePhotos;
+    private StorageReference mRootStorageRef;
+    private LinearLayoutManager manager;
+    private FirebaseRecyclerAdapter<Photo, EventNewHolder> adapter;
+    private FloatingActionButton floatingButtonPhoto;
 
     public EventNewFragment() {
     }
@@ -32,6 +78,9 @@ public class EventNewFragment extends Fragment {
         context = ctx;
         eventKey = key;
         EventNewFragment eventNewFragment = new EventNewFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PHOTO_KEY, key);
+        eventNewFragment.setArguments(args);
         return eventNewFragment;
     }
 
@@ -43,36 +92,157 @@ public class EventNewFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+
+                } else {
+
+                }
+            }
+        };
+
+        mAuth = FirebaseAuth.getInstance();
+
+        database = FirebaseDatabase.getInstance();
+        mRootRef = database.getReference();
+        refPhoto = mRootRef.child("photo");
+        refUser = mRootRef.child("user");
+
+        storage = FirebaseStorage.getInstance();
+        mRootStorageRef = storage.getReference();
+
+        refStoragePhotos = mRootStorageRef.child("photos");
+
+        String key = getArguments().getString(ARG_PHOTO_KEY);
+
+        if (key == null) {
+            // TODO something
+        } else {
+            refEvent = mRootRef.child("event").child(key);
+        }
+
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_event_new, container, false);
+        View view = inflater.inflate(R.layout.fragment_event_new, container, false);
+        ButterKnife.bind(this, view);
+
+        floatingButtonPhoto = (FloatingActionButton) view.findViewById(R.id.floatingButtonPhoto);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        manager = new LinearLayoutManager(getContext());
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(manager);
+
+        // Query query = refPhoto.equalTo(getArguments().getString(ARG_PHOTO_KEY), "event");
+        Query query = refPhoto;
+
+        adapter = new FirebaseRecyclerAdapter<Photo, EventNewHolder>(Photo.class, R.layout.card_event_new, EventNewHolder.class, query) {
+            @Override
+            protected void populateViewHolder(final EventNewHolder eventNewHolder, final Photo photo, int position) {
+                if (photo.getEvent() != null && photo.getEvent().equals(getArguments().getString(ARG_PHOTO_KEY))) {
+                    if (photo.getUser() != null) {
+
+                        refUser.child(photo.getUser()).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                User user = dataSnapshot.getValue(User.class);
+
+                                if (null != user && user.getPhotoProfl() != null) {
+                                    eventNewHolder.setImageViewPhoto(getContext(), photo.getUrl());
+                                    eventNewHolder.setImageViewPhotoProfil(getContext(), user.getPhotoProfl());
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+            }
+        };
+
+        recyclerView.setAdapter(adapter);
+
+       /* refEvent.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Event event = dataSnapshot.getValue(Event.class);
+
+              *//*  if(null != event) {
+
+                    if (event.getPhotos() != null) {
+                        for (Map.Entry<String, String> entry : event.getPhotos().entrySet()) {
+                            String key = entry.getKey();
+                            String value = entry.getValue();
+
+                            Query query = refEvent.child("photos");
+                            adapter = new FirebaseRecyclerAdapter<Event, EventNewHolder>() {
+                                @Override
+                                protected void populateViewHolder(EventNewHolder viewHolder, Event model, int position) {
+
+                                }
+                            }
+
+                        }
+                    }
+
+                }*//*
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
 
 
-        eventNewAdapter = new EventNewAdapter(aNews);
+
+
+
+      /*  eventNewAdapter = new EventNewAdapter(aNews);
 
         aNews.add(new Photo());
         aNews.add(new Photo());
         aNews.add(new Photo());
 
+*/
 
-        recyclerView.setAdapter(eventNewAdapter);
+        floatingButtonPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/jpeg");
+                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
+            }
+        });
+
+        recyclerView.setAdapter(adapter);
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -83,6 +253,9 @@ public class EventNewFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        if (mAuth != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -103,6 +276,68 @@ public class EventNewFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
+            Uri selectedImageUri = data.getData();
+            uploadPhoto(selectedImageUri);
+
+        }
+    }
+
+    private void uploadPhoto(Uri selectedImageUri) {
+
+        final String uuid = UUID.randomUUID().toString();
+
+        Log.e(Utils.TAG, "uuid " + uuid);
+
+        StorageReference photoRef = refStoragePhotos.child(uuid);
+        photoRef.putFile(selectedImageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri downloadUri = taskSnapshot.getDownloadUrl();
+                        Log.e(Utils.TAG, "name " + taskSnapshot.getMetadata().getName());
+                        savePhoto(FirebaseAuth.getInstance().getCurrentUser(), downloadUri, uuid);
+                        Log.e(Utils.TAG, "uploadPhoto:onSuccess:" + taskSnapshot.getDownloadUrl());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(Utils.TAG, "uploadPhoto:onError", e);
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    }
+                });
+    }
+
+    private void savePhoto(FirebaseUser currentUser, Uri downloadUri, String uuid) {
+
+        Photo photo = new Photo(getArguments().getString(ARG_PHOTO_KEY), currentUser.getUid(), downloadUri.toString(), new Date(), "1", null);
+
+        Map hashMap = new HashMap();
+
+        hashMap.put("event/" + getArguments().getString(ARG_PHOTO_KEY) + "/photos/" + uuid, "1");
+        hashMap.put("photo/" + uuid, photo);
+        hashMap.put("user/" + currentUser.getUid() + "/photos/" + uuid, "1");
+
+        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
+                }
+            }
+        });
+
     }
 
 }

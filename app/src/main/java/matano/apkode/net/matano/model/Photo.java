@@ -13,16 +13,18 @@ public class Photo implements Serializable {
     private String user;    //  Uidowner
     private String url;
     private Date date;      // enregistrement
+    private String status;
     private List<String> likes = new ArrayList<>(); // Uid
 
     public Photo() {
     }
 
-    public Photo(String event, String user, String url, Date date, List<String> likes) {
+    public Photo(String event, String user, String url, Date date, String status, List<String> likes) {
         this.event = event;
         this.user = user;
         this.url = url;
         this.date = date;
+        this.status = status;
         this.likes = likes;
     }
 
@@ -56,6 +58,14 @@ public class Photo implements Serializable {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public List<String> getLikes() {
