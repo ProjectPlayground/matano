@@ -16,12 +16,12 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/btn"
+        android:layout_above="@+id/button_participer"
         android:layout_below="@+id/textViewParticipantNumer"
         android:scrollbars="none" />
 
     <Button
-        android:id="@+id/btn"
+        android:id="@+id/button_participer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

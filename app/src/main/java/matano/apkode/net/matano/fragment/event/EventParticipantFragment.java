@@ -7,9 +7,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -23,16 +25,19 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.adapter.event.EventParticipantAdapter;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.event.EventParticipantHolder;
 import matano.apkode.net.matano.model.User;
 
 public class EventParticipantFragment extends Fragment {
-    private static final String ARG_PHOTO_KEY = null;
+    private static final String ARG_EVENT_KEY = null;
     private Context context;
     private RecyclerView recyclerView;
     private EventParticipantAdapter eventParticipantAdapter;
@@ -47,6 +52,8 @@ public class EventParticipantFragment extends Fragment {
     private LinearLayoutManager manager;
     private FirebaseRecyclerAdapter<String, EventParticipantHolder> adapter;
     private TextView textViewParticipantNumer;
+    private Button button_participer;
+    private DatabaseReference refEventUser;
 
     public EventParticipantFragment() {
     }
@@ -56,7 +63,7 @@ public class EventParticipantFragment extends Fragment {
         eventKey = key;
         EventParticipantFragment eventParticipantFragment = new EventParticipantFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PHOTO_KEY, key);
+        args.putString(ARG_EVENT_KEY, key);
         eventParticipantFragment.setArguments(args);
         return eventParticipantFragment;
     }
@@ -88,7 +95,7 @@ public class EventParticipantFragment extends Fragment {
         mRootRef = database.getReference();
         refUser = mRootRef.child("user");
 
-        String key = getArguments().getString(ARG_PHOTO_KEY);
+        String key = getArguments().getString(ARG_EVENT_KEY);
 
         if (key == null) {
             // TODO something
@@ -104,6 +111,7 @@ public class EventParticipantFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_event_participant, container, false);
 
         textViewParticipantNumer = (TextView) view.findViewById(R.id.textViewParticipantNumer);
+        button_participer = (Button) view.findViewById(R.id.button_participer);
 
         ButterKnife.bind(this, view);
 
@@ -203,6 +211,33 @@ public class EventParticipantFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
+        if (button_participer != null) {
+
+            isUserParticipe();
+
+            button_participer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    switch (button_participer.getTag().toString()) {
+                        case "9":
+                            button_participer.setTag("0");
+                            // button_participer.setText("En attente");
+                            break;
+                        case "0":
+                            button_participer.setTag("9");
+                            // button_participer.setText("Participer");
+                            break;
+                        case "1":
+                            button_participer.setTag("9");
+                            //   button_participer.setText("Participer");
+                            break;
+                    }
+                    setUserToEvent();
+                }
+            });
+        }
+
+
 
     }
 
@@ -243,6 +278,75 @@ public class EventParticipantFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    private void isUserParticipe() {
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        assert currentUser != null;
+        refEventUser = refEvent.child("users").child(currentUser.getUid());
+
+        refEventUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    button_participer.setText("Participer");
+                    button_participer.setTag("9");
+                    button_participer.setVisibility(View.VISIBLE);
+                } else {
+                    String status = dataSnapshot.getValue(String.class);
+                    switch (status) {
+                        case "0":
+                            button_participer.setText("En attente");
+                            button_participer.setTag("0");
+                            button_participer.setVisibility(View.VISIBLE);
+                            break;
+                        case "1":
+                            button_participer.setText("Je participe");
+                            button_participer.setTag("1");
+                            button_participer.setVisibility(View.VISIBLE);
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void setUserToEvent() {
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        String tag = button_participer.getTag().toString();
+
+        switch (tag) {
+            case "9":
+                tag = null;
+                break;
+            case "0":
+                tag = "0";
+                break;
+        }
+
+
+        Map hashMap = new HashMap();
+        hashMap.put("event/" + getArguments().getString(ARG_EVENT_KEY) + "/users/" + currentUser.getUid(), tag);
+        hashMap.put("user/" + currentUser.getUid() + "/events/" + getArguments().getString(ARG_EVENT_KEY), tag);
+
+        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
+                }
+            }
+        });
     }
 
 }
