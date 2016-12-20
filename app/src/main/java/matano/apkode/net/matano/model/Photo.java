@@ -3,9 +3,9 @@ package matano.apkode.net.matano.model;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @IgnoreExtraProperties
 public class Photo implements Serializable {
@@ -14,18 +14,18 @@ public class Photo implements Serializable {
     private String url;
     private Date date;      // enregistrement
     private String status;
-    private List<String> likes = new ArrayList<>(); // Uid
+    private Map<String, String> pLikes = new HashMap<>();   // idPhotos
 
     public Photo() {
     }
 
-    public Photo(String event, String user, String url, Date date, String status, List<String> likes) {
+    public Photo(String event, String user, String url, Date date, String status, Map<String, String> pLikes) {
         this.event = event;
         this.user = user;
         this.url = url;
         this.date = date;
         this.status = status;
-        this.likes = likes;
+        this.pLikes = pLikes;
     }
 
     public String getEvent() {
@@ -68,11 +68,11 @@ public class Photo implements Serializable {
         this.status = status;
     }
 
-    public List<String> getLikes() {
-        return likes;
+    public Map<String, String> getpLikes() {
+        return pLikes;
     }
 
-    public void setLikes(List<String> likes) {
-        this.likes = likes;
+    public void setpLikes(Map<String, String> pLikes) {
+        this.pLikes = pLikes;
     }
 }

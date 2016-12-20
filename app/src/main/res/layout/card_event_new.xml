@@ -59,14 +59,15 @@
             android:padding="@dimen/activity_horizontal_margin">
 
             <ImageButton
-                android:id="@+id/btm"
+                android:id="@+id/imageButtonLikePhoto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/background_light"
-                android:src="@mipmap/ic_action_action_favorite_outline_padding"
-                android:tint="@color/colorPrimary" />
+                android:tint="@color/colorPrimary"
+                android:visibility="gone" />
 
             <ImageButton
+                android:id="@+id/imageButtonSharePhoto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"

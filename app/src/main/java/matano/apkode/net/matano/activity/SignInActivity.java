@@ -173,7 +173,7 @@ public class SignInActivity extends AppCompatActivity {
                         photoProfil = photoUrl.toString();
                     }
 
-                    User userNew = new User(username, firstName, null, null, null, email, null, null, null, null, photoProfil, null, null, null, null, null, null);
+                    User userNew = new User(username, firstName, null, null, null, email, null, null, null, null, photoProfil, null, null, null, null, null, null, null);
 
                     uploadAndSavePhoto(userNew, user);
 

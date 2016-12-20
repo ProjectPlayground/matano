@@ -207,9 +207,7 @@ public class EventParticipantFragment extends Fragment {
                                     eventParticipantHolder.getImageButtonAddFollowing().setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            String a = (String) view.getTag();
-                                            Log.e(Utils.TAG, "a " + a);
-                                            addFollowing(ref, a);
+                                            addFollowing(ref, (String) view.getTag());
                                         }
                                     });
 

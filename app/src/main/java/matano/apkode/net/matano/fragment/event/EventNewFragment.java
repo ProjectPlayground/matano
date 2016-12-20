@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -68,7 +69,7 @@ public class EventNewFragment extends Fragment {
     private StorageReference refStoragePhotos;
     private StorageReference mRootStorageRef;
     private LinearLayoutManager manager;
-    private FirebaseRecyclerAdapter<Photo, EventNewHolder> adapter;
+    private FirebaseRecyclerAdapter<String, EventNewHolder> adapter;
     private FloatingActionButton floatingButtonPhoto;
 
     public EventNewFragment() {
@@ -147,83 +148,100 @@ public class EventNewFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
 
-        // Query query = refPhoto.equalTo(getArguments().getString(ARG_PHOTO_KEY), "event");
-        Query query = refPhoto;
 
-        adapter = new FirebaseRecyclerAdapter<Photo, EventNewHolder>(Photo.class, R.layout.card_event_new, EventNewHolder.class, query) {
+        Query query = refEvent.child("photos");
+
+
+        adapter = new FirebaseRecyclerAdapter<String, EventNewHolder>(String.class, R.layout.card_event_new, EventNewHolder.class, query) {
             @Override
-            protected void populateViewHolder(final EventNewHolder eventNewHolder, final Photo photo, int position) {
-                if (photo.getEvent() != null && photo.getEvent().equals(getArguments().getString(ARG_PHOTO_KEY))) {
-                    if (photo.getUser() != null) {
+            protected void populateViewHolder(final EventNewHolder eventNewHolder, String s, int position) {
+                if (s != null) {
+                    final String ref = getRef(position).getKey();
+                    refPhoto.child(ref).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Photo photo = dataSnapshot.getValue(Photo.class);
 
-                        refUser.child(photo.getUser()).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                User user = dataSnapshot.getValue(User.class);
+                            if (photo != null && photo.getUrl() != null && photo.getUser() != null) {
+                                eventNewHolder.setImageViewPhoto(getContext(), photo.getUrl());
 
-                                if (null != user && user.getPhotoProfl() != null) {
-                                    eventNewHolder.setImageViewPhoto(getContext(), photo.getUrl());
-                                    eventNewHolder.setImageViewPhotoProfil(getContext(), user.getPhotoProfl());
+                                refUser.child(photo.getUser()).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        User user = dataSnapshot.getValue(User.class);
+
+                                        if (user != null) {
+                                            eventNewHolder.setImageViewPhotoProfil(getContext(), user.getPhotoProfl());
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                                final ImageButton imageButtonLikePhoto = eventNewHolder.getImageButtonLikePhoto();
+
+                                DatabaseReference reference = mRootRef.child("photo").child(ref).child("likes");
+
+                                reference.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.getChildrenCount() == 0) {
+                                            imageButtonLikePhoto.setTag("1");
+                                            imageButtonLikePhoto.setVisibility(View.VISIBLE);
+                                            imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
+                                        } else {
+                                            for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                                                if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(snap.getKey())) {
+                                                    imageButtonLikePhoto.setTag(null);
+                                                    imageButtonLikePhoto.setVisibility(View.VISIBLE);
+                                                    imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_padding);
+                                                } else {
+                                                    imageButtonLikePhoto.setTag("1");
+                                                    imageButtonLikePhoto.setVisibility(View.VISIBLE);
+                                                    imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                                if (imageButtonLikePhoto != null) {
+
+                                    imageButtonLikePhoto.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            addPhotoLike(ref, (String) view.getTag());
+                                        }
+                                    });
+
                                 }
 
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
 
                             }
-                        });
-                    }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
         };
 
+
         recyclerView.setAdapter(adapter);
 
-       /* refEvent.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Event event = dataSnapshot.getValue(Event.class);
-
-              *//*  if(null != event) {
-
-                    if (event.getPhotos() != null) {
-                        for (Map.Entry<String, String> entry : event.getPhotos().entrySet()) {
-                            String key = entry.getKey();
-                            String value = entry.getValue();
-
-                            Query query = refEvent.child("photos");
-                            adapter = new FirebaseRecyclerAdapter<Event, EventNewHolder>() {
-                                @Override
-                                protected void populateViewHolder(EventNewHolder viewHolder, Event model, int position) {
-
-                                }
-                            }
-
-                        }
-                    }
-
-                }*//*
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
-
-
-
-
-
-      /*  eventNewAdapter = new EventNewAdapter(aNews);
-
-        aNews.add(new Photo());
-        aNews.add(new Photo());
-        aNews.add(new Photo());
-
-*/
 
         floatingButtonPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -292,8 +310,6 @@ public class EventNewFragment extends Fragment {
 
         final String uuid = UUID.randomUUID().toString();
 
-        Log.e(Utils.TAG, "uuid " + uuid);
-
         StorageReference photoRef = refStoragePhotos.child(uuid);
         photoRef.putFile(selectedImageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -328,6 +344,26 @@ public class EventNewFragment extends Fragment {
         hashMap.put("event/" + getArguments().getString(ARG_PHOTO_KEY) + "/photos/" + uuid, "1");
         hashMap.put("photo/" + uuid, photo);
         hashMap.put("user/" + currentUser.getUid() + "/photos/" + uuid, "1");
+
+        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
+                }
+            }
+        });
+
+    }
+
+    private void addPhotoLike(String keyPhoto, String tag) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        assert currentUser != null;
+        String currentUserUid = currentUser.getUid();
+
+        Map hashMap = new HashMap();
+        hashMap.put("photo/" + keyPhoto + "/likes/" + currentUserUid, tag);
+        hashMap.put("user/" + currentUserUid + "/likes/" + keyPhoto, tag);
 
         mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
