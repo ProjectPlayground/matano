@@ -268,6 +268,9 @@ public class EventPhotoFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (adapter != null) {
+            adapter.cleanup();
+        }
     }
 
     @Override

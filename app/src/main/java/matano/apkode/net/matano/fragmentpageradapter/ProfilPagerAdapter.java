@@ -22,15 +22,16 @@ import matano.apkode.net.matano.fragment.profil.ProfilPhotoFragment;
 import matano.apkode.net.matano.fragment.profil.ProfilTicketFragment;
 
 public class ProfilPagerAdapter extends FragmentPagerAdapter {
+    private static String ARG_USER_UID = "userUid";
     Toolbar toolbar;
     private Context context;
     private int icons[] = {R.mipmap.ic_action_action_account_box_padding, R.mipmap.ic_action_image_image_padding, R.mipmap.ic_action_notification_event_note_padding, R.mipmap.ic_action_action_account_balance_wallet_padding, R.mipmap.ic_action_action_account_child_padding};
 
-
-    public ProfilPagerAdapter(FragmentManager fm, Context ctx, Toolbar toolbar) {
+    public ProfilPagerAdapter(FragmentManager fm, Context ctx, Toolbar toolbar, String userUid) {
         super(fm);
         this.context = ctx;
         this.toolbar = toolbar;
+        ARG_USER_UID = userUid;
     }
 
     public View getTabView(int position) {
@@ -47,17 +48,17 @@ public class ProfilPagerAdapter extends FragmentPagerAdapter {
         switch (position + 1) {
 
             case 1:
-                return new ProfilInfoFragment().newInstance(context);
+                return new ProfilInfoFragment().newInstance(context, ARG_USER_UID);
             case 2:
-                return new ProfilPhotoFragment().newInstance(context);
+                return new ProfilPhotoFragment().newInstance(context, ARG_USER_UID);
             case 3:
-                return new ProfilEventFragment().newInstance(context);
+                return new ProfilEventFragment().newInstance(context, ARG_USER_UID);
             case 4:
-                return new ProfilTicketFragment().newInstance(context);
+                return new ProfilTicketFragment().newInstance(context, ARG_USER_UID);
             case 5:
-                return new ProfilFriendFragment().newInstance(context);
+                return new ProfilFriendFragment().newInstance(context, ARG_USER_UID);
             default:
-                return new ProfilDefaultFragment().newInstance(context);
+                return new ProfilDefaultFragment().newInstance(context, ARG_USER_UID);
         }
 
     }

@@ -11,14 +11,18 @@ import android.view.ViewGroup;
 import matano.apkode.net.matano.R;
 
 public class ProfilDefaultFragment extends Fragment {
+    private static String ARG_USER_UID = "userUid";
     private Context context;
 
     public ProfilDefaultFragment() {
     }
 
-    public ProfilDefaultFragment newInstance(Context ctx) {
+    public ProfilDefaultFragment newInstance(Context ctx, String userUid) {
         context = ctx;
         ProfilDefaultFragment profilDefaultFragment = new ProfilDefaultFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_USER_UID, userUid);
+        profilDefaultFragment.setArguments(bundle);
         return profilDefaultFragment;
     }
 

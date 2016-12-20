@@ -29,8 +29,7 @@
                     android:id="@+id/imageViewPhotoProfil"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:adjustViewBounds="true"
-                    android:src="@mipmap/person1" />
+                    android:adjustViewBounds="true" />
 
             </android.support.v7.widget.CardView>
 
@@ -45,7 +44,6 @@
                     android:id="@+id/textViewFollowersNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="2,400"
                     android:textColor="@color/cardview_dark_background"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -54,7 +52,6 @@
                     android:id="@+id/textViewFollowingsNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="4,179"
                     android:textColor="@color/cardview_dark_background"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -63,7 +60,6 @@
                     android:id="@+id/textViewPhotosNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="106"
                     android:textColor="@color/cardview_dark_background"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -81,12 +77,11 @@
             android:padding="@dimen/activity_horizontal_margin">
 
             <ImageButton
-                android:id="@+id/btnAdd"
+                android:id="@+id/imageButtonAddOrSetting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:background="@color/cardview_light_background"
-                android:src="@mipmap/ic_action_social_person_add_padding"
                 android:tint="@color/colorPrimary" />
 
             <TextView
@@ -95,9 +90,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
-                android:layout_toLeftOf="@+id/btnAdd"
+                android:layout_toLeftOf="@+id/imageButtonAddOrSetting"
                 android:gravity="center_vertical"
-                android:hint="@string/useename"
                 android:textColor="@color/cardview_dark_background"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -112,9 +106,8 @@
 
             <TextView
                 android:id="@+id/textViewPresentation"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/citation"
                 android:padding="@dimen/activity_horizontal_margin" />
         </android.support.v7.widget.CardView>
 

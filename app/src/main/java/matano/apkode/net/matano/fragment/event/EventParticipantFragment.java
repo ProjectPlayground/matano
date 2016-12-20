@@ -1,6 +1,7 @@
 package matano.apkode.net.matano.fragment.event;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -31,6 +33,7 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.activity.ProfilActivity;
 import matano.apkode.net.matano.adapter.event.EventParticipantAdapter;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.event.EventParticipantHolder;
@@ -38,6 +41,7 @@ import matano.apkode.net.matano.model.User;
 
 public class EventParticipantFragment extends Fragment {
     private static final String ARG_EVENT_KEY = null;
+    private static String ARG_USER_UID = "userUid";
     private Context context;
     private RecyclerView recyclerView;
     private EventParticipantAdapter eventParticipantAdapter;
@@ -54,6 +58,7 @@ public class EventParticipantFragment extends Fragment {
     private TextView textViewParticipantNumer;
     private Button button_participer;
     private DatabaseReference refEventUser;
+
 
     public EventParticipantFragment() {
     }
@@ -161,6 +166,7 @@ public class EventParticipantFragment extends Fragment {
                             final User user = dataSnapshot.getValue(User.class);
 
                             if (user != null && user.getUsername() != null && user.getPhotoProfl() != null) {
+
                                 eventParticipantHolder.setImageViewPhoto(getContext(), user.getPhotoProfl());
                                 eventParticipantHolder.setTextViewUsername(user.getUsername());
 
@@ -176,7 +182,7 @@ public class EventParticipantFragment extends Fragment {
                                                 eventParticipantHolder.getImageButtonAddFollowing().setTag("1");
                                                 eventParticipantHolder.getImageButtonAddFollowing().setVisibility(View.VISIBLE);
                                                 if (!ref.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                                    eventParticipantHolder.getImageButtonAddFollowing().setImageResource(R.mipmap.ic_action_social_person_add_padding);
+                                                    eventParticipantHolder.getImageButtonAddFollowing().setImageResource(R.mipmap.ic_action_social_group_add_padding);
                                                 }
                                             } else {
                                                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
@@ -185,13 +191,13 @@ public class EventParticipantFragment extends Fragment {
                                                         eventParticipantHolder.getImageButtonAddFollowing().setTag(null);
                                                         eventParticipantHolder.getImageButtonAddFollowing().setVisibility(View.VISIBLE);
                                                         if (!ref.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                                            eventParticipantHolder.getImageButtonAddFollowing().setImageResource(R.mipmap.ic_action_action_done_all_padding);
+                                                            eventParticipantHolder.getImageButtonAddFollowing().setImageResource(R.mipmap.ic_action_social_people_padding);
                                                         }
                                                     } else {
                                                         eventParticipantHolder.getImageButtonAddFollowing().setTag("1");
                                                         eventParticipantHolder.getImageButtonAddFollowing().setVisibility(View.VISIBLE);
                                                         if (!ref.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                                            eventParticipantHolder.getImageButtonAddFollowing().setImageResource(R.mipmap.ic_action_social_person_add_padding);
+                                                            eventParticipantHolder.getImageButtonAddFollowing().setImageResource(R.mipmap.ic_action_social_group_add_padding);
                                                         }
                                                     }
                                                 }
@@ -211,8 +217,25 @@ public class EventParticipantFragment extends Fragment {
                                         }
                                     });
 
+                                }
+
+                                ImageView imageViewPhoto = eventParticipantHolder.getImageViewPhoto();
+
+                                if (imageViewPhoto != null) {
+
+                                    imageViewPhoto.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent intent = new Intent(getContext(), ProfilActivity.class);
+                                            intent.putExtra(ARG_USER_UID, ref);
+                                            startActivity(intent);
+
+                                        }
+                                    });
 
                                 }
+
+
                             }
                         }
 
@@ -318,6 +341,9 @@ public class EventParticipantFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (adapter != null) {
+            adapter.cleanup();
+        }
     }
 
     @Override

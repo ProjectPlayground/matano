@@ -31,6 +31,7 @@ public class ProfilPhotoHolder extends RecyclerView.ViewHolder {
                         .with(context)
                         .load(s)
                         //  .centerCrop()
+                        .placeholder(R.mipmap.img4)
                         .into(imageViewPhoto);
             }
         }

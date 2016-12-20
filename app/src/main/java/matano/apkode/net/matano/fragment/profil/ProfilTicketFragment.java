@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +23,12 @@ import java.util.List;
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.adapter.profil.ProfilTicketAdapter;
-import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.profil.ProfilTicketHolder;
 import matano.apkode.net.matano.model.Event;
 import matano.apkode.net.matano.model.Ticket;
 
 public class ProfilTicketFragment extends Fragment {
+    private static String ARG_USER_UID = "userUid";
     private Context context;
     private RecyclerView recyclerView;
     private ProfilTicketAdapter profilTicketAdapter;
@@ -56,12 +54,30 @@ public class ProfilTicketFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
-        refUser = mRootRef.child("user");
+        refUser = mRootRef.child("user").child(ARG_USER_UID);
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+
+                } else {
+
+                    // TODO go sign in
+                }
+            }
+        };
+
     }
 
-    public ProfilTicketFragment newInstance(Context ctx) {
+    public ProfilTicketFragment newInstance(Context ctx, String userUid) {
         context = ctx;
         ProfilTicketFragment profilTicketFragment = new ProfilTicketFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_USER_UID, userUid);
+        profilTicketFragment.setArguments(bundle);
+        ARG_USER_UID = userUid;
         return profilTicketFragment;
     }
 
@@ -82,65 +98,7 @@ public class ProfilTicketFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    refUser = refUser.child(user.getUid());
-                    refUserTicket = refUser.child("tickets");
-
-                    Query query = refUserTicket;
-
-                    adapter = new FirebaseRecyclerAdapter<Ticket, ProfilTicketHolder>(Ticket.class, R.layout.card_profil_ticket, ProfilTicketHolder.class, query) {
-
-
-                        @Override
-                        protected void populateViewHolder(ProfilTicketHolder viewHolder, Ticket model, int position) {
-
-                        }
-                    };
-
-                    adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-                        @Override
-                        public void onChanged() {
-                            super.onChanged();
-                        }
-
-                        @Override
-                        public void onItemRangeChanged(int positionStart, int itemCount) {
-                            super.onItemRangeChanged(positionStart, itemCount);
-                        }
-
-                        @Override
-                        public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
-                            super.onItemRangeChanged(positionStart, itemCount, payload);
-                        }
-
-                        @Override
-                        public void onItemRangeInserted(int positionStart, int itemCount) {
-                            super.onItemRangeInserted(positionStart, itemCount);
-                        }
-
-                        @Override
-                        public void onItemRangeRemoved(int positionStart, int itemCount) {
-                            super.onItemRangeRemoved(positionStart, itemCount);
-                        }
-
-                        @Override
-                        public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-                            super.onItemRangeMoved(fromPosition, toPosition, itemCount);
-                        }
-                    });
-
-                    recyclerView.setAdapter(adapter);
-
-                } else {
-                    Log.e(Utils.TAG, "user == null ");
-                    // TODO go sign in
-                }
-            }
-        };
+        recyclerView.setAdapter(adapter);
 
     }
 

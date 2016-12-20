@@ -12,6 +12,7 @@ import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.fragmentpageradapter.ProfilPagerAdapter;
 
 public class ProfilActivity extends AppCompatActivity {
+    private static String ARG_USER_UID = "userUid";
     private ViewPager mViewPager;
 
     @Override
@@ -24,10 +25,16 @@ public class ProfilActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
+        String userUid = getIntent().getStringExtra(ARG_USER_UID);
+
+
+        if (userUid == null) {
+            finish();
+        }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ProfilPagerAdapter profilPagerAdapter = new ProfilPagerAdapter(getSupportFragmentManager(), getApplicationContext(), toolbar);
+        ProfilPagerAdapter profilPagerAdapter = new ProfilPagerAdapter(getSupportFragmentManager(), getApplicationContext(), toolbar, userUid);
 
         ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(profilPagerAdapter);

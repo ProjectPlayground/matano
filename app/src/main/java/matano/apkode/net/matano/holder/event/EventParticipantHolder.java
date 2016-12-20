@@ -28,6 +28,10 @@ public class EventParticipantHolder extends RecyclerView.ViewHolder {
 
     }
 
+    public ImageView getImageViewPhoto() {
+        return imageViewPhoto;
+    }
+
     public void setImageViewPhoto(Context context, String s) {
         if (s != null) {
             if (imageViewPhoto != null) {

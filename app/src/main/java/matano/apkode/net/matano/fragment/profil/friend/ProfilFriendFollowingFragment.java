@@ -1,12 +1,11 @@
-package matano.apkode.net.matano.fragment.profil;
+package matano.apkode.net.matano.fragment.profil.friend;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,39 +21,36 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.holder.profil.ProfilPhotoHolder;
-import matano.apkode.net.matano.model.Photo;
+import matano.apkode.net.matano.holder.profil.ProfilFriendHolder;
+import matano.apkode.net.matano.model.User;
 
-public class ProfilPhotoFragment extends Fragment {
+
+public class ProfilFriendFollowingFragment extends Fragment {
     private static String ARG_USER_UID = "userUid";
-    private Context context;
-    private RecyclerView recyclerView;
-    private List<Photo> photos = new ArrayList<>();
     private FirebaseAuth mAuth;
+    private Context context;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase database;
     private DatabaseReference mRootRef;
     private DatabaseReference refUser;
-    private DatabaseReference refUserPhoto;
-    private FirebaseRecyclerAdapter<String, ProfilPhotoHolder> adapter;
-    private GridLayoutManager manager;
+    private FirebaseRecyclerAdapter<String, ProfilFriendHolder> adapter;
+    private LinearLayoutManager manager;
+    private RecyclerView recyclerView;
 
-    public ProfilPhotoFragment() {
+
+    public ProfilFriendFollowingFragment() {
     }
 
-    public ProfilPhotoFragment newInstance(Context ctx, String userUid) {
+    public ProfilFriendFollowingFragment newInstance(Context ctx, String userUid) {
         context = ctx;
-        ProfilPhotoFragment profilPhotoFragment = new ProfilPhotoFragment();
+        ProfilFriendFollowingFragment profilFriendFollowingFragment = new ProfilFriendFollowingFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_USER_UID, userUid);
-        profilPhotoFragment.setArguments(bundle);
+        profilFriendFollowingFragment.setArguments(bundle);
         ARG_USER_UID = userUid;
-        return profilPhotoFragment;
+        return profilFriendFollowingFragment;
     }
 
     @Override
@@ -78,47 +74,47 @@ public class ProfilPhotoFragment extends Fragment {
                 if (user != null) {
 
                 } else {
-
                     // TODO go sign in
                 }
             }
         };
-
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_profil_photo, container, false);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+
+        View view = inflater.inflate(R.layout.fragment_profil_friend_following, container, false);
+
         ButterKnife.bind(this, view);
+
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        manager = new GridLayoutManager(getContext(), 2);
 
+        manager = new LinearLayoutManager(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-
         recyclerView.setLayoutManager(manager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        Query query = refUser.child("photos");
+        Query query = refUser.child("followings");
 
-        adapter = new FirebaseRecyclerAdapter<String, ProfilPhotoHolder>(String.class, R.layout.card_profil_photo, ProfilPhotoHolder.class, query) {
+        adapter = new FirebaseRecyclerAdapter<String, ProfilFriendHolder>(String.class, R.layout.card_profil_friend_following, ProfilFriendHolder.class, query) {
             @Override
-            protected void populateViewHolder(ProfilPhotoHolder profilPhotoHolder, String s, int position) {
+            protected void populateViewHolder(ProfilFriendHolder profilFriendHolder, String s, int position) {
                 if (s != null) {
-                    displayUserInformation(profilPhotoHolder, getRef(position).getKey());
+                    displayInformationFollowings(profilFriendHolder, getRef(position).getKey());
                 }
             }
         };
 
+
         recyclerView.setAdapter(adapter);
     }
-
 
     @Override
     public void onStart() {
@@ -162,24 +158,19 @@ public class ProfilPhotoFragment extends Fragment {
         super.onDetach();
     }
 
-    private void displayUserInformation(final ProfilPhotoHolder profilPhotoHolder, final String photoUid) {
-
-        DatabaseReference reference = mRootRef.child("photo").child(photoUid);
+    private void displayInformationFollowings(final ProfilFriendHolder profilFriendHolder, final String userUid) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = mRootRef.child("user").child(userUid);
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Photo photo = dataSnapshot.getValue(Photo.class);
+                User user = dataSnapshot.getValue(User.class);
 
-                if (photo != null && photo.getUrl() != null) {
-
-                    String url = photo.getUrl();
-                    if (url != null) {
-                        profilPhotoHolder.setImageViewPhoto(getContext(), url);
-                    }
-
+                if (user != null) {
+                    profilFriendHolder.setImageViewPhoto(getContext(), user.getPhotoProfl());
+                    profilFriendHolder.setTextViewUsername(user.getUsername());
                 }
-
             }
 
             @Override
@@ -189,6 +180,4 @@ public class ProfilPhotoFragment extends Fragment {
         });
 
     }
-
-
 }

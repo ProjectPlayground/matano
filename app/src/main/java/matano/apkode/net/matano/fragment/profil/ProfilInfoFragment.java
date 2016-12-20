@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
@@ -28,6 +30,7 @@ import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.model.User;
 
 public class ProfilInfoFragment extends Fragment {
+    private static String ARG_USER_UID = "userUid";
     TextView textViewFollowersNumber;
     TextView textViewFollowingsNumber;
     TextView textViewPhotosNumber;
@@ -41,6 +44,7 @@ public class ProfilInfoFragment extends Fragment {
 //    @BindView(R.id.textViewUsername) TextView textViewUsername;
 //    @BindView(R.id.imageViewPhotoProfil) ImageView imageViewPhotoProfil;
 //    @BindView(R.id.textViewPresentation) TextView textViewPresentation;
+    ImageButton imageButtonAddOrSetting;
     private Context context;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -58,14 +62,12 @@ public class ProfilInfoFragment extends Fragment {
     private Date birthday = null;
     private String presentation = null;
     private String photoProfl = null;
-
     private Map<String, String> events = null;  // idEvent - boolean
     private Map<String, String> followers = null;  // Uid
     private Map<String, String> followings = null;  // Uid
     private Map<String, String> photos = null;   // idPhoto
     private Map<String, String> videos = null;   // idVidoe
     private Map<String, String> tickets = null;   // idTicket
-
     private int eventsNumber = 0;
     private int followersNumber = 0;
     private int followingsNumber = 0;
@@ -73,13 +75,16 @@ public class ProfilInfoFragment extends Fragment {
     private int videosNumber = 0;
     private int ticketsNumber = 0;
 
-
     public ProfilInfoFragment() {
     }
 
-    public ProfilInfoFragment newInstance(Context ctx) {
+    public ProfilInfoFragment newInstance(Context ctx, String userUid) {
         context = ctx;
         ProfilInfoFragment profilInfoFragment = new ProfilInfoFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_USER_UID, userUid);
+        profilInfoFragment.setArguments(bundle);
+        ARG_USER_UID = userUid;
         return profilInfoFragment;
     }
 
@@ -97,6 +102,18 @@ public class ProfilInfoFragment extends Fragment {
         mRootRef = database.getReference();
         refUser = mRootRef.child("user");
 
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    refUser = refUser.child(ARG_USER_UID);
+                } else {
+                    // TODO go sign in
+                }
+            }
+        };
+
     }
 
     @Nullable
@@ -104,6 +121,7 @@ public class ProfilInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profil_info, container, false);
         ButterKnife.bind(this, view);
+
         return view;
     }
 
@@ -117,37 +135,28 @@ public class ProfilInfoFragment extends Fragment {
         textViewUsername = (TextView) view.findViewById(R.id.textViewUsername);
         textViewPresentation = (TextView) view.findViewById(R.id.textViewPresentation);
         imageViewPhotoProfil = (ImageView) view.findViewById(R.id.imageViewPhotoProfil);
+        imageButtonAddOrSetting = (ImageButton) view.findViewById(R.id.imageButtonAddOrSetting);
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+        Query query = refUser;
+
+        query.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    refUser = refUser.child(user.getUid());
-/*
-                    List<String> photos = new ArrayList<>();
-                    photos.add("http://www.newseum.org/wp-content/uploads/2014/08/370x250xhostevent_landing_wedding2.jpg.pagespeed.ic.eyeFV_I2q1.jpg");
-                    photos.add("http://www.newseum.org/wp-content/uploads/2014/08/370x250xhostevent_landing_wedding2.jpg.pagespeed.ic.eyeFV_I2q1.jpg");
-                    photos.add("http://partiezbyleslie.com/wp-content/uploads/2015/07/Event-management.png");
-                    photos.add("http://www.skiheavenly.com/~/media/heavenly/images/732x260%20header%20images/events-heavenly-header.ashx");
-                    photos.add("http://tk-themes.net/html-ivent/images/event/category/cate_2.jpg");
-                    photos.add("http://www.salesfish.com/wp-content/uploads/2011/11/Experiential-Event-Marketing.jpg");
-                    photos.add("http://www.eventcity.co.uk/images/dynamicImages/orig_img50b4cfb0422a6.jpg");
-                    photos.add("http://www.newseum.org/wp-content/uploads/2014/08/370x250xhostevent_landing_wedding2.jpg.pagespeed.ic.eyeFV_I2q1.jpg");
-                    photos.add("http://www.newseum.org/wp-content/uploads/2014/08/370x250xhostevent_landing_wedding2.jpg.pagespeed.ic.eyeFV_I2q1.jpg");
-                    photos.add("http://partiezbyleslie.com/wp-content/uploads/2015/07/Event-management.png");
-                    photos.add("http://www.skiheavenly.com/~/media/heavenly/images/732x260%20header%20images/events-heavenly-header.ashx");
-                    photos.add("http://tk-themes.net/html-ivent/images/event/category/cate_2.jpg");
-                    photos.add("http://www.salesfish.com/wp-content/uploads/2011/11/Experiential-Event-Marketing.jpg");
-                    photos.add("http://www.eventcity.co.uk/images/dynamicImages/orig_img50b4cfb0422a6.jpg");
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
 
-                    refUser.child("photos").setValue(photos);*/
-                    getUserData();
-                } else {
-                    // TODO go sign in
+                if (user == null) {
+                    getActivity().finish();
                 }
+
+                displayUserInformation(user);
             }
-        };
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
 
     }
@@ -191,28 +200,10 @@ public class ProfilInfoFragment extends Fragment {
         super.onDetach();
     }
 
-    private void getUserData() {
-        refUser.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-
-                if (null != user) {
-                    displayUserInformation(user);
-                } else {
-                    // TODO check
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     private void displayUserInformation(User user) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String currentUserUid = currentUser.getUid();
 
         if (user.getUsername() != null) {
             username = user.getUsername();
@@ -220,6 +211,7 @@ public class ProfilInfoFragment extends Fragment {
 
         if (user.getFirstName() != null) {
             firstName = user.getFirstName();
+            username = firstName;
         }
         if (user.getLastName() != null) {
             lastName = user.getLastName();
@@ -290,16 +282,20 @@ public class ProfilInfoFragment extends Fragment {
 
         if (textViewFollowersNumber != null) {
             textViewFollowersNumber.setText(followersNumber + " followers");
+            textViewFollowersNumber.setVisibility(View.VISIBLE);
         }
         if (textViewFollowingsNumber != null) {
             textViewFollowingsNumber.setText("" + followingsNumber + " followings");
+            textViewFollowingsNumber.setVisibility(View.VISIBLE);
         }
         if (textViewPhotosNumber != null) {
             textViewPhotosNumber.setText("" + photosNumber + " posts");
+            textViewPhotosNumber.setVisibility(View.VISIBLE);
         }
         if (textViewUsername != null) {
             if (username != null) {
                 textViewUsername.setText("?" + username);
+                textViewUsername.setVisibility(View.VISIBLE);
             }
         }
         if (imageViewPhotoProfil != null) {
@@ -308,6 +304,7 @@ public class ProfilInfoFragment extends Fragment {
                         .with(getContext())
                         .load(photoProfl)
                         //  .centerCrop()
+                        .placeholder(R.mipmap.person2)
                         .into(imageViewPhotoProfil);
             }
         }
@@ -316,7 +313,46 @@ public class ProfilInfoFragment extends Fragment {
                 textViewPresentation.setText(presentation);
             } else {
                 textViewPresentation.setText("Introduce yourself ...");
+                textViewPresentation.setVisibility(View.VISIBLE);
             }
+        }
+
+        if (imageButtonAddOrSetting != null) {
+
+            if (currentUserUid.equals(ARG_USER_UID)) {
+                imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_action_settings_padding);
+                imageButtonAddOrSetting.setVisibility(View.VISIBLE);
+                imageButtonAddOrSetting.setTag("");
+            } else {
+
+                refUser.child("followers").child(currentUserUid).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String s = dataSnapshot.getValue(String.class);
+
+                        if (s == null) {
+                            // not frends
+                            imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_social_group_add_padding);
+                            imageButtonAddOrSetting.setVisibility(View.VISIBLE);
+                            imageButtonAddOrSetting.setTag("");
+                        } else {
+                            // frends
+                            imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_social_people_padding);
+                            imageButtonAddOrSetting.setVisibility(View.VISIBLE);
+                            imageButtonAddOrSetting.setTag("");
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+            }
+
         }
 
     }
