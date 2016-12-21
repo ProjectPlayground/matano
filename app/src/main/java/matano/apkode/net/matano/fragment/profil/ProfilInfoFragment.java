@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +24,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.model.User;
 
 public class ProfilInfoFragment extends Fragment {
@@ -100,15 +103,16 @@ public class ProfilInfoFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
-        refUser = mRootRef.child("user");
+        refUser = mRootRef.child("user").child(ARG_USER_UID);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    refUser = refUser.child(ARG_USER_UID);
+
                 } else {
+
                     // TODO go sign in
                 }
             }
@@ -122,13 +126,6 @@ public class ProfilInfoFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profil_info, container, false);
         ButterKnife.bind(this, view);
 
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
         textViewFollowersNumber = (TextView) view.findViewById(R.id.textViewFollowersNumber);
         textViewFollowingsNumber = (TextView) view.findViewById(R.id.textViewFollowingsNumber);
         textViewPhotosNumber = (TextView) view.findViewById(R.id.textViewPhotosNumber);
@@ -136,6 +133,13 @@ public class ProfilInfoFragment extends Fragment {
         textViewPresentation = (TextView) view.findViewById(R.id.textViewPresentation);
         imageViewPhotoProfil = (ImageView) view.findViewById(R.id.imageViewPhotoProfil);
         imageButtonAddOrSetting = (ImageButton) view.findViewById(R.id.imageButtonAddOrSetting);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         Query query = refUser;
 
@@ -203,6 +207,7 @@ public class ProfilInfoFragment extends Fragment {
 
     private void displayUserInformation(User user) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        assert currentUser != null;
         String currentUserUid = currentUser.getUid();
 
         if (user.getUsername() != null) {
@@ -301,7 +306,7 @@ public class ProfilInfoFragment extends Fragment {
         if (imageViewPhotoProfil != null) {
             if (photoProfl != null) {
                 Glide
-                        .with(getContext())
+                        .with(getActivity())
                         .load(photoProfl)
                         //  .centerCrop()
                         .placeholder(R.mipmap.person2)
@@ -322,7 +327,14 @@ public class ProfilInfoFragment extends Fragment {
             if (currentUserUid.equals(ARG_USER_UID)) {
                 imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_action_settings_padding);
                 imageButtonAddOrSetting.setVisibility(View.VISIBLE);
-                imageButtonAddOrSetting.setTag("");
+
+                imageButtonAddOrSetting.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // Intent intent = new Intent(getContext(), )
+                    }
+                });
+
             } else {
 
                 refUser.child("followers").child(currentUserUid).addValueEventListener(new ValueEventListener() {
@@ -334,12 +346,28 @@ public class ProfilInfoFragment extends Fragment {
                             // not frends
                             imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_social_group_add_padding);
                             imageButtonAddOrSetting.setVisibility(View.VISIBLE);
-                            imageButtonAddOrSetting.setTag("");
+                            imageButtonAddOrSetting.setTag("1");
+
+                            imageButtonAddOrSetting.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    addFollowing(ARG_USER_UID, (String) view.getTag());
+                                }
+                            });
+
                         } else {
                             // frends
                             imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_social_people_padding);
                             imageButtonAddOrSetting.setVisibility(View.VISIBLE);
-                            imageButtonAddOrSetting.setTag("");
+                            imageButtonAddOrSetting.setTag(null);
+
+                            imageButtonAddOrSetting.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    addFollowing(ARG_USER_UID, (String) view.getTag());
+                                }
+                            });
+
                         }
 
                     }
@@ -355,6 +383,26 @@ public class ProfilInfoFragment extends Fragment {
 
         }
 
+    }
+
+    private void addFollowing(String uid, String tag) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        assert currentUser != null;
+        String currentUserUid = currentUser.getUid();
+
+        Map hashMap = new HashMap();
+        hashMap.put("user/" + uid + "/followers/" + currentUserUid, tag);
+        hashMap.put("user/" + currentUserUid + "/followings/" + uid, tag);
+
+        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
+                }
+            }
+        });
     }
 
 

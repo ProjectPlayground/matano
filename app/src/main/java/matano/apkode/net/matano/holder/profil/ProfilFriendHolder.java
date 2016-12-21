@@ -16,13 +16,13 @@ import matano.apkode.net.matano.model.User;
 public class ProfilFriendHolder extends RecyclerView.ViewHolder {
     private ImageView imageViewPhoto;
     private TextView textViewUsername;
-    private ImageButton imageButtonAdd;
+    private ImageButton imageButtonAddOrSetting;
 
     public ProfilFriendHolder(View itemView) {
         super(itemView);
         imageViewPhoto = (ImageView) itemView.findViewById(R.id.imageViewPhoto);
         textViewUsername = (TextView) itemView.findViewById(R.id.textViewUsername);
-        imageButtonAdd = (ImageButton) itemView.findViewById(R.id.imageButtonAdd);
+        imageButtonAddOrSetting = (ImageButton) itemView.findViewById(R.id.imageButtonAddOrSetting);
     }
 
     public void bind(User user) {
@@ -56,8 +56,8 @@ public class ProfilFriendHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public ImageButton getImageButtonAdd() {
-        return imageButtonAdd;
+    public ImageButton getImageButtonAddOrSetting() {
+        return imageButtonAddOrSetting;
     }
 
 }

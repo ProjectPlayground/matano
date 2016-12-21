@@ -1,15 +1,19 @@
 package matano.apkode.net.matano.fragment.profil.friend;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,8 +25,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.activity.ProfilActivity;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.profil.ProfilFriendHolder;
 import matano.apkode.net.matano.model.User;
 
@@ -159,7 +168,10 @@ public class ProfilFriendFollowingFragment extends Fragment {
     }
 
     private void displayInformationFollowings(final ProfilFriendHolder profilFriendHolder, final String userUid) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        assert currentUser != null;
+        final String currentUserUid = currentUser.getUid();
+
         DatabaseReference reference = mRootRef.child("user").child(userUid);
 
         reference.addValueEventListener(new ValueEventListener() {
@@ -170,6 +182,80 @@ public class ProfilFriendFollowingFragment extends Fragment {
                 if (user != null) {
                     profilFriendHolder.setImageViewPhoto(getContext(), user.getPhotoProfl());
                     profilFriendHolder.setTextViewUsername(user.getUsername());
+
+                    ImageView imageViewPhoto = profilFriendHolder.getImageViewPhoto();
+
+                    if (imageViewPhoto != null) {
+
+                        imageViewPhoto.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(getContext(), ProfilActivity.class);
+                                intent.putExtra("userUid", userUid);
+                                startActivity(intent);
+
+                            }
+                        });
+
+                    }
+
+                    if (!userUid.equals(currentUserUid)) {
+                        final ImageButton imageButtonAddOrSetting = profilFriendHolder.getImageButtonAddOrSetting();
+                        if (imageButtonAddOrSetting != null) {
+                            DatabaseReference databaseReference = mRootRef.child("user").child(currentUserUid).child("followings");
+
+                            databaseReference.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(final DataSnapshot dataSnapshot) {
+                                    if (!dataSnapshot.exists()) {
+                                        imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_social_group_add_padding);
+                                        imageButtonAddOrSetting.setVisibility(View.VISIBLE);
+                                        imageButtonAddOrSetting.setTag("1");
+
+                                        imageButtonAddOrSetting.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                addFollowing(userUid, (String) view.getTag());
+                                            }
+                                        });
+
+                                    } else {
+                                        for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                                            if (userUid.equals(snap.getKey())) {
+                                                imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_social_people_padding);
+                                                imageButtonAddOrSetting.setVisibility(View.VISIBLE);
+                                                imageButtonAddOrSetting.setTag(null);
+
+                                                imageButtonAddOrSetting.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View view) {
+                                                        addFollowing(userUid, (String) view.getTag());
+                                                    }
+                                                });
+                                            } else {
+                                                imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_social_group_add_padding);
+                                                imageButtonAddOrSetting.setVisibility(View.VISIBLE);
+                                                imageButtonAddOrSetting.setTag("1");
+
+                                                imageButtonAddOrSetting.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View view) {
+                                                        addFollowing(userUid, (String) view.getTag());
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    }
+
                 }
             }
 
@@ -179,5 +265,25 @@ public class ProfilFriendFollowingFragment extends Fragment {
             }
         });
 
+    }
+
+    private void addFollowing(String uid, String tag) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        assert currentUser != null;
+        String currentUserUid = currentUser.getUid();
+
+        Map hashMap = new HashMap();
+        hashMap.put("user/" + uid + "/followers/" + currentUserUid, tag);
+        hashMap.put("user/" + currentUserUid + "/followings/" + uid, tag);
+
+        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
+                }
+            }
+        });
     }
 }

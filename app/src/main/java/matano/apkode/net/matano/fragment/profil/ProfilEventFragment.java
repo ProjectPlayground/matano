@@ -115,7 +115,6 @@ public class ProfilEventFragment extends Fragment {
             }
         };
 
-
         recyclerView.setAdapter(adapter);
 
     }

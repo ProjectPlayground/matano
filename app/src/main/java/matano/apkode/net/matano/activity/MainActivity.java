@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -28,6 +29,7 @@ import matano.apkode.net.matano.fragment.MainNewFragment;
 
 
 public class MainActivity extends AppCompatActivity {
+    private static String ARG_USER_UID = "userUid";
     private FrameLayout frameLayout;
     private MainFragment mainFragment;
     private MainNewFragment mainNewFragment;
@@ -41,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private List<String> categorieList = new ArrayList<>();
     private List<String> paysList = new ArrayList<>();
     private List<String> villeList = new ArrayList<>();
-
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.ic_bottom_profil:
                         Intent intent = new Intent(getApplicationContext(), ProfilActivity.class);
+                        intent.putExtra(ARG_USER_UID, FirebaseAuth.getInstance().getCurrentUser().getUid());
                         startActivity(intent);
                         break;
 
@@ -229,5 +231,9 @@ public class MainActivity extends AppCompatActivity {
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+    }
+
+    public void logOut(View view) {
+        AuthUI.getInstance().signOut(this);
     }
 }

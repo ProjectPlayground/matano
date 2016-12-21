@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
@@ -21,16 +20,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.model.User;
 
 public class SignInActivity extends AppCompatActivity {
@@ -43,9 +37,6 @@ public class SignInActivity extends AppCompatActivity {
     private DatabaseReference refUser;
     private FrameLayout frameLayoutContry;
     private FrameLayout frameLayoutCity;
-    private FirebaseStorage storage;
-    private StorageReference refStoragePhotos;
-    private StorageReference mRootStorageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +51,6 @@ public class SignInActivity extends AppCompatActivity {
         mRootRef = database.getReference();
         refUser = mRootRef.child("user");
 
-        storage = FirebaseStorage.getInstance();
-        mRootStorageRef = storage.getReference();
-
-        refStoragePhotos = mRootStorageRef.child("profil");
-
         frameLayoutContry = (FrameLayout) findViewById(R.id.frameLayoutContry);
         frameLayoutCity = (FrameLayout) findViewById(R.id.frameLayoutCity);
 
@@ -73,7 +59,8 @@ public class SignInActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    setUserExiste();
+                    refUser = refUser.child(user.getUid());
+                    setIfUserExist();
                 } else {
                     startActivityForResult(
                             AuthUI.getInstance()
@@ -123,62 +110,55 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-
-                setUserExiste();
-                // goMain();
-                // finish();
+                setIfUserExist();
                 return;
             }
 
-            // Sign in canceled
             if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, R.string.cancel_login, Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // No network
             if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
                 Toast.makeText(this, R.string.no_network, Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // User is not signed in. Maybe just wait for the user to press
-            // "sign in" again, or show a message.
         }
     }
 
-    private void setUserExiste() {
+    private void setIfUserExist() {
 
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        assert user != null;
-        DatabaseReference refUserExist = refUser.child(user.getUid());
-
-        refUserExist.addListenerForSingleValueEvent(new ValueEventListener() {
+        refUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
 
-                    String username = user.getDisplayName();
-                    String firstName = user.getDisplayName();
-                    String email = user.getEmail();
+                    String username = currentUser.getDisplayName();
+                    String firstName = currentUser.getDisplayName();
+                    String email = currentUser.getEmail();
                     String photoProfil = null;
 
-                    Uri photoUrl = user.getPhotoUrl();
+                    Uri photoUrl = currentUser.getPhotoUrl();
 
                     if (null != photoUrl) {
                         photoProfil = photoUrl.toString();
                     }
 
-                    User userNew = new User(username, firstName, null, null, null, email, null, null, null, null, photoProfil, null, null, null, null, null, null, null);
+                    User userNew = new User();
+                    userNew.setUsername(username);
+                    userNew.setFirstName(firstName);
+                    userNew.setEmail(email);
+                    userNew.setPhotoProfl(photoProfil);
 
-                    uploadAndSavePhoto(userNew, user);
-
+                    saveUser(userNew);
+                    
                 } else {
-                    setUserContryExist();
+                    setIfUserContryExist();
                 }
             }
 
@@ -189,66 +169,28 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
-    private void uploadAndSavePhoto(final User userNew, final FirebaseUser user) {
-
-
-        Map hashMap = new HashMap();
-
-        hashMap.put("user/" + user.getUid(), userNew);
-        hashMap.put("profil/" + user.getUid(), userNew.getPhotoProfl());
-
-        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+    private void saveUser(User userNew) {
+        refUser.setValue(userNew, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (null != databaseError) {
-                    Log.e(Utils.TAG, "null != databaseError");
+                if (null == databaseError) {
+                    setIfUserContryExist();
                 } else {
-                    Log.e(Utils.TAG, "null == databaseError");
-                    setUserContryExist();
+                    Toast.makeText(getApplicationContext(), R.string.cancel_login, Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
     }
 
-
-    private void savePhoto(FirebaseUser currentUser, Uri downloadUri, String uuid, User userNew) {
-        Map hashMap = new HashMap();
-
-        hashMap.put("user/" + uuid, userNew);
-        // hashMap.put("profil/"+currentUser.getUid(), downloadUri.toString());
-
-        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (null != databaseError) {
-                    Log.e(Utils.TAG, "null != databaseError");
-                } else {
-                    Log.e(Utils.TAG, "null == databaseError");
-                    setUserContryExist();
-                }
-            }
-        });
-
-
-
-
-    }
-
-    private void setUserContryExist() {
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        assert user != null;
-        DatabaseReference refUserExist = refUser.child(user.getUid());
-
-        refUserExist.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void setIfUserContryExist() {
+        refUser.child("contry").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(user.getUid()).child("contry").exists()) {
-                    setUserCityExist();
-                } else {
+                if (dataSnapshot.getValue() == null) {
                     frameLayoutCity.setVisibility(View.GONE);
                     frameLayoutContry.setVisibility(View.VISIBLE);
+                } else {
+                    setIfUserCityExist();
                 }
             }
 
@@ -260,20 +202,15 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
-    private void setUserCityExist() {
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        assert user != null;
-        DatabaseReference refUserExist = refUser.child(user.getUid());
-
-        refUserExist.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void setIfUserCityExist() {
+        refUser.child("city").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(user.getUid()).child("city").exists()) {
-                    goMain();
-                } else {
+                if (dataSnapshot.getValue() == null) {
                     frameLayoutContry.setVisibility(View.GONE);
                     frameLayoutCity.setVisibility(View.VISIBLE);
+                } else {
+                    goMain();
                 }
             }
 
@@ -285,10 +222,8 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
 
-        // Check which radio button was clicked
         switch (view.getId()) {
             case R.id.radio_niger:
                 if (checked)
@@ -302,10 +237,8 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void onRadioButtonCityClicked(View view) {
-        // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
 
-        // Check which radio button was clicked
         switch (view.getId()) {
             case R.id.radio_niamey:
                 if (checked)
@@ -319,15 +252,11 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void setUserAddContry(String contry) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        assert user != null;
-        DatabaseReference refUserContry = refUser.child(user.getUid()).child("contry");
-        refUserContry.setValue(contry, new DatabaseReference.CompletionListener() {
+        refUser.child("contry").setValue(contry, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (null == databaseError) {
-                    setUserCityExist();
+                    setIfUserCityExist();
                 } else {
 
                 }
@@ -336,11 +265,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void setUserAddCity(String city) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        assert user != null;
-        DatabaseReference refUserContry = refUser.child(user.getUid()).child("city");
-        refUserContry.setValue(city, new DatabaseReference.CompletionListener() {
+        refUser.child("city").setValue(city, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (null == databaseError) {
@@ -350,10 +275,6 @@ public class SignInActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    public void logOut(View view) {
-        AuthUI.getInstance().signOut(this);
     }
 
     private void goMain() {
