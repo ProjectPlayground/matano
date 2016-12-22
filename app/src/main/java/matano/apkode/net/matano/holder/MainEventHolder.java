@@ -14,43 +14,62 @@ import matano.apkode.net.matano.model.Event;
 
 
 public class MainEventHolder extends RecyclerView.ViewHolder {
-    private TextView textViewEventTitle;
-    private TextView textViewEventPresentation;
-    private ImageView imageViewEventPhoto;
+    private TextView textViewTitle;
+    private TextView textViewPlace;
+    private TextView textViewDateStart;
+    private TextView txtParticipantNumber;
+    private ImageView imageViewPhotoProfil;
 
 
     public MainEventHolder(View itemView) {
         super(itemView);
-        textViewEventTitle = (TextView) itemView.findViewById(R.id.textViewEventTitle);
-        textViewEventPresentation = (TextView) itemView.findViewById(R.id.textViewEventPresentation);
-        imageViewEventPhoto = (ImageView) itemView.findViewById(R.id.imageViewEventPhoto);
+        textViewTitle = (TextView) itemView.findViewById(R.id.textViewTitle);
+        textViewPlace = (TextView) itemView.findViewById(R.id.textViewPlace);
+        textViewDateStart = (TextView) itemView.findViewById(R.id.textViewDateStart);
+        txtParticipantNumber = (TextView) itemView.findViewById(R.id.txtParticipantNumber);
+        imageViewPhotoProfil = (ImageView) itemView.findViewById(R.id.imageViewPhotoProfil);
     }
 
 
-    public void setTextViewEventTitle(String s) {
+    public void setTextViewTitle(String s) {
         if (null != s) {
-            if (null != textViewEventTitle) {
-                textViewEventTitle.setText(s);
+            if (null != textViewTitle) {
+                textViewTitle.setText(s);
             }
         }
     }
 
-    public void setTextViewEventPresentation(String s) {
+    public void setTextViewPlace(String s) {
         if (null != s) {
-            if (null != textViewEventPresentation) {
-                textViewEventPresentation.setText(s);
+            if (null != textViewPlace) {
+                textViewPlace.setText(s);
             }
         }
     }
 
-    public void setImageViewEventPhoto(Context context, String s) {
+    public void setTextViewDateStart(String s) {
         if (null != s) {
-            if (null != imageViewEventPhoto) {
+            if (null != textViewDateStart) {
+                textViewDateStart.setText(s);
+            }
+        }
+    }
+
+    public void setTxtParticipantNumber(int s) {
+        if (null != txtParticipantNumber) {
+            txtParticipantNumber.setText(s + " Participants");
+        }
+    }
+
+    public void setImageViewPhotoProfil(Context context, String s) {
+        if (null != s) {
+            if (null != imageViewPhotoProfil) {
                 Glide
                         .with(context)
                         .load(s)
+                        .placeholder(R.mipmap.img5)
                         //  .centerCrop()
-                        .into(imageViewEventPhoto);
+                        .into(imageViewPhotoProfil);
             }
         }
     }

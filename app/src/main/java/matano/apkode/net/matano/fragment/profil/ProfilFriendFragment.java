@@ -89,6 +89,7 @@ public class ProfilFriendFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_profil_friend, container, false);
         ButterKnife.bind(this, view);
 

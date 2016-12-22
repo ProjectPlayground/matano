@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.fragment.event.EventDefaultFragment;
 import matano.apkode.net.matano.fragment.event.EventInfoFragment;
 import matano.apkode.net.matano.fragment.event.EventNewFragment;
 import matano.apkode.net.matano.fragment.event.EventParticipantFragment;
@@ -60,7 +59,7 @@ public class EventPagerAdapter extends FragmentPagerAdapter {
             case 5:
                 return new EventPrivateFragment().newInstance(context, eventKey);
             default:
-                return new EventDefaultFragment().newInstance(context, eventKey);
+                return null;
         }
 
     }

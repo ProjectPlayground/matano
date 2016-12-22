@@ -63,6 +63,11 @@ public class ProfilActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 }

@@ -22,7 +22,6 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.adapter.profil.ProfilTicketAdapter;
 import matano.apkode.net.matano.holder.profil.ProfilTicketHolder;
 import matano.apkode.net.matano.model.Event;
 import matano.apkode.net.matano.model.Ticket;
@@ -31,7 +30,6 @@ public class ProfilTicketFragment extends Fragment {
     private static String ARG_USER_UID = "userUid";
     private Context context;
     private RecyclerView recyclerView;
-    private ProfilTicketAdapter profilTicketAdapter;
     private List<Event> events = new ArrayList<>();
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -84,6 +82,7 @@ public class ProfilTicketFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_profil_ticket, container, false);
         ButterKnife.bind(this, view);
         return view;

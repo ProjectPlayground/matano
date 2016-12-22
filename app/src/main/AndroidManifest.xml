@@ -38,23 +38,14 @@
         <activity
             android:name=".activity.ProfilActivity"
             android:label="@string/title_activity_prrofil"
-            android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="matano.apkode.net.matano.activity.MainActivity" />
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.EventActivity"
             android:label="@string/title_activity_event"
             android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="matano.apkode.net.matano.activity.MainActivity" />
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.SplashscreenActivity"
+            android:name=".activity.SignInActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -62,9 +53,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.SignInActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
 
 
     </application>

@@ -41,7 +41,6 @@ import java.util.UUID;
 
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.adapter.event.EventNewAdapter;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.event.EventNewHolder;
 import matano.apkode.net.matano.model.Photo;
@@ -55,7 +54,6 @@ public class EventNewFragment extends Fragment {
     private static final int RC_PHOTO_PICKER = 2;
     private Context context;
     private RecyclerView recyclerView;
-    private EventNewAdapter eventNewAdapter;
     private List<Photo> aNews = new ArrayList<>();
     private String eventKey;
     private FirebaseAuth mAuth;
@@ -131,6 +129,8 @@ public class EventNewFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+
         View view = inflater.inflate(R.layout.fragment_event_new, container, false);
         ButterKnife.bind(this, view);
 

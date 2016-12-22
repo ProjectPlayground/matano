@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -37,6 +38,7 @@ public class SignInActivity extends AppCompatActivity {
     private DatabaseReference refUser;
     private FrameLayout frameLayoutContry;
     private FrameLayout frameLayoutCity;
+    private TextView logo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,8 @@ public class SignInActivity extends AppCompatActivity {
 
         frameLayoutContry = (FrameLayout) findViewById(R.id.frameLayoutContry);
         frameLayoutCity = (FrameLayout) findViewById(R.id.frameLayoutCity);
+
+        logo = (TextView) findViewById(R.id.logo);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -187,6 +191,8 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
+                    logo.setVisibility(View.GONE);
+
                     frameLayoutCity.setVisibility(View.GONE);
                     frameLayoutContry.setVisibility(View.VISIBLE);
                 } else {
@@ -207,6 +213,8 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
+                    logo.setVisibility(View.GONE);
+
                     frameLayoutContry.setVisibility(View.GONE);
                     frameLayoutCity.setVisibility(View.VISIBLE);
                 } else {

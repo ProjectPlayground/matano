@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.fragment.profil;
+package matano.apkode.net.matano.fragment.main;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,41 +14,34 @@ import android.view.ViewGroup;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.holder.profil.ProfilEventHolder;
+import matano.apkode.net.matano.holder.MainEventHolder;
 import matano.apkode.net.matano.model.Event;
 
-public class ProfilEventFragment extends Fragment {
-    private static String ARG_USER_UID = "userUid";
+public class MainEventSportFragment extends Fragment {
+    private static final String CATEGORIE = "Sport";
     private Context context;
     private RecyclerView recyclerView;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase database;
     private DatabaseReference mRootRef;
-    private DatabaseReference refUser;
-    private FirebaseRecyclerAdapter<String, ProfilEventHolder> adapter;
+    private DatabaseReference refEvent;
+    private FirebaseRecyclerAdapter<Event, MainEventHolder> adapter;
     private LinearLayoutManager manager;
 
-    public ProfilEventFragment() {
+    public MainEventSportFragment() {
     }
 
-    public ProfilEventFragment newInstance(Context ctx, String userUid) {
-        context = ctx;
-        ProfilEventFragment profilEventFragment = new ProfilEventFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ARG_USER_UID, userUid);
-        profilEventFragment.setArguments(bundle);
-        ARG_USER_UID = userUid;
-        return profilEventFragment;
+    public MainEventSportFragment newInstance(Context context) {
+        this.context = context;
+        MainEventSportFragment mainEventSportFragment = new MainEventSportFragment();
+        return mainEventSportFragment;
     }
 
     @Override
@@ -63,27 +56,25 @@ public class ProfilEventFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
-        refUser = mRootRef.child("user").child(ARG_USER_UID);
+        refEvent = mRootRef.child("event");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-
-                } else {
-                    // TODO go sign in
+                    //TODO someting
                 }
             }
         };
-
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_profil_event, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_main_event, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -98,13 +89,17 @@ public class ProfilEventFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
 
-        Query query = refUser.child("events");
+        Query query = refEvent.orderByChild("category").equalTo(CATEGORIE);
 
-        adapter = new FirebaseRecyclerAdapter<String, ProfilEventHolder>(String.class, R.layout.card_profil_event, ProfilEventHolder.class, query) {
+        adapter = new FirebaseRecyclerAdapter<Event, MainEventHolder>(Event.class, R.layout.card_main_event, MainEventHolder.class, query) {
             @Override
-            protected void populateViewHolder(ProfilEventHolder profilEventHolder, String s, int position) {
-                if (s != null) {
-                    displayUserInformation(profilEventHolder, getRef(position).getKey());
+            protected void populateViewHolder(MainEventHolder mainEventHolder, Event event, int position) {
+                if (event != null) {
+                    if (event.getCategory() != null) {
+                        if (event.getCategory().equals(CATEGORIE)) {
+                            displayLayout(mainEventHolder, event);
+                        }
+                    }
                 }
             }
         };
@@ -155,52 +150,17 @@ public class ProfilEventFragment extends Fragment {
         super.onDetach();
     }
 
+    private void displayLayout(MainEventHolder mainEventHolder, Event event) {
+        String title = event.getTitle();
+        String place = event.getPlace();
+        String photoProfil = event.getPhotoProfil();
 
-    private void displayUserInformation(final ProfilEventHolder profilEventHolder, String eventUid) {
-
-        DatabaseReference reference = mRootRef.child("event").child(eventUid);
-
-
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Event event = dataSnapshot.getValue(Event.class);
-
-                if (event != null) {
-
-                    String photoProfil = event.getPhotoProfil();
-                    if (photoProfil != null) {
-                        profilEventHolder.setImageViewPhotoProfil(getContext(), photoProfil);
-                    }
-
-                    String title = event.getTitle();
-                    if (title != null) {
-                        profilEventHolder.setTextViewTitle(title);
-                    }
-
-                    String place = event.getPlace();
-
-                    if (place != null) {
-                        profilEventHolder.setTextViewPlace(place);
-                    }
-
-                    String tarification = event.getTarification();
-
-                    if (tarification != null) {
-                        profilEventHolder.setTextViewTarification(tarification);
-                    }
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        if (title != null && place != null && photoProfil != null) {
+            mainEventHolder.setTextViewTitle(title);
+            mainEventHolder.setTextViewPlace(place);
+            mainEventHolder.setImageViewPhotoProfil(getActivity(), photoProfil);
+        }
 
     }
-
 
 }

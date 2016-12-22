@@ -34,7 +34,6 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.activity.ProfilActivity;
-import matano.apkode.net.matano.adapter.event.EventParticipantAdapter;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.event.EventParticipantHolder;
 import matano.apkode.net.matano.model.User;
@@ -44,7 +43,6 @@ public class EventParticipantFragment extends Fragment {
     private static String ARG_USER_UID = "userUid";
     private Context context;
     private RecyclerView recyclerView;
-    private EventParticipantAdapter eventParticipantAdapter;
     private List<User> participants = new ArrayList<>();
     private String eventKey;
     private FirebaseAuth mAuth;
@@ -113,6 +111,8 @@ public class EventParticipantFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+
         View view = inflater.inflate(R.layout.fragment_event_participant, container, false);
 
         textViewParticipantNumer = (TextView) view.findViewById(R.id.textViewParticipantNumer);

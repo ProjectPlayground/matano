@@ -1,4 +1,4 @@
-package matano.apkode.net.matano;
+package matano.apkode.net.matano.config;
 
 /**
  * Created by smalllamartin on 12/9/16.

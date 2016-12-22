@@ -14,9 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_gravity="bottom"
-        app:itemBackground="@color/gray"
-        app:itemIconTint="@drawable/nav_item_color_state"
-        app:itemTextColor="@drawable/nav_item_color_state"
+        app:itemBackground="@android:color/background_light"
         app:menu="@menu/bottom_navigation_main" />
 
     <FrameLayout

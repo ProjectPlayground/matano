@@ -6,7 +6,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.widget.Toolbar;
 
-import matano.apkode.net.matano.fragment.MainEventFragment;
+import matano.apkode.net.matano.fragment.main.MainEventCultureFragment;
+import matano.apkode.net.matano.fragment.main.MainEventEducationFragment;
+import matano.apkode.net.matano.fragment.main.MainEventSportFragment;
 
 
 public class MainPagerAdapter extends FragmentPagerAdapter {
@@ -22,8 +24,18 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return MainEventFragment.newInstance(position + 1, context);
+        switch (position) {
+            case 0:
+                return new MainEventCultureFragment().newInstance(context);
+            case 1:
+                return new MainEventEducationFragment().newInstance(context);
+            case 2:
+                return new MainEventSportFragment().newInstance(context);
+            default:
+                return null;
+        }
     }
+
 
     @Override
     public int getCount() {

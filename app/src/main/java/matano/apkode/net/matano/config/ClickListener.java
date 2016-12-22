@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.helper;
+package matano.apkode.net.matano.config;
 
 import android.view.View;
 

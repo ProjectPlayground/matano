@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.helper;
+package matano.apkode.net.matano.config;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

@@ -36,8 +36,6 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.activity.SignInActivity;
-import matano.apkode.net.matano.adapter.event.EventTopParticipantAdapter;
-import matano.apkode.net.matano.adapter.event.EventTopPhotoAdapter;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.profil.ProfilEventHolder;
 import matano.apkode.net.matano.model.Event;
@@ -49,8 +47,6 @@ public class EventInfoFragment extends Fragment {
     private RecyclerView recyclerViewTopPhoto;
     private RecyclerView recyclerViewTopUser;
     private List<Photo> photos = new ArrayList<>();
-    private EventTopPhotoAdapter eventTopPhotoAdapter;
-    private EventTopParticipantAdapter eventTopParticipantAdapter;
     private String eventKey;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -148,13 +144,12 @@ public class EventInfoFragment extends Fragment {
             }
         }
 
-        // eventTopPhotoAdapter = new EventTopPhotoAdapter(photos);
-        // eventTopParticipantAdapter = new EventTopParticipantAdapter(users);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_event_info, container, false);
 
         imageViewPhotoProfil = (ImageView) view.findViewById(R.id.imageViewPhotoProfil);

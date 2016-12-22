@@ -43,7 +43,6 @@ import java.util.UUID;
 
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.adapter.event.EventPhotoAdapter;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.dialogfragment.PhotoDialog;
 import matano.apkode.net.matano.holder.event.EventPhotoHolder;
@@ -56,7 +55,6 @@ public class EventPhotoFragment extends Fragment {
     private static final int RC_PHOTO_PICKER = 2;
     private Context context;
     private RecyclerView recyclerView;
-    private EventPhotoAdapter eventPhotoAdapter;
     private List<Photo> photos = new ArrayList<>();
     private String eventKey;
     private FirebaseAuth mAuth;
@@ -132,6 +130,8 @@ public class EventPhotoFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+
         View view = inflater.inflate(R.layout.fragment_event_photo, container, false);
         ButterKnife.bind(this, view);
 

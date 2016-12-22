@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.fragment.profil.ProfilDefaultFragment;
 import matano.apkode.net.matano.fragment.profil.ProfilEventFragment;
 import matano.apkode.net.matano.fragment.profil.ProfilFriendFragment;
 import matano.apkode.net.matano.fragment.profil.ProfilInfoFragment;
@@ -58,7 +57,7 @@ public class ProfilPagerAdapter extends FragmentPagerAdapter {
             case 5:
                 return new ProfilFriendFragment().newInstance(context, ARG_USER_UID);
             default:
-                return new ProfilDefaultFragment().newInstance(context, ARG_USER_UID);
+                return null;
         }
 
     }
