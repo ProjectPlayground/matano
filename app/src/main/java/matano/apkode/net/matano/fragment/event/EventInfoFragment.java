@@ -42,7 +42,7 @@ import matano.apkode.net.matano.model.Event;
 import matano.apkode.net.matano.model.Photo;
 
 public class EventInfoFragment extends Fragment {
-    private static final String ARG_EVENT_KEY = null;
+    private static String ARG_EVENT_UID = "eventUid";
     private Context context;
     private RecyclerView recyclerViewTopPhoto;
     private RecyclerView recyclerViewTopUser;
@@ -94,15 +94,16 @@ public class EventInfoFragment extends Fragment {
     public EventInfoFragment() {
     }
 
-    public EventInfoFragment newInstance(Context ctx, String key) {
+    public EventInfoFragment newInstance(Context ctx, String eventUid) {
         context = ctx;
-        eventKey = key;
+        eventKey = eventUid;
 
         EventInfoFragment eventInfoFragment = new EventInfoFragment();
 
         Bundle args = new Bundle();
-        args.putString(ARG_EVENT_KEY, key);
+        args.putString(ARG_EVENT_UID, eventUid);
         eventInfoFragment.setArguments(args);
+        ARG_EVENT_UID = eventUid;
         return eventInfoFragment;
     }
 
@@ -118,33 +119,21 @@ public class EventInfoFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
+        refEvent = mRootRef.child("event").child(ARG_EVENT_UID);
 
-        String key = getArguments().getString(ARG_EVENT_KEY);
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
 
-        if (key == null) {
-            // TODO something
-        } else {
-            refEvent = mRootRef.child("event").child(key);
-
-            if (refEvent == null) {
-                //TODO do something
-            } else {
-                mAuthListener = new FirebaseAuth.AuthStateListener() {
-                    @Override
-                    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                        user = firebaseAuth.getCurrentUser();
-                        if (user != null) {
-                            //  Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                        } else {
-                            // Log.d(TAG, "onAuthStateChanged:signed_out");
-                            goSignIn();
-                        }
-                    }
-                };
+                } else {
+                    // TODO go sign in
+                }
             }
-        }
+        };
 
-    }
+        }
 
     @Nullable
     @Override
@@ -479,10 +468,10 @@ public class EventInfoFragment extends Fragment {
                 break;
         }
 
-        
+
         Map hashMap = new HashMap();
-        hashMap.put("event/" + getArguments().getString(ARG_EVENT_KEY) + "/users/" + currentUser.getUid(), tag);
-        hashMap.put("user/" + currentUser.getUid() + "/events/" + getArguments().getString(ARG_EVENT_KEY), tag);
+        hashMap.put("event/" + ARG_EVENT_UID + "/users/" + currentUser.getUid(), tag);
+        hashMap.put("user/" + currentUser.getUid() + "/events/" + ARG_EVENT_UID, tag);
 
         mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override

@@ -110,26 +110,30 @@ public class ProfilFriendFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (buttonFollower != null) {
+            buttonFollower.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-        buttonFollower.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragmentLayoutContainer, profilFriendFollowerFragment);
+                    transaction.commit();
+                }
+            });
+        }
 
-                transaction.replace(R.id.fragmentLayoutContainer, profilFriendFollowerFragment);
-                transaction.commit();
-            }
-        });
 
-        buttonFollowing.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        if (buttonFollowing != null) {
+            buttonFollowing.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                transaction.replace(R.id.fragmentLayoutContainer, profilFriendFollowingFragment);
-                transaction.commit();
-            }
-        });
+                    transaction.replace(R.id.fragmentLayoutContainer, profilFriendFollowingFragment);
+                    transaction.commit();
+                }
+            });
+        }
         
     }
 

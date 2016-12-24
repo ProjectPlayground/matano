@@ -32,10 +32,12 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -50,8 +52,8 @@ import static android.app.Activity.RESULT_OK;
 
 
 public class EventNewFragment extends Fragment {
-    private static final String ARG_PHOTO_KEY = null;
-    private static final int RC_PHOTO_PICKER = 2;
+    private static final int ARG_PHOTO_PICKER = 2;
+    private static String ARG_EVENT_UID = "eventUid";
     private Context context;
     private RecyclerView recyclerView;
     private List<Photo> aNews = new ArrayList<>();
@@ -62,9 +64,10 @@ public class EventNewFragment extends Fragment {
     private DatabaseReference mRootRef;
     private DatabaseReference refEvent;
     private DatabaseReference refUser;
+    private DatabaseReference refPhotos;
     private DatabaseReference refPhoto;
     private FirebaseStorage storage;
-    private StorageReference refStoragePhotos;
+    private StorageReference refStoragePhoto;
     private StorageReference mRootStorageRef;
     private LinearLayoutManager manager;
     private FirebaseRecyclerAdapter<String, EventNewHolder> adapter;
@@ -73,13 +76,14 @@ public class EventNewFragment extends Fragment {
     public EventNewFragment() {
     }
 
-    public EventNewFragment newInstance(Context ctx, String key) {
-        context = ctx;
-        eventKey = key;
+    public EventNewFragment newInstance(Context ctx, String eventUid) {
+        this.context = ctx;
+        eventKey = eventUid;
         EventNewFragment eventNewFragment = new EventNewFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PHOTO_KEY, key);
+        args.putString(ARG_EVENT_UID, eventUid);
         eventNewFragment.setArguments(args);
+        ARG_EVENT_UID = eventUid;
         return eventNewFragment;
     }
 
@@ -91,6 +95,20 @@ public class EventNewFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        database = FirebaseDatabase.getInstance();
+        mRootRef = database.getReference();
+        refEvent = mRootRef.child("event").child(ARG_EVENT_UID);
+        refPhotos = refEvent.child("photos");
+        refPhoto = mRootRef.child("photo");
+        refUser = mRootRef.child("user");
+
+        storage = FirebaseStorage.getInstance();
+        mRootStorageRef = storage.getReference();
+
+        refStoragePhoto = mRootStorageRef.child("photos");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -104,26 +122,6 @@ public class EventNewFragment extends Fragment {
             }
         };
 
-        mAuth = FirebaseAuth.getInstance();
-
-        database = FirebaseDatabase.getInstance();
-        mRootRef = database.getReference();
-        refPhoto = mRootRef.child("photo");
-        refUser = mRootRef.child("user");
-
-        storage = FirebaseStorage.getInstance();
-        mRootStorageRef = storage.getReference();
-
-        refStoragePhotos = mRootStorageRef.child("photos");
-
-        String key = getArguments().getString(ARG_PHOTO_KEY);
-
-        if (key == null) {
-            // TODO something
-        } else {
-            refEvent = mRootRef.child("event").child(key);
-        }
-
     }
 
     @Nullable
@@ -135,6 +133,7 @@ public class EventNewFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         floatingButtonPhoto = (FloatingActionButton) view.findViewById(R.id.floatingButtonPhoto);
+
         return view;
     }
 
@@ -148,100 +147,18 @@ public class EventNewFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
 
-
-        Query query = refEvent.child("photos");
-
+        Query query = refPhotos;
 
         adapter = new FirebaseRecyclerAdapter<String, EventNewHolder>(String.class, R.layout.card_event_new, EventNewHolder.class, query) {
             @Override
-            protected void populateViewHolder(final EventNewHolder eventNewHolder, String s, int position) {
+            protected void populateViewHolder(EventNewHolder eventNewHolder, String s, int position) {
                 if (s != null) {
-                    final String ref = getRef(position).getKey();
-                    refPhoto.child(ref).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Photo photo = dataSnapshot.getValue(Photo.class);
-
-                            if (photo != null && photo.getUrl() != null && photo.getUser() != null) {
-                                eventNewHolder.setImageViewPhoto(getContext(), photo.getUrl());
-
-                                refUser.child(photo.getUser()).addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        User user = dataSnapshot.getValue(User.class);
-
-                                        if (user != null) {
-                                            eventNewHolder.setImageViewPhotoProfil(getContext(), user.getPhotoProfl());
-                                        }
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-
-                                final ImageButton imageButtonLikePhoto = eventNewHolder.getImageButtonLikePhoto();
-
-                                DatabaseReference reference = mRootRef.child("photo").child(ref).child("likes");
-
-                                reference.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.getChildrenCount() == 0) {
-                                            imageButtonLikePhoto.setTag("1");
-                                            imageButtonLikePhoto.setVisibility(View.VISIBLE);
-                                            imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
-                                        } else {
-                                            for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                                                if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(snap.getKey())) {
-                                                    imageButtonLikePhoto.setTag(null);
-                                                    imageButtonLikePhoto.setVisibility(View.VISIBLE);
-                                                    imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_padding);
-                                                } else {
-                                                    imageButtonLikePhoto.setTag("1");
-                                                    imageButtonLikePhoto.setVisibility(View.VISIBLE);
-                                                    imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-
-                                if (imageButtonLikePhoto != null) {
-
-                                    imageButtonLikePhoto.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            addPhotoLike(ref, (String) view.getTag());
-                                        }
-                                    });
-
-                                }
-
-
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
+                    getPhoto(eventNewHolder, getRef(position).getKey());
                 }
             }
         };
 
-
         recyclerView.setAdapter(adapter);
-
 
         floatingButtonPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -249,11 +166,9 @@ public class EventNewFragment extends Fragment {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/jpeg");
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
+                startActivityForResult(Intent.createChooser(intent, "Complete action using"), ARG_PHOTO_PICKER);
             }
         });
-
-        recyclerView.setAdapter(adapter);
 
     }
 
@@ -299,21 +214,133 @@ public class EventNewFragment extends Fragment {
         super.onDetach();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
-            Uri selectedImageUri = data.getData();
-            uploadPhoto(selectedImageUri);
+    private void getPhoto(final EventNewHolder eventNewHolder, final String photoUid) {
+        Query query = refPhoto.child(photoUid);
 
-        }
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Photo photo = dataSnapshot.getValue(Photo.class);
+
+                if (photo != null && photo.getUrl() != null && photo.getDate() != null) {
+                    getUser(eventNewHolder, photoUid, photo);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getUser(final EventNewHolder eventNewHolder, final String photoUid, final Photo photo) {
+        String userUid = photo.getUser();
+
+        Query query = refUser.child(userUid);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (user != null && user.getPhotoProfl() != null && user.getUsername() != null) {
+                    displayLayout(eventNewHolder, photoUid, photo, user);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void displayLayout(EventNewHolder eventNewHolder, final String photoUid, Photo photo, User user) {
+        final String userUid = photo.getUser();
+        String url = photo.getUrl();
+        Date date = photo.getDate();
+
+        eventNewHolder.setTextViewUsername(user.getUsername());
+        eventNewHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
+        eventNewHolder.setImageViewPhoto(getContext(), url);
+        eventNewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        eventNewHolder.setImageViewPhotoProfil(getContext(), user.getPhotoProfl());
+
+        final ImageButton imageButtonLikePhoto = eventNewHolder.getImageButtonLikePhoto();
+
+        Query query = refUser.child(userUid).child("likes");
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getChildrenCount() == 0) {
+                    imageButtonLikePhoto.setTag("1");
+                    imageButtonLikePhoto.setVisibility(View.VISIBLE);
+                    imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
+                } else {
+                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                        if (photoUid.equals(snap.getKey())) {
+                            imageButtonLikePhoto.setTag(null);
+                            imageButtonLikePhoto.setVisibility(View.VISIBLE);
+                            imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_padding);
+                        } else {
+                            imageButtonLikePhoto.setTag("1");
+                            imageButtonLikePhoto.setVisibility(View.VISIBLE);
+                            imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        imageButtonLikePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                addPhotoLike(photoUid, (String) view.getTag());
+            }
+        });
+
+    }
+
+    private void addPhotoLike(String photoUid, String tag) {
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        assert currentUser != null;
+        String currentUserUid = currentUser.getUid();
+
+        Map hashMap = new HashMap();
+        hashMap.put("photo/" + photoUid + "/likes/" + currentUserUid, tag);
+        hashMap.put("user/" + currentUserUid + "/likes/" + photoUid, tag);
+
+        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
+                }
+            }
+        });
+
     }
 
     private void uploadPhoto(Uri selectedImageUri) {
 
         final String uuid = UUID.randomUUID().toString();
 
-        StorageReference photoRef = refStoragePhotos.child(uuid);
+        StorageReference photoRef = refStoragePhoto.child(uuid);
         photoRef.putFile(selectedImageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -340,11 +367,11 @@ public class EventNewFragment extends Fragment {
 
     private void savePhoto(FirebaseUser currentUser, Uri downloadUri, String uuid) {
 
-        Photo photo = new Photo(getArguments().getString(ARG_PHOTO_KEY), currentUser.getUid(), downloadUri.toString(), new Date(), "1", null);
+        Photo photo = new Photo(ARG_EVENT_UID, currentUser.getUid(), downloadUri.toString(), new Date(), "1", null);
 
         Map hashMap = new HashMap();
 
-        hashMap.put("event/" + getArguments().getString(ARG_PHOTO_KEY) + "/photos/" + uuid, "1");
+        hashMap.put("event/" + ARG_EVENT_UID + "/photos/" + uuid, "1");
         hashMap.put("photo/" + uuid, photo);
         hashMap.put("user/" + currentUser.getUid() + "/photos/" + uuid, "1");
 
@@ -359,24 +386,14 @@ public class EventNewFragment extends Fragment {
 
     }
 
-    private void addPhotoLike(String keyPhoto, String tag) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        assert currentUser != null;
-        String currentUserUid = currentUser.getUid();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ARG_PHOTO_PICKER && resultCode == RESULT_OK) {
+            Uri selectedImageUri = data.getData();
+            uploadPhoto(selectedImageUri);
 
-        Map hashMap = new HashMap();
-        hashMap.put("photo/" + keyPhoto + "/likes/" + currentUserUid, tag);
-        hashMap.put("user/" + currentUserUid + "/likes/" + keyPhoto, tag);
-
-        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
-                }
-            }
-        });
-
+        }
     }
 
 }
