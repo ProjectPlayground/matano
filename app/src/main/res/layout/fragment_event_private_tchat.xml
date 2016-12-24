@@ -10,7 +10,6 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/linearLayout"
         android:divider="@android:color/transparent"
-        android:padding="@dimen/activity_horizontal_margin"
         android:scrollbars="none"
         android:stackFromBottom="true"
         android:transcriptMode="alwaysScroll" />

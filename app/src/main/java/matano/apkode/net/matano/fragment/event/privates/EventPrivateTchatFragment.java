@@ -324,7 +324,7 @@ public class EventPrivateTchatFragment extends Fragment {
                 final Photo photo = dataSnapshot.getValue(Photo.class);
 
                 if (photo != null && photo.getUrl() != null) {
-                    displayLayoutPhoto(eventPrivateTchatHolder, tchat, user, photo);
+                    //  displayLayoutPhoto(eventPrivateTchatHolder, tchat, user, photo);
                 }
             }
 

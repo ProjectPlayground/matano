@@ -1,38 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/relativeLayoutContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_margin="@dimen/activity_horizontal_margin">
 
-    <LinearLayout
-        android:id="@+id/linearLayoutContainer"
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewPhotoProfil"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:padding="8dp"
+        app:cardCornerRadius="12dp">
 
         <ImageView
             android:id="@+id/imageViewPhotoProfil"
             android:layout_width="36dp"
-            android:layout_height="36dp" />
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:src="@mipmap/person" />
 
-        <TextView
-            android:id="@+id/textViewUsername"
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/cardViewPhotoProfil"
+        android:padding="8dp"
+        app:cardCornerRadius="8dp">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutContainer"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
 
-        <TextView
-            android:id="@+id/textViewMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
-        <ImageView
-            android:id="@+id/imageViewPhoto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/textViewUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tontonbachir"
+                android:textSize="10sp" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/textViewMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Un long message ici qui veut tout dire" />
+
+            <ImageView
+                android:id="@+id/imageViewPhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
 
 
 </RelativeLayout>
