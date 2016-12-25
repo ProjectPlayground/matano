@@ -16,7 +16,10 @@
             android:layout_marginRight="1dp"
             android:layout_marginTop="1dp"
             android:layout_weight="1"
-            android:text="Followers" />
+            android:background="@color/colorPrimary"
+            android:text="Followers"
+            android:textColor="@android:color/background_light"
+            android:textSize="13sp" />
 
         <Button
             android:id="@+id/buttonFollowing"
@@ -25,7 +28,9 @@
             android:layout_marginRight="1dp"
             android:layout_marginTop="1dp"
             android:layout_weight="1"
+            android:background="@color/colorPrimary"
             android:text="Followings"
+            android:textColor="@android:color/background_light"
             android:textSize="13sp" />
 
     </LinearLayout>

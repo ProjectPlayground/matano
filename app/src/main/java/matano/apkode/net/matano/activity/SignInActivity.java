@@ -23,9 +23,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
+import java.util.Date;
 
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.model.Event;
 import matano.apkode.net.matano.model.User;
 
 public class SignInActivity extends AppCompatActivity {
@@ -43,6 +45,16 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // FirebaseAuth.getInstance().signOut();
+
+        Event event = new Event("Chanpionat Tai chi", "Sport", "Formation", "Niger", "Dosso", "Palais des sports", "Rue faubourg saint honore", 3.234233, 3.388, 3.333, new Date(), "Championat annuel des arts matiaux", "http://i.dailymail.co.uk/i/pix/2016/05/13/08/341D5D5200000578-0-image-a-11_1463124122276.jpg", null, "Gratuit", null, null, null);
+
+        database = FirebaseDatabase.getInstance();
+        mRootRef = database.getReference();
+        refEvent = mRootRef.child("event");
+
+        //  refEvent.push().setValue(event);
 
         setContentView(R.layout.activity_signin);
         ButterKnife.bind(this);

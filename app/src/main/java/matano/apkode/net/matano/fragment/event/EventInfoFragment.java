@@ -1,11 +1,12 @@
 package matano.apkode.net.matano.fragment.event;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,8 +25,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,9 +38,9 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.activity.SignInActivity;
 import matano.apkode.net.matano.config.Utils;
-import matano.apkode.net.matano.holder.profil.ProfilEventHolder;
+import matano.apkode.net.matano.dialogfragment.PhotoDialog;
+import matano.apkode.net.matano.holder.event.EventPhotoHolder;
 import matano.apkode.net.matano.model.Event;
 import matano.apkode.net.matano.model.Photo;
 
@@ -54,16 +57,17 @@ public class EventInfoFragment extends Fragment {
     private DatabaseReference mRootRef;
     private DatabaseReference refEventUser;
     private DatabaseReference refEvent;
+    private DatabaseReference refPhotos;
+    private DatabaseReference refPhoto;
     private FirebaseUser user;
-    private FirebaseRecyclerAdapter<Event, ProfilEventHolder> adapter;
+    private FirebaseRecyclerAdapter<String, EventPhotoHolder> adapter;
     private LinearLayoutManager manager;
 
     private ImageView imageViewPhotoProfil;
     private TextView textViewTitle;
     private TextView textViewPlace;
     private TextView textViewAddress;
-    private TextView textViewDateStart;
-    private TextView textViewDateEnd;
+    private TextView textViewDate;
     private TextView textViewTarification;
     private TextView textViewPresentation;
     private Button button_participer;
@@ -80,8 +84,7 @@ public class EventInfoFragment extends Fragment {
     private Double longitude = null;
     private Double latitude = null;
     private Double altitude = null;
-    private String dateStart = null;
-    private String dateEnd = null;
+    private String date = null;
     private String presentation = null;
     private String photoProfil = null; // idPhoto
     private String videoProfil = null; //  idVideo
@@ -94,8 +97,8 @@ public class EventInfoFragment extends Fragment {
     public EventInfoFragment() {
     }
 
-    public EventInfoFragment newInstance(Context ctx, String eventUid) {
-        context = ctx;
+    public EventInfoFragment newInstance(Context context, String eventUid) {
+        this.context = context;
         eventKey = eventUid;
 
         EventInfoFragment eventInfoFragment = new EventInfoFragment();
@@ -120,6 +123,8 @@ public class EventInfoFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
         refEvent = mRootRef.child("event").child(ARG_EVENT_UID);
+        refPhotos = refEvent.child("photos");
+        refPhoto = mRootRef.child("photo");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -145,11 +150,18 @@ public class EventInfoFragment extends Fragment {
         textViewTitle = (TextView) view.findViewById(R.id.textViewTitle);
         textViewPlace = (TextView) view.findViewById(R.id.textViewPlace);
         textViewAddress = (TextView) view.findViewById(R.id.textViewAddress);
-        textViewDateStart = (TextView) view.findViewById(R.id.textViewDateStart);
-        textViewDateEnd = (TextView) view.findViewById(R.id.textViewDateEnd);
+        textViewDate = (TextView) view.findViewById(R.id.textViewDate);
         textViewTarification = (TextView) view.findViewById(R.id.textViewTarification);
         textViewPresentation = (TextView) view.findViewById(R.id.textViewPresentation);
         button_participer = (Button) view.findViewById(R.id.button_participer);
+
+
+        manager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+
+        recyclerViewTopPhoto = (RecyclerView) view.findViewById(R.id.recyclerViewTopPhoto);
+        recyclerViewTopPhoto.setHasFixedSize(true);
+        recyclerViewTopPhoto.setLayoutManager(manager);
+        recyclerViewTopPhoto.setItemAnimator(new DefaultItemAnimator());
 
         ButterKnife.bind(this, view);
         return view;
@@ -160,6 +172,21 @@ public class EventInfoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE);
+
+
+        Query query = refPhotos.limitToFirst(10);
+
+        adapter = new FirebaseRecyclerAdapter<String, EventPhotoHolder>(String.class, R.layout.card_event_info_top_photo, EventPhotoHolder.class, query) {
+            @Override
+            protected void populateViewHolder(EventPhotoHolder eventPhotoHolder, String s, int position) {
+                if (s != null) {
+                    getPhoto(eventPhotoHolder, getRef(position).getKey());
+                }
+            }
+        };
+
+        recyclerViewTopPhoto.setAdapter(adapter);
+
 
         refEvent.addValueEventListener(new ValueEventListener() {
             @Override
@@ -203,12 +230,10 @@ public class EventInfoFragment extends Fragment {
                     if (event.getAltitude() != null) {
                         altitude = event.getAltitude();
                     }
-                    if (event.getDateStart() != null) {
-                        dateStart = simpleDateFormat.format(event.getDateStart());
+                    if (event.getDate() != null) {
+                        date = simpleDateFormat.format(event.getDate());
                     }
-                    if (event.getDateEnd() != null) {
-                        dateEnd = simpleDateFormat.format(event.getDateEnd());
-                    }
+
                     if (event.getPresentation() != null) {
                         presentation = event.getPresentation();
                     }
@@ -249,16 +274,12 @@ public class EventInfoFragment extends Fragment {
                             textViewAddress.setText(address);
                         }
                     }
-                    if (textViewDateStart != null) {
-                        if (dateStart != null) {
-                            textViewDateStart.setText(dateStart);
+                    if (textViewDate != null) {
+                        if (date != null) {
+                            textViewDate.setText(date);
                         }
                     }
-                    if (textViewDateEnd != null) {
-                        if (dateEnd != null) {
-                            textViewDateEnd.setText(dateEnd);
-                        }
-                    }
+
                     if (textViewTarification != null) {
                         if (tarification != null) {
                             textViewTarification.setText(tarification);
@@ -308,70 +329,6 @@ public class EventInfoFragment extends Fragment {
 
             }
         });
-
-
-       /* recyclerViewTopPhoto = (RecyclerView) view.findViewById(R.id.recyclerViewTopPhoto);
-        recyclerViewTopUser = (RecyclerView) view.findViewById(R.id.recyclerViewTopParticipant);
-
-        photos.add(new Photo());
-        photos.add(new Photo());
-        photos.add(new Photo());
-        photos.add(new Photo());
-        photos.add(new Photo());
-        photos.add(new Photo());
-        photos.add(new Photo());
-
-
-        if (null != recyclerViewTopPhoto) {
-            recyclerViewTopPhoto.setHasFixedSize(true);
-            recyclerViewTopPhoto.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-            recyclerViewTopPhoto.setAdapter(eventTopPhotoAdapter);
-        }
-
-        recyclerViewTopPhoto.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerViewTopPhoto, new ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("Photo", (Serializable) photos);
-                bundle.putInt("position", position);
-
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-
-                PhotoDialog photoDialog = new PhotoDialog();
-
-                photoDialog.setArguments(bundle);
-
-                photoDialog.show(fragmentTransaction, "PhotoDialog");
-
-
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));
-
-
-        users.add(new User());
-        users.add(new User());
-        users.add(new User());
-        users.add(new User());
-        users.add(new User());
-        users.add(new User());
-        users.add(new User());
-        users.add(new User());
-        users.add(new User());
-        users.add(new User());
-
-        if (null != recyclerViewTopUser) {
-            recyclerViewTopUser.setHasFixedSize(true);
-            recyclerViewTopUser.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-            recyclerViewTopUser.setAdapter(eventTopParticipantAdapter);
-        }
-*/
-
     }
 
     @Override
@@ -388,6 +345,7 @@ public class EventInfoFragment extends Fragment {
     public void onPause() {
         super.onPause();
     }
+
 
     @Override
     public void onStop() {
@@ -409,10 +367,6 @@ public class EventInfoFragment extends Fragment {
         super.onDetach();
     }
 
-    private void goSignIn() {
-        startActivity(new Intent(getContext(), SignInActivity.class));
-        getActivity().finish();
-    }
 
     private void isUserParticipe() {
 
@@ -481,6 +435,57 @@ public class EventInfoFragment extends Fragment {
                 }
             }
         });
+    }
+
+
+    private void getPhoto(final EventPhotoHolder eventPhotoHolder, String s) {
+        Query query = refPhoto.child(s);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Photo photo = dataSnapshot.getValue(Photo.class);
+
+                if (photo != null) {
+                    displayLayout(eventPhotoHolder, photo);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void displayLayout(EventPhotoHolder eventPhotoHolder, Photo photo) {
+        String url = photo.getUrl();
+
+        if (url != null) {
+            eventPhotoHolder.setImageViewPhoto(getContext(), photo.getUrl());
+
+            eventPhotoHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("Photo", (Serializable) photos);
+                    // TODO fix position
+                    int position = 1;
+                    bundle.putInt("position", position);
+
+                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
+                    PhotoDialog photoDialog = new PhotoDialog();
+
+                    photoDialog.setArguments(bundle);
+
+                    photoDialog.show(fragmentTransaction, "PhotoDialog");
+                }
+            });
+
+        }
+
     }
 
 }

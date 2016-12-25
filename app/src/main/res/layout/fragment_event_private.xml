@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+
         <Button
             android:id="@+id/buttonPrivateTchat"
             android:layout_width="0dp"
@@ -18,7 +19,9 @@
             android:layout_marginRight="1dp"
             android:layout_marginTop="1dp"
             android:layout_weight="1"
+            android:background="@color/colorPrimary"
             android:text="Tchat"
+            android:textColor="@android:color/background_light"
             android:textSize="13sp" />
 
         <Button
@@ -28,7 +31,10 @@
             android:layout_marginRight="1dp"
             android:layout_marginTop="1dp"
             android:layout_weight="1"
-            android:text="Photos" />
+            android:background="@color/colorPrimary"
+            android:text="Photos"
+            android:textColor="@android:color/background_light"
+            android:textSize="13sp" />
 
     </LinearLayout>
 

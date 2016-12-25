@@ -16,18 +16,20 @@ import matano.apkode.net.matano.model.Event;
 public class MainEventHolder extends RecyclerView.ViewHolder {
     private TextView textViewTitle;
     private TextView textViewPlace;
-    private TextView textViewDateStart;
+    private TextView textViewDate;
     private TextView txtParticipantNumber;
     private ImageView imageViewPhotoProfil;
+    private TextView textViewTarification;
 
 
     public MainEventHolder(View itemView) {
         super(itemView);
         textViewTitle = (TextView) itemView.findViewById(R.id.textViewTitle);
         textViewPlace = (TextView) itemView.findViewById(R.id.textViewPlace);
-        textViewDateStart = (TextView) itemView.findViewById(R.id.textViewDateStart);
+        textViewDate = (TextView) itemView.findViewById(R.id.textViewDate);
         txtParticipantNumber = (TextView) itemView.findViewById(R.id.txtParticipantNumber);
         imageViewPhotoProfil = (ImageView) itemView.findViewById(R.id.imageViewPhotoProfil);
+        textViewTarification = (TextView) itemView.findViewById(R.id.textViewTarification);
     }
 
 
@@ -47,10 +49,18 @@ public class MainEventHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public void setTextViewDateStart(String s) {
+    public void setTextViewTarification(String s) {
         if (null != s) {
-            if (null != textViewDateStart) {
-                textViewDateStart.setText(s);
+            if (textViewTarification != null) {
+                textViewTarification.setText(s);
+            }
+        }
+    }
+
+    public void setTextViewDate(String s) {
+        if (null != s) {
+            if (null != textViewDate) {
+                textViewDate.setText(s);
             }
         }
     }
@@ -67,7 +77,7 @@ public class MainEventHolder extends RecyclerView.ViewHolder {
                 Glide
                         .with(context)
                         .load(s)
-                        .placeholder(R.mipmap.img5)
+                        //.placeholder(R.mipmap.img5)
                         //  .centerCrop()
                         .into(imageViewPhotoProfil);
             }

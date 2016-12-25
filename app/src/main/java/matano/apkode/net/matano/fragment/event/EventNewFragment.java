@@ -15,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -72,6 +74,8 @@ public class EventNewFragment extends Fragment {
     private LinearLayoutManager manager;
     private FirebaseRecyclerAdapter<String, EventNewHolder> adapter;
     private FloatingActionButton floatingButtonPhoto;
+    private EventNewFragment eventNewFragment;
+    private ProgressBar progressBar;
 
     public EventNewFragment() {
     }
@@ -79,7 +83,7 @@ public class EventNewFragment extends Fragment {
     public EventNewFragment newInstance(Context ctx, String eventUid) {
         this.context = ctx;
         eventKey = eventUid;
-        EventNewFragment eventNewFragment = new EventNewFragment();
+        eventNewFragment = new EventNewFragment();
         Bundle args = new Bundle();
         args.putString(ARG_EVENT_UID, eventUid);
         eventNewFragment.setArguments(args);
@@ -95,6 +99,11 @@ public class EventNewFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            ARG_EVENT_UID = savedInstanceState.getString("eventUid", null);
+            Log.e(Utils.TAG, "save onCreate " + ARG_EVENT_UID);
+        }
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -133,6 +142,7 @@ public class EventNewFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         floatingButtonPhoto = (FloatingActionButton) view.findViewById(R.id.floatingButtonPhoto);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
         return view;
     }
@@ -340,27 +350,37 @@ public class EventNewFragment extends Fragment {
 
         final String uuid = UUID.randomUUID().toString();
 
+        progressBar.setVisibility(View.VISIBLE);
+        Toast.makeText(getContext(), "En cours...", Toast.LENGTH_SHORT).show();
+
         StorageReference photoRef = refStoragePhoto.child(uuid);
         photoRef.putFile(selectedImageUri)
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        long totalByteCount = taskSnapshot.getTotalByteCount();
+                        long bytesTransferred = taskSnapshot.getBytesTransferred();
+
+                        Log.e(Utils.TAG, "bytesTransferred : " + bytesTransferred + " , totalByteCount : " + totalByteCount);
+
+                        progressBar.setMax((int) totalByteCount);
+                        progressBar.setProgress((int) bytesTransferred);
+                    }
+                })
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUri = taskSnapshot.getDownloadUrl();
-                        Log.e(Utils.TAG, "name " + taskSnapshot.getMetadata().getName());
                         savePhoto(FirebaseAuth.getInstance().getCurrentUser(), downloadUri, uuid);
-                        Log.e(Utils.TAG, "uploadPhoto:onSuccess:" + taskSnapshot.getDownloadUrl());
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Uploaded", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e(Utils.TAG, "uploadPhoto:onError", e);
-                    }
-                })
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -394,6 +414,12 @@ public class EventNewFragment extends Fragment {
             uploadPhoto(selectedImageUri);
 
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("eventUid", ARG_EVENT_UID);
     }
 
 }

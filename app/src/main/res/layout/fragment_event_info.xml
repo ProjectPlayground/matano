@@ -72,13 +72,7 @@
                         android:tint="@color/colorPrimary" />
 
                     <TextView
-                        android:id="@+id/textViewDateStart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin" />
-
-                    <TextView
-                        android:id="@+id/textViewDateEnd"
+                        android:id="@+id/textViewDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/activity_horizontal_margin" />
@@ -210,8 +204,7 @@
                         android:id="@+id/textViewPresentation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                        android:hint="@string/citation" />
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin" />
 
                 </LinearLayout>
             </android.support.v7.widget.CardView>

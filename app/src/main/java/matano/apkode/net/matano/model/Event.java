@@ -19,8 +19,7 @@ public class Event implements Serializable {
     private Double longitude;
     private Double latitude;
     private Double altitude;
-    private Date dateStart;
-    private Date dateEnd;
+    private Date date;
     private String presentation;
     private String photoProfil; // idPhoto
     private String videoProfil; //  idVideo
@@ -34,7 +33,7 @@ public class Event implements Serializable {
     public Event() {
     }
 
-    public Event(String title, String category, String subCategory, String contry, String city, String place, String address, Double longitude, Double latitude, Double altitude, Date dateStart, Date dateEnd, String presentation, String photoProfil, String videoProfil, String tarification, Map<String, String> tarifs, Map<String, String> users, Map<String, String> photos) {
+    public Event(String title, String category, String subCategory, String contry, String city, String place, String address, Double longitude, Double latitude, Double altitude, Date date, String presentation, String photoProfil, String videoProfil, String tarification, Map<String, String> tarifs, Map<String, String> users, Map<String, String> photos) {
         this.title = title;
         this.category = category;
         this.subCategory = subCategory;
@@ -45,8 +44,7 @@ public class Event implements Serializable {
         this.longitude = longitude;
         this.latitude = latitude;
         this.altitude = altitude;
-        this.dateStart = dateStart;
-        this.dateEnd = dateEnd;
+        this.date = date;
         this.presentation = presentation;
         this.photoProfil = photoProfil;
         this.videoProfil = videoProfil;
@@ -136,21 +134,14 @@ public class Event implements Serializable {
         this.altitude = altitude;
     }
 
-    public Date getDateStart() {
-        return dateStart;
+    public Date getDate() {
+        return date;
     }
 
-    public void setDateStart(Date dateStart) {
-        this.dateStart = dateStart;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public Date getDateEnd() {
-        return dateEnd;
-    }
-
-    public void setDateEnd(Date dateEnd) {
-        this.dateEnd = dateEnd;
-    }
 
     public String getPresentation() {
         return presentation;

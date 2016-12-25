@@ -19,6 +19,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -26,6 +28,7 @@ import java.util.Locale;
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.activity.EventActivity;
+import matano.apkode.net.matano.config.Message;
 import matano.apkode.net.matano.holder.MainEventHolder;
 import matano.apkode.net.matano.model.Event;
 
@@ -156,27 +159,33 @@ public class MainEventCultureFragment extends Fragment {
         super.onDetach();
     }
 
+
     private void displayLayout(MainEventHolder mainEventHolder, Event event, final String refEvent) {
         String title = event.getTitle();
         String place = event.getPlace();
+        String tarification = event.getTarification();
         String photoProfil = event.getPhotoProfil();
-        Date dateStart = event.getDateStart();
+        Date date = event.getDate();
         int users = 0;
 
         if (event.getUsers() != null) {
             users = event.getUsers().size();
         }
 
-        if (title != null && place != null && photoProfil != null && dateStart != null) {
+        if (title != null && place != null && photoProfil != null && date != null && tarification != null) {
             mainEventHolder.setTextViewTitle(title);
             mainEventHolder.setTextViewPlace(place);
+            mainEventHolder.setTextViewTarification(tarification);
             mainEventHolder.setImageViewPhotoProfil(getActivity(), photoProfil);
-            mainEventHolder.setTextViewDateStart(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(dateStart));
+            mainEventHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
             mainEventHolder.setTxtParticipantNumber(users);
 
             mainEventHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    EventBus.getDefault().post(new Message("Coucou"));
+
                     Intent intent = new Intent(getContext(), EventActivity.class);
                     intent.putExtra("eventKey", refEvent);
                     startActivity(intent);

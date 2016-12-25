@@ -15,6 +15,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_horizontal_margin" />
+
         <ImageView
             android:id="@+id/imageViewPhotoProfil"
             android:layout_width="wrap_content"
@@ -28,16 +34,17 @@
             android:padding="@dimen/activity_horizontal_margin">
 
             <TextView
-                android:id="@+id/textViewTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:alpha="0.87" />
-
-            <TextView
                 android:id="@+id/textViewPlace"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:alpha="0.54" />
+
+            <TextView
+                android:id="@+id/textViewTarification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alpha="0.87" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -55,7 +62,7 @@
             android:paddingTop="@dimen/activity_horizontal_margin">
 
             <TextView
-                android:id="@+id/textViewDateStart"
+                android:id="@+id/textViewDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

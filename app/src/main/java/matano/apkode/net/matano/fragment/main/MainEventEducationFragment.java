@@ -1,13 +1,13 @@
 package matano.apkode.net.matano.fragment.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +19,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.Utils;
+import matano.apkode.net.matano.activity.EventActivity;
 import matano.apkode.net.matano.holder.MainEventHolder;
 import matano.apkode.net.matano.model.Event;
 
@@ -49,13 +53,11 @@ public class MainEventEducationFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.e(Utils.TAG, "onAttach");
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e(Utils.TAG, "onCreate");
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -77,7 +79,7 @@ public class MainEventEducationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        Log.e(Utils.TAG, "onCreateView");
+
         View view = inflater.inflate(R.layout.fragment_main_event, container, false);
         ButterKnife.bind(this, view);
         return view;
@@ -86,7 +88,6 @@ public class MainEventEducationFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.e(Utils.TAG, "onViewCreated");
         manager = new LinearLayoutManager(getContext());
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
@@ -99,8 +100,7 @@ public class MainEventEducationFragment extends Fragment {
         adapter = new FirebaseRecyclerAdapter<Event, MainEventHolder>(Event.class, R.layout.card_main_event, MainEventHolder.class, query) {
             @Override
             protected void populateViewHolder(MainEventHolder mainEventHolder, Event event, int position) {
-                Log.e(Utils.TAG, CATEGORIE);
-                displayLayout(mainEventHolder, event);
+                displayLayout(mainEventHolder, event, getRef(position).getKey());
             }
         };
 
@@ -110,14 +110,12 @@ public class MainEventEducationFragment extends Fragment {
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-        Log.e(Utils.TAG, "onStart");
     }
 
     @Override
     public void onResume() {
         super.onResume();
         recyclerView.setAdapter(adapter);
-        Log.e(Utils.TAG, "onResume");
     }
 
     @Override
@@ -126,19 +124,16 @@ public class MainEventEducationFragment extends Fragment {
         if (mAuth != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
-        Log.e(Utils.TAG, "onPause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.e(Utils.TAG, "onStop");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.e(Utils.TAG, "onDestroyView");
     }
 
     @Override
@@ -147,24 +142,42 @@ public class MainEventEducationFragment extends Fragment {
         if (adapter != null) {
             adapter.cleanup();
         }
-        Log.e(Utils.TAG, "onDestroy");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.e(Utils.TAG, "onDetach");
     }
 
-    private void displayLayout(MainEventHolder mainEventHolder, Event event) {
+    private void displayLayout(MainEventHolder mainEventHolder, Event event, final String refEvent) {
         String title = event.getTitle();
         String place = event.getPlace();
+        String tarification = event.getTarification();
         String photoProfil = event.getPhotoProfil();
+        Date date = event.getDate();
+        int users = 0;
 
-        if (title != null && place != null && photoProfil != null) {
+        if (event.getUsers() != null) {
+            users = event.getUsers().size();
+        }
+
+        if (title != null && place != null && photoProfil != null && date != null && tarification != null) {
             mainEventHolder.setTextViewTitle(title);
             mainEventHolder.setTextViewPlace(place);
+            mainEventHolder.setTextViewTarification(tarification);
             mainEventHolder.setImageViewPhotoProfil(getActivity(), photoProfil);
+            mainEventHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
+            mainEventHolder.setTxtParticipantNumber(users);
+
+            mainEventHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getContext(), EventActivity.class);
+                    intent.putExtra("eventKey", refEvent);
+                    startActivity(intent);
+                }
+            });
+
         }
 
     }

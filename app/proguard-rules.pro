@@ -18,9 +18,6 @@
 
 -keepattributes Signature
 -keepattributes *Annotation*
--keepclassmembers class com.yourcompany.models.** {
-  *;
-}
 
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
@@ -28,3 +25,4 @@
   public *;
 }
 -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+

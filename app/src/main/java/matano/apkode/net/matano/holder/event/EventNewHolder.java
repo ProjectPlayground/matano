@@ -29,7 +29,6 @@ public class EventNewHolder extends RecyclerView.ViewHolder {
         imageViewPhotoProfil = (ImageView) itemView.findViewById(R.id.imageViewPhotoProfil);
         imageButtonLikePhoto = (ImageButton) itemView.findViewById(R.id.imageButtonLikePhoto);
         imageButtonSharePhoto = (ImageButton) itemView.findViewById(R.id.imageButtonSharePhoto);
-
     }
 
     public void bind(Photo photo) {
@@ -58,7 +57,7 @@ public class EventNewHolder extends RecyclerView.ViewHolder {
                 Glide
                         .with(context)
                         .load(s)
-                        .placeholder(R.mipmap.img4)
+                        // .placeholder(R.mipmap.img4)
                         //  .centerCrop()
                         .into(imageViewPhoto);
 
@@ -73,7 +72,7 @@ public class EventNewHolder extends RecyclerView.ViewHolder {
                 Glide
                         .with(context)
                         .load(s)
-                        .placeholder(R.mipmap.img4)
+                        //.placeholder(R.mipmap.img4)
                         //  .centerCrop()
                         .into(imageViewPhotoProfil);
 

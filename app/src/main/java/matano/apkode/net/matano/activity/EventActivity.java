@@ -7,7 +7,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -43,9 +42,8 @@ public class EventActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    //  Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
                 } else {
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
                     goSignIn();
                 }
             }
@@ -64,7 +62,6 @@ public class EventActivity extends AppCompatActivity {
 
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         EventPagerAdapter eventPagerAdapter = new EventPagerAdapter(getSupportFragmentManager(), getApplicationContext(), toolbar, eventKey);
 

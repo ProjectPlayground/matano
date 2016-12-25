@@ -1,6 +1,7 @@
 package matano.apkode.net.matano.fragment.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,8 +19,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.activity.EventActivity;
 import matano.apkode.net.matano.holder.MainEventHolder;
 import matano.apkode.net.matano.model.Event;
 
@@ -97,7 +103,7 @@ public class MainEventSportFragment extends Fragment {
                 if (event != null) {
                     if (event.getCategory() != null) {
                         if (event.getCategory().equals(CATEGORIE)) {
-                            displayLayout(mainEventHolder, event);
+                            displayLayout(mainEventHolder, event, getRef(position).getKey());
                         }
                     }
                 }
@@ -150,15 +156,35 @@ public class MainEventSportFragment extends Fragment {
         super.onDetach();
     }
 
-    private void displayLayout(MainEventHolder mainEventHolder, Event event) {
+    private void displayLayout(MainEventHolder mainEventHolder, Event event, final String refEvent) {
         String title = event.getTitle();
         String place = event.getPlace();
+        String tarification = event.getTarification();
         String photoProfil = event.getPhotoProfil();
+        Date date = event.getDate();
+        int users = 0;
 
-        if (title != null && place != null && photoProfil != null) {
+        if (event.getUsers() != null) {
+            users = event.getUsers().size();
+        }
+
+        if (title != null && place != null && photoProfil != null && date != null && tarification != null) {
             mainEventHolder.setTextViewTitle(title);
             mainEventHolder.setTextViewPlace(place);
+            mainEventHolder.setTextViewTarification(tarification);
             mainEventHolder.setImageViewPhotoProfil(getActivity(), photoProfil);
+            mainEventHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
+            mainEventHolder.setTxtParticipantNumber(users);
+
+            mainEventHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getContext(), EventActivity.class);
+                    intent.putExtra("eventKey", refEvent);
+                    startActivity(intent);
+                }
+            });
+
         }
 
     }
