@@ -15,10 +15,10 @@ import android.widget.ImageView;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.fragment.event.EventInfoFragment;
-import matano.apkode.net.matano.fragment.event.EventNewFragment;
 import matano.apkode.net.matano.fragment.event.EventParticipantFragment;
 import matano.apkode.net.matano.fragment.event.EventPhotoFragment;
 import matano.apkode.net.matano.fragment.event.EventPrivateFragment;
+import matano.apkode.net.matano.fragment.event.EventTimelineFragment;
 
 
 public class EventPagerAdapter extends FragmentPagerAdapter {
@@ -51,7 +51,7 @@ public class EventPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new EventInfoFragment().newInstance(context, eventKey);
             case 2:
-                return new EventNewFragment().newInstance(context, eventKey);
+                return new EventTimelineFragment().newInstance(context, eventKey);
             case 3:
                 return new EventPhotoFragment().newInstance(context, eventKey);
             case 4:

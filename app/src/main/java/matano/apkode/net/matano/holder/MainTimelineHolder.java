@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.holder.event;
+package matano.apkode.net.matano.holder;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +13,7 @@ import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.model.Photo;
 
 
-public class EventNewHolder extends RecyclerView.ViewHolder {
+public class MainTimelineHolder extends RecyclerView.ViewHolder {
     private TextView textViewUsername;
     private TextView textViewDate;
     private ImageView imageViewPhoto;
@@ -21,7 +21,7 @@ public class EventNewHolder extends RecyclerView.ViewHolder {
     private ImageButton imageButtonLikePhoto;
     private ImageButton imageButtonSharePhoto;
 
-    public EventNewHolder(View itemView) {
+    public MainTimelineHolder(View itemView) {
         super(itemView);
         textViewUsername = (TextView) itemView.findViewById(R.id.textViewUsername);
         textViewDate = (TextView) itemView.findViewById(R.id.textViewDate);
@@ -29,6 +29,7 @@ public class EventNewHolder extends RecyclerView.ViewHolder {
         imageViewPhotoProfil = (ImageView) itemView.findViewById(R.id.imageViewPhotoProfil);
         imageButtonLikePhoto = (ImageButton) itemView.findViewById(R.id.imageButtonLikePhoto);
         imageButtonSharePhoto = (ImageButton) itemView.findViewById(R.id.imageButtonSharePhoto);
+
     }
 
     public void bind(Photo photo) {
@@ -38,7 +39,7 @@ public class EventNewHolder extends RecyclerView.ViewHolder {
     public void setTextViewUsername(String s) {
         if (s != null) {
             if (textViewUsername != null) {
-                textViewUsername.setText("?" + s);
+                textViewUsername.setText(s);
             }
         }
     }
@@ -57,7 +58,7 @@ public class EventNewHolder extends RecyclerView.ViewHolder {
                 Glide
                         .with(context)
                         .load(s)
-                        // .placeholder(R.mipmap.img4)
+                        .placeholder(R.mipmap.img4)
                         //  .centerCrop()
                         .into(imageViewPhoto);
 
@@ -72,7 +73,7 @@ public class EventNewHolder extends RecyclerView.ViewHolder {
                 Glide
                         .with(context)
                         .load(s)
-                        //.placeholder(R.mipmap.img4)
+                        // .placeholder(R.mipmap.img4)
                         //  .centerCrop()
                         .into(imageViewPhotoProfil);
 

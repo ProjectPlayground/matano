@@ -58,4 +58,5 @@ public class EventParticipantHolder extends RecyclerView.ViewHolder {
     public ImageButton getImageButtonAddFollowing() {
         return imageButtonAddFollowing;
     }
+
 }

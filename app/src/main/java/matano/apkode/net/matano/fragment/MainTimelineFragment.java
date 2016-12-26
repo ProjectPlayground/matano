@@ -27,12 +27,12 @@ import java.util.Locale;
 
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.holder.MainNewHolder;
+import matano.apkode.net.matano.holder.MainTimelineHolder;
 import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.User;
 
 
-public class MainNewFragment extends Fragment {
+public class MainTimelineFragment extends Fragment {
     private Context context;
     private RecyclerView recyclerView;
     private FirebaseAuth mAuth;
@@ -41,20 +41,20 @@ public class MainNewFragment extends Fragment {
     private DatabaseReference mRootRef;
     private DatabaseReference refUser;
     private LinearLayoutManager manager;
-    private FirebaseRecyclerAdapter<String, MainNewHolder> adapter;
+    private FirebaseRecyclerAdapter<String, MainTimelineHolder> adapter;
 
-    public MainNewFragment() {
+    public MainTimelineFragment() {
     }
 
-    public MainNewFragment newInstance(Context context) {
-        this.context = context;
-        MainNewFragment mainNewFragment = new MainNewFragment();
-        return mainNewFragment;
+    public MainTimelineFragment newInstance() {
+        MainTimelineFragment mainTimelineFragment = new MainTimelineFragment();
+        return mainTimelineFragment;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class MainNewFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main_new, container, false);
+        View view = inflater.inflate(R.layout.fragment_main_timeline, container, false);
 
         ButterKnife.bind(this, view);
         return view;
@@ -103,27 +103,11 @@ public class MainNewFragment extends Fragment {
 
         Query query = refUser.child(currentUserUid).child("followings");
 
-        /*refUser.addValueEventListener(new ValueEventListener() {
+        adapter = new FirebaseRecyclerAdapter<String, MainTimelineHolder>(String.class, R.layout.card_main_timeline, MainTimelineHolder.class, query) {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    String userUid = snap.getKey();
-                    getUserPhotos(userUid);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
-
-
-        adapter = new FirebaseRecyclerAdapter<String, MainNewHolder>(String.class, R.layout.card_main_new, MainNewHolder.class, query) {
-            @Override
-            protected void populateViewHolder(MainNewHolder mainNewHolder, String s, int position) {
+            protected void populateViewHolder(MainTimelineHolder mainTimelineHolder, String s, int position) {
                 if (s != null) {
-                    getUserPhotos(mainNewHolder, getRef(position).getKey());
+                    getUserPhotos(mainTimelineHolder, getRef(position).getKey());
                 }
             }
         };
@@ -176,7 +160,7 @@ public class MainNewFragment extends Fragment {
         super.onDetach();
     }
 
-    private void getUserPhotos(final MainNewHolder mainNewHolder, String userUid) {
+    private void getUserPhotos(final MainTimelineHolder mainTimelineHolder, String userUid) {
         DatabaseReference reference = mRootRef.child("user").child(userUid).child("photos");
 
         reference.addValueEventListener(new ValueEventListener() {
@@ -186,7 +170,7 @@ public class MainNewFragment extends Fragment {
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
                     String photoUid = snap.getValue(String.class);
                     if (photoUid != null) {
-                        getUserPhoto(mainNewHolder, snap.getKey());
+                        getUserPhoto(mainTimelineHolder, snap.getKey());
                     }
                 }
 
@@ -200,7 +184,7 @@ public class MainNewFragment extends Fragment {
 
     }
 
-    private void getUserPhoto(final MainNewHolder mainNewHolder, final String photoUid) {
+    private void getUserPhoto(final MainTimelineHolder mainTimelineHolder, final String photoUid) {
         DatabaseReference reference = mRootRef.child("photo").child(photoUid);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -208,7 +192,7 @@ public class MainNewFragment extends Fragment {
                 Photo photo = dataSnapshot.getValue(Photo.class);
 
                 if (photo != null) {
-                    displayLayout(mainNewHolder, photo);
+                    displayLayout(mainTimelineHolder, photo);
                 }
 
             }
@@ -220,7 +204,7 @@ public class MainNewFragment extends Fragment {
         });
     }
 
-    private void displayLayout(final MainNewHolder mainNewHolder, Photo p) {
+    private void displayLayout(final MainTimelineHolder mainTimelineHolder, Photo p) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         assert currentUser != null;
         String currentUserUid = currentUser.getUid();
@@ -239,11 +223,11 @@ public class MainNewFragment extends Fragment {
                 String photoProfil = user.getPhotoProfl();
 
                 if (username != null && photoProfil != null && photo != null && date != null) {
-                    mainNewHolder.setImageViewPhotoProfil(getActivity(), photoProfil);
-                    mainNewHolder.setTextViewUsername(username);
-                    mainNewHolder.setImageViewPhoto(getActivity(), photo);
+                    mainTimelineHolder.setImageViewPhotoProfil(getActivity(), photoProfil);
+                    mainTimelineHolder.setTextViewUsername(username);
+                    mainTimelineHolder.setImageViewPhoto(getActivity(), photo);
 
-                    mainNewHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
+                    mainTimelineHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
                 }
 
             }
@@ -254,6 +238,5 @@ public class MainNewFragment extends Fragment {
             }
         });
     }
-
 
 }

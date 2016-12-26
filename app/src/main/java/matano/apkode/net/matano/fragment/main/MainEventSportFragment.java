@@ -44,8 +44,7 @@ public class MainEventSportFragment extends Fragment {
     public MainEventSportFragment() {
     }
 
-    public MainEventSportFragment newInstance(Context context) {
-        this.context = context;
+    public MainEventSportFragment newInstance() {
         MainEventSportFragment mainEventSportFragment = new MainEventSportFragment();
         return mainEventSportFragment;
     }
@@ -53,6 +52,7 @@ public class MainEventSportFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
     }
 
     @Override
@@ -83,6 +83,11 @@ public class MainEventSportFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main_event, container, false);
         ButterKnife.bind(this, view);
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override

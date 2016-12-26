@@ -43,6 +43,7 @@ public class ProfilTicketFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
     }
 
     @Override
@@ -69,8 +70,7 @@ public class ProfilTicketFragment extends Fragment {
 
     }
 
-    public ProfilTicketFragment newInstance(Context ctx, String userUid) {
-        context = ctx;
+    public ProfilTicketFragment newInstance(String userUid) {
         ProfilTicketFragment profilTicketFragment = new ProfilTicketFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_USER_UID, userUid);

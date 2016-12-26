@@ -47,8 +47,7 @@ public class MainEventCultureFragment extends Fragment {
     public MainEventCultureFragment() {
     }
 
-    public MainEventCultureFragment newInstance(Context context) {
-        this.context = context;
+    public MainEventCultureFragment newInstance() {
         MainEventCultureFragment mainEventCultureFragment = new MainEventCultureFragment();
         return mainEventCultureFragment;
     }
@@ -56,6 +55,7 @@ public class MainEventCultureFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
     }
 
     @Override
@@ -86,6 +86,12 @@ public class MainEventCultureFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main_event, container, false);
         ButterKnife.bind(this, view);
         return view;
+    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override

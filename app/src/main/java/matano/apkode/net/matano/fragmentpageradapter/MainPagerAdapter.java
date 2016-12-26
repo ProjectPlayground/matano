@@ -26,11 +26,11 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new MainEventCultureFragment().newInstance(context);
+                return new MainEventCultureFragment().newInstance();
             case 1:
-                return new MainEventEducationFragment().newInstance(context);
+                return new MainEventEducationFragment().newInstance();
             case 2:
-                return new MainEventSportFragment().newInstance(context);
+                return new MainEventSportFragment().newInstance();
             default:
                 return null;
         }

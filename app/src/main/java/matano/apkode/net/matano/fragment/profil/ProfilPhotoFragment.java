@@ -47,8 +47,7 @@ public class ProfilPhotoFragment extends Fragment {
     public ProfilPhotoFragment() {
     }
 
-    public ProfilPhotoFragment newInstance(Context ctx, String userUid) {
-        context = ctx;
+    public ProfilPhotoFragment newInstance(String userUid) {
         ProfilPhotoFragment profilPhotoFragment = new ProfilPhotoFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_USER_UID, userUid);
@@ -60,6 +59,7 @@ public class ProfilPhotoFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
     }
 
     @Override

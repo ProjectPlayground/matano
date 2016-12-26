@@ -79,10 +79,10 @@ public class ProfilInfoFragment extends Fragment {
     private int ticketsNumber = 0;
 
     public ProfilInfoFragment() {
+        Log.e(Utils.TAG, "ProfilInfoFragment");
     }
 
-    public ProfilInfoFragment newInstance(Context ctx, String userUid) {
-        context = ctx;
+    public ProfilInfoFragment newInstance(String userUid) {
         ProfilInfoFragment profilInfoFragment = new ProfilInfoFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_USER_UID, userUid);
@@ -94,6 +94,7 @@ public class ProfilInfoFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
     }
 
     @Override
@@ -307,7 +308,7 @@ public class ProfilInfoFragment extends Fragment {
         if (imageViewPhotoProfil != null) {
             if (photoProfl != null) {
                 Glide
-                        .with(getActivity())
+                        .with(context)
                         .load(photoProfl)
                         //  .centerCrop()
                         .placeholder(R.mipmap.person2)

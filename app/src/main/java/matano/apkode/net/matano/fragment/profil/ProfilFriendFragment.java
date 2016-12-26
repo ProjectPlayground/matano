@@ -49,8 +49,7 @@ public class ProfilFriendFragment extends Fragment {
     public ProfilFriendFragment() {
     }
 
-    public ProfilFriendFragment newInstance(Context ctx, String userUid) {
-        context = ctx;
+    public ProfilFriendFragment newInstance(String userUid) {
         ProfilFriendFragment profilFriendFragment = new ProfilFriendFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_USER_UID, userUid);
@@ -62,6 +61,7 @@ public class ProfilFriendFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
     }
 
     @Override

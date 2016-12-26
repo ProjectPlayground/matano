@@ -39,7 +39,7 @@ public class ProfilFriendHolder extends RecyclerView.ViewHolder {
                 Glide
                         .with(context)
                         .load(s)
-                        .placeholder(R.mipmap.img4)
+                        //   .placeholder(R.mipmap.img4)
                         //  .centerCrop()
                         .into(imageViewPhoto);
 

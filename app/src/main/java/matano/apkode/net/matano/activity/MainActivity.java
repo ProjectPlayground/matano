@@ -5,26 +5,27 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.fragment.MainEventFragment;
-import matano.apkode.net.matano.fragment.MainNewFragment;
+import matano.apkode.net.matano.fragment.MainTimelineFragment;
 
 
 public class MainActivity extends AppCompatActivity {
     private static String ARG_USER_UID = "userUid";
     private FrameLayout frameLayout;
     private MainEventFragment mainEventFragment;
-    private MainNewFragment mainNewFragment;
+    private MainTimelineFragment mainTimelineFragment;
     private FrameLayout frameLayoutMenu;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -56,18 +57,24 @@ public class MainActivity extends AppCompatActivity {
         frameLayoutMenu = (FrameLayout) findViewById(R.id.frameLayoutMenu);
 
 
-        if (null != frameLayout) {
-
-            if (savedInstanceState != null) {
-                return;
-            }
-
-            mainEventFragment = new MainEventFragment();
-            mainNewFragment = new MainNewFragment();
-
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, mainEventFragment).commit();
-
+        if (savedInstanceState != null) {
+            return;
         }
+
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new MainEventFragment().newInstance()).commit();
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
 
@@ -77,11 +84,11 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (item.getItemId()) {
                     case R.id.ic_bottom_event:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mainEventFragment).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainEventFragment().newInstance()).commit();
                         return true;
 
                     case R.id.ic_bottom_new:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mainNewFragment).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainTimelineFragment().newInstance()).commit();
                         return true;
 
                     case R.id.ic_bottom_profil:
@@ -96,15 +103,53 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_search, menu);
+
+        MenuItem item = menu.findItem(R.id.menuSearch);
+
+        SearchView searchView = (SearchView) item.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // adapter = getFilter().filter(newText);
+                return false;
+            }
+        });
+
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -124,21 +169,4 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this, SignInActivity.class));
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
-
-    public void logOut(View view) {
-        AuthUI.getInstance().signOut(this);
-    }
 }

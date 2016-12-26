@@ -124,6 +124,12 @@ public class EventParticipantFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -235,6 +241,18 @@ public class EventParticipantFragment extends Fragment {
 
                                 }
 
+                               /* TextView textViewUsername = eventParticipantHolder.getTextViewUsername();
+
+                                if(textViewUsername != null) {
+                                    textViewUsername.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent intent = new Intent(getContext(), ProfilActivity.class);
+                                            intent.putExtra(ARG_USER_UID, ref);
+                                            startActivity(intent);
+                                        }
+                                    });
+                                }*/
 
                             }
                         }

@@ -47,15 +47,15 @@ public class ProfilPagerAdapter extends FragmentPagerAdapter {
         switch (position + 1) {
 
             case 1:
-                return new ProfilInfoFragment().newInstance(context, ARG_USER_UID);
+                return new ProfilInfoFragment().newInstance(ARG_USER_UID);
             case 2:
-                return new ProfilPhotoFragment().newInstance(context, ARG_USER_UID);
+                return new ProfilPhotoFragment().newInstance(ARG_USER_UID);
             case 3:
-                return new ProfilEventFragment().newInstance(context, ARG_USER_UID);
+                return new ProfilEventFragment().newInstance(ARG_USER_UID);
             case 4:
-                return new ProfilTicketFragment().newInstance(context, ARG_USER_UID);
+                return new ProfilTicketFragment().newInstance(ARG_USER_UID);
             case 5:
-                return new ProfilFriendFragment().newInstance(context, ARG_USER_UID);
+                return new ProfilFriendFragment().newInstance(ARG_USER_UID);
             default:
                 return null;
         }

@@ -105,4 +105,6 @@
     <string name="twitter_consumer_secret" translatable="false">u50dpUqZOYx6wIKy84ZBctwpilHylCKgW0sQS1EXv4tms2BRaS</string>
     <string name="no_network">Erreur réseau, vérifier votre connexion internet</string>
     <string name="cancel_login">Cancel login</string>
+    <string name="search_title">Search</string>
+    <string name="action_search">Search</string>
 </resources>

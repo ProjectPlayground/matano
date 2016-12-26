@@ -15,6 +15,17 @@ import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.fragmentpageradapter.MainPagerAdapter;
 
 public class MainEventFragment extends Fragment {
+    private Toolbar toolbar;
+
+
+    public MainEventFragment() {
+
+    }
+
+    public MainEventFragment newInstance() {
+        MainEventFragment mainEventFragment = new MainEventFragment();
+        return mainEventFragment;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -32,15 +43,15 @@ public class MainEventFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-
-        if (null != toolbar) {
-            toolbar.setTitle("Home");
-        }
 
         MainPagerAdapter mainPagerAdapter = new MainPagerAdapter(getFragmentManager(), getContext(), toolbar);
 

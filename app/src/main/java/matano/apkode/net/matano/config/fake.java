@@ -96,4 +96,8 @@ recyclerView.addOnItemTouchListener(new ImageGalerieAdapter.RecyclerTouchListene
         });
      */
 
+
+    /*
+    // adapter = getFilter().filter(newText);
+     */
 }

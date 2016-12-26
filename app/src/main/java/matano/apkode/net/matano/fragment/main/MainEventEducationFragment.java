@@ -44,8 +44,7 @@ public class MainEventEducationFragment extends Fragment {
     public MainEventEducationFragment() {
     }
 
-    public MainEventEducationFragment newInstance(Context context) {
-        this.context = context;
+    public MainEventEducationFragment newInstance() {
         MainEventEducationFragment mainEventEducationFragment = new MainEventEducationFragment();
         return mainEventEducationFragment;
     }
@@ -53,6 +52,7 @@ public class MainEventEducationFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
     }
 
     @Override
@@ -83,6 +83,11 @@ public class MainEventEducationFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main_event, container, false);
         ButterKnife.bind(this, view);
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override

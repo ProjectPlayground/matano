@@ -41,8 +41,7 @@ public class ProfilEventFragment extends Fragment {
     public ProfilEventFragment() {
     }
 
-    public ProfilEventFragment newInstance(Context ctx, String userUid) {
-        context = ctx;
+    public ProfilEventFragment newInstance(String userUid) {
         ProfilEventFragment profilEventFragment = new ProfilEventFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_USER_UID, userUid);
@@ -54,6 +53,7 @@ public class ProfilEventFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
     }
 
     @Override

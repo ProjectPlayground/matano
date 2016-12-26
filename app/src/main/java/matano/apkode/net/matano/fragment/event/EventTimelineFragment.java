@@ -46,14 +46,14 @@ import java.util.UUID;
 import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.Utils;
-import matano.apkode.net.matano.holder.event.EventNewHolder;
+import matano.apkode.net.matano.holder.event.EventTimelineHolder;
 import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.User;
 
 import static android.app.Activity.RESULT_OK;
 
 
-public class EventNewFragment extends Fragment {
+public class EventTimelineFragment extends Fragment {
     private static final int ARG_PHOTO_PICKER = 2;
     private static String ARG_EVENT_UID = "eventUid";
     private Context context;
@@ -72,23 +72,23 @@ public class EventNewFragment extends Fragment {
     private StorageReference refStoragePhoto;
     private StorageReference mRootStorageRef;
     private LinearLayoutManager manager;
-    private FirebaseRecyclerAdapter<String, EventNewHolder> adapter;
+    private FirebaseRecyclerAdapter<String, EventTimelineHolder> adapter;
     private FloatingActionButton floatingButtonPhoto;
-    private EventNewFragment eventNewFragment;
+    private EventTimelineFragment eventTimelineFragment;
     private ProgressBar progressBar;
 
-    public EventNewFragment() {
+    public EventTimelineFragment() {
     }
 
-    public EventNewFragment newInstance(Context ctx, String eventUid) {
+    public EventTimelineFragment newInstance(Context ctx, String eventUid) {
         this.context = ctx;
         eventKey = eventUid;
-        eventNewFragment = new EventNewFragment();
+        eventTimelineFragment = new EventTimelineFragment();
         Bundle args = new Bundle();
         args.putString(ARG_EVENT_UID, eventUid);
-        eventNewFragment.setArguments(args);
+        eventTimelineFragment.setArguments(args);
         ARG_EVENT_UID = eventUid;
-        return eventNewFragment;
+        return eventTimelineFragment;
     }
 
     @Override
@@ -138,7 +138,7 @@ public class EventNewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View view = inflater.inflate(R.layout.fragment_event_new, container, false);
+        View view = inflater.inflate(R.layout.fragment_event_timeline, container, false);
         ButterKnife.bind(this, view);
 
         floatingButtonPhoto = (FloatingActionButton) view.findViewById(R.id.floatingButtonPhoto);
@@ -159,11 +159,11 @@ public class EventNewFragment extends Fragment {
 
         Query query = refPhotos;
 
-        adapter = new FirebaseRecyclerAdapter<String, EventNewHolder>(String.class, R.layout.card_event_new, EventNewHolder.class, query) {
+        adapter = new FirebaseRecyclerAdapter<String, EventTimelineHolder>(String.class, R.layout.card_event_timeline, EventTimelineHolder.class, query) {
             @Override
-            protected void populateViewHolder(EventNewHolder eventNewHolder, String s, int position) {
+            protected void populateViewHolder(EventTimelineHolder eventTimelineHolder, String s, int position) {
                 if (s != null) {
-                    getPhoto(eventNewHolder, getRef(position).getKey());
+                    getPhoto(eventTimelineHolder, getRef(position).getKey());
                 }
             }
         };
@@ -224,7 +224,7 @@ public class EventNewFragment extends Fragment {
         super.onDetach();
     }
 
-    private void getPhoto(final EventNewHolder eventNewHolder, final String photoUid) {
+    private void getPhoto(final EventTimelineHolder eventTimelineHolder, final String photoUid) {
         Query query = refPhoto.child(photoUid);
 
         query.addValueEventListener(new ValueEventListener() {
@@ -233,7 +233,7 @@ public class EventNewFragment extends Fragment {
                 Photo photo = dataSnapshot.getValue(Photo.class);
 
                 if (photo != null && photo.getUrl() != null && photo.getDate() != null) {
-                    getUser(eventNewHolder, photoUid, photo);
+                    getUser(eventTimelineHolder, photoUid, photo);
                 }
 
             }
@@ -245,7 +245,7 @@ public class EventNewFragment extends Fragment {
         });
     }
 
-    private void getUser(final EventNewHolder eventNewHolder, final String photoUid, final Photo photo) {
+    private void getUser(final EventTimelineHolder eventTimelineHolder, final String photoUid, final Photo photo) {
         String userUid = photo.getUser();
 
         Query query = refUser.child(userUid);
@@ -255,7 +255,7 @@ public class EventNewFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 if (user != null && user.getPhotoProfl() != null && user.getUsername() != null) {
-                    displayLayout(eventNewHolder, photoUid, photo, user);
+                    displayLayout(eventTimelineHolder, photoUid, photo, user);
                 }
             }
 
@@ -266,24 +266,24 @@ public class EventNewFragment extends Fragment {
         });
     }
 
-    private void displayLayout(EventNewHolder eventNewHolder, final String photoUid, Photo photo, User user) {
+    private void displayLayout(EventTimelineHolder eventTimelineHolder, final String photoUid, Photo photo, User user) {
         final String userUid = photo.getUser();
         String url = photo.getUrl();
         Date date = photo.getDate();
 
-        eventNewHolder.setTextViewUsername(user.getUsername());
-        eventNewHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
-        eventNewHolder.setImageViewPhoto(getContext(), url);
-        eventNewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+        eventTimelineHolder.setTextViewUsername(user.getUsername());
+        eventTimelineHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
+        eventTimelineHolder.setImageViewPhoto(getContext(), url);
+        eventTimelineHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
         });
 
-        eventNewHolder.setImageViewPhotoProfil(getContext(), user.getPhotoProfl());
+        eventTimelineHolder.setImageViewPhotoProfil(getContext(), user.getPhotoProfl());
 
-        final ImageButton imageButtonLikePhoto = eventNewHolder.getImageButtonLikePhoto();
+        final ImageButton imageButtonLikePhoto = eventTimelineHolder.getImageButtonLikePhoto();
 
         Query query = refUser.child(userUid).child("likes");
 
