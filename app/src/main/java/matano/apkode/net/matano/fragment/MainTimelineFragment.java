@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +26,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.activity.MainActivity;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.MainTimelineHolder;
 import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.User;
@@ -43,23 +45,20 @@ public class MainTimelineFragment extends Fragment {
     private LinearLayoutManager manager;
     private FirebaseRecyclerAdapter<String, MainTimelineHolder> adapter;
 
-    public MainTimelineFragment() {
-    }
-
-    public MainTimelineFragment newInstance() {
-        MainTimelineFragment mainTimelineFragment = new MainTimelineFragment();
-        return mainTimelineFragment;
-    }
 
     @Override
     public void onAttach(Context context) {
+        Log.e(Utils.TAG, "MainTimelineFragment onAttach");
         super.onAttach(context);
         this.context = context;
+
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Timeline");
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e(Utils.TAG, "MainTimelineFragment onCreate");
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -82,14 +81,16 @@ public class MainTimelineFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_timeline, container, false);
+        Log.e(Utils.TAG, "MainTimelineFragment onCreateView");
 
-        ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Log.e(Utils.TAG, "MainTimelineFragment onViewCreated");
         super.onViewCreated(view, savedInstanceState);
+
 
         manager = new LinearLayoutManager(getContext());
 
@@ -115,11 +116,18 @@ public class MainTimelineFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.e(Utils.TAG, "MainTimelineFragment onActivityCreated");
 
     }
 
     @Override
     public void onStart() {
+        Log.e(Utils.TAG, "MainTimelineFragment onStart");
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
     }
@@ -127,10 +135,12 @@ public class MainTimelineFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.e(Utils.TAG, "MainTimelineFragment onResume");
     }
 
     @Override
     public void onPause() {
+        Log.e(Utils.TAG, "MainTimelineFragment onPause");
         super.onPause();
         if (mAuth != null) {
             mAuth.removeAuthStateListener(mAuthListener);
@@ -140,15 +150,18 @@ public class MainTimelineFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        Log.e(Utils.TAG, "MainTimelineFragment onStop");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        Log.e(Utils.TAG, "MainTimelineFragment onDestroyView");
     }
 
     @Override
     public void onDestroy() {
+        Log.e(Utils.TAG, "MainTimelineFragment onDestroy");
         super.onDestroy();
         if (adapter != null) {
             adapter.cleanup();
@@ -158,6 +171,7 @@ public class MainTimelineFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.e(Utils.TAG, "MainTimelineFragment onDetach");
     }
 
     private void getUserPhotos(final MainTimelineHolder mainTimelineHolder, String userUid) {
@@ -238,5 +252,6 @@ public class MainTimelineFragment extends Fragment {
             }
         });
     }
+
 
 }

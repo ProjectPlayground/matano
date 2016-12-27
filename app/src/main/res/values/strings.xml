@@ -107,4 +107,34 @@
     <string name="cancel_login">Cancel login</string>
     <string name="search_title">Search</string>
     <string name="action_search">Search</string>
+    <string-array name="contry">
+        <item>Niger</item>
+        <item>Sénégal</item>
+    </string-array>
+    <string-array name="city_niger">
+        <item>Agadez</item>
+        <item>Diffa</item>
+        <item>Dosso</item>
+        <item>Maradi</item>
+        <item>Niamey</item>
+        <item>Tahoua</item>
+        <item>Tillabéri</item>
+        <item>Zinder</item>
+    </string-array>
+    <string-array name="city_senegal">
+        <item>Dakar</item>
+        <item>Ziguinchor</item>
+        <item>Diourbel</item>
+        <item>Saint-Louis</item>
+        <item>Tambacounda</item>
+        <item>Kaolack</item>
+        <item>Thiès</item>
+        <item>Louga</item>
+        <item>Fatick</item>
+        <item>Kolda</item>
+        <item>Matam</item>
+        <item>Kaffrine</item>
+        <item>Kédougou</item>
+        <item>Sédhiou</item>
+    </string-array>
 </resources>

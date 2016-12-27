@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.model.User;
@@ -40,13 +39,6 @@ public class ProfilInfoFragment extends Fragment {
     TextView textViewUsername;
     TextView textViewPresentation;
     ImageView imageViewPhotoProfil;
-
-    //    @BindView(R.id.textViewFollowersNumber) TextView textViewFollowersNumber;
-//    @BindView(R.id.textViewFollowingsNumber) TextView textViewFollowingsNumber;
-//    @BindView(R.id.textViewPhotosNumber) TextView textViewPhotosNumber;
-//    @BindView(R.id.textViewUsername) TextView textViewUsername;
-//    @BindView(R.id.imageViewPhotoProfil) ImageView imageViewPhotoProfil;
-//    @BindView(R.id.textViewPresentation) TextView textViewPresentation;
     ImageButton imageButtonAddOrSetting;
     private Context context;
     private FirebaseAuth mAuth;
@@ -126,7 +118,6 @@ public class ProfilInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_profil_info, container, false);
-        ButterKnife.bind(this, view);
 
         textViewFollowersNumber = (TextView) view.findViewById(R.id.textViewFollowersNumber);
         textViewFollowingsNumber = (TextView) view.findViewById(R.id.textViewFollowingsNumber);

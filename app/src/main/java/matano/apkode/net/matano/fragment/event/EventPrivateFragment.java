@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.fragment.event.privates.EventPrivatePhotoFragment;
 import matano.apkode.net.matano.fragment.event.privates.EventPrivateTchatFragment;
@@ -82,7 +81,6 @@ public class EventPrivateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_event_private, container, false);
-        ButterKnife.bind(this, view);
 
         buttonPrivateTchat = (Button) view.findViewById(R.id.buttonPrivateTchat);
         buttonPrivatePhoto = (Button) view.findViewById(R.id.buttonPrivatePhoto);

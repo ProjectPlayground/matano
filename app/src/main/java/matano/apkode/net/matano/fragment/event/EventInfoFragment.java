@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.dialogfragment.PhotoDialog;
@@ -163,7 +162,6 @@ public class EventInfoFragment extends Fragment {
         recyclerViewTopPhoto.setLayoutManager(manager);
         recyclerViewTopPhoto.setItemAnimator(new DefaultItemAnimator());
 
-        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -366,7 +364,6 @@ public class EventInfoFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
-
 
     private void isUserParticipe() {
 

@@ -22,7 +22,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.holder.event.privates.EventPrivatePhotoHolder;
 import matano.apkode.net.matano.model.Photo;
@@ -90,8 +89,6 @@ public class EventPrivatePhotoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_event_private_photo, container, false);
-        ButterKnife.bind(this, view);
-
         return view;
     }
 

@@ -28,7 +28,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.activity.ProfilActivity;
 import matano.apkode.net.matano.config.Utils;
@@ -95,8 +94,6 @@ public class ProfilFriendFollowerFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View view = inflater.inflate(R.layout.fragment_profil_friend_follower, container, false);
-
-        ButterKnife.bind(this, view);
 
         return view;
     }

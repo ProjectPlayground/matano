@@ -10,31 +10,32 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.MainEventFragment;
 import matano.apkode.net.matano.fragment.MainTimelineFragment;
 
 
 public class MainActivity extends AppCompatActivity {
-    private static String ARG_USER_UID = "userUid";
-    private FrameLayout frameLayout;
-    private MainEventFragment mainEventFragment;
-    private MainTimelineFragment mainTimelineFragment;
-    private FrameLayout frameLayoutMenu;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-
+    private MainEventFragment mainEventFragment;
+    private MainTimelineFragment mainTimelineFragment;
+    private FrameLayout frameLayout;
+    private LocalStorage localStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        localStorage = new LocalStorage(this);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -43,26 +44,36 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user == null) {
-                    goSignIn();
+                    goLoginActivity();
                     finish();
                 }
             }
         };
 
+        if (!localStorage.isContryStored()) {
+            goContryActivity();
+        }
+
+        if (!localStorage.isCityStored()) {
+            goCityActivity();
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mainEventFragment = new MainEventFragment();
+        mainTimelineFragment = new MainTimelineFragment();
+
         frameLayout = (FrameLayout) findViewById(R.id.fragment_container);
 
-        frameLayoutMenu = (FrameLayout) findViewById(R.id.frameLayoutMenu);
+        if (frameLayout != null) {
+            if (savedInstanceState != null) {
+                return;
+            }
 
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, mainEventFragment).commit();
 
-        if (savedInstanceState != null) {
-            return;
         }
-
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new MainEventFragment().newInstance()).commit();
-
 
     }
 
@@ -84,16 +95,16 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (item.getItemId()) {
                     case R.id.ic_bottom_event:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainEventFragment().newInstance()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mainEventFragment).commit();
                         return true;
 
                     case R.id.ic_bottom_new:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainTimelineFragment().newInstance()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mainTimelineFragment).commit();
                         return true;
 
                     case R.id.ic_bottom_profil:
                         Intent intent = new Intent(getApplicationContext(), ProfilActivity.class);
-                        intent.putExtra(ARG_USER_UID, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        intent.putExtra(Utils.ARG_USER_UID, FirebaseAuth.getInstance().getCurrentUser().getUid());
                         startActivity(intent);
                         break;
 
@@ -150,23 +161,23 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            frameLayoutMenu.bringToFront();
-            frameLayoutMenu.setVisibility(View.VISIBLE);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    private void goLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
-
-    private void goSignIn() {
-        startActivity(new Intent(this, SignInActivity.class));
+    private void goContryActivity() {
+        Intent intent = new Intent(this, ContryActivity.class);
+        startActivity(intent);
+        finish();
     }
+
+    private void goCityActivity() {
+        Intent intent = new Intent(this, CityActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 
 }

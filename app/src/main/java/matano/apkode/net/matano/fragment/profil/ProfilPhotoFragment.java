@@ -25,7 +25,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.holder.profil.ProfilPhotoHolder;
 import matano.apkode.net.matano.model.Photo;
@@ -90,7 +89,6 @@ public class ProfilPhotoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profil_photo, container, false);
-        ButterKnife.bind(this, view);
         return view;
     }
 

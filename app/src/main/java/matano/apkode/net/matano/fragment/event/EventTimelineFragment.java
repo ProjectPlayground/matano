@@ -43,7 +43,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.event.EventTimelineHolder;
@@ -139,7 +138,6 @@ public class EventTimelineFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View view = inflater.inflate(R.layout.fragment_event_timeline, container, false);
-        ButterKnife.bind(this, view);
 
         floatingButtonPhoto = (FloatingActionButton) view.findViewById(R.id.floatingButtonPhoto);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);

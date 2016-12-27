@@ -109,7 +109,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void goSignIn() {
-        startActivity(new Intent(this, SignInActivity.class));
+        startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
 

@@ -31,7 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.activity.ProfilActivity;
 import matano.apkode.net.matano.config.Utils;
@@ -118,7 +117,6 @@ public class EventParticipantFragment extends Fragment {
         textViewParticipantNumer = (TextView) view.findViewById(R.id.textViewParticipantNumer);
         button_participer = (Button) view.findViewById(R.id.button_participer);
 
-        ButterKnife.bind(this, view);
 
         return view;
     }

@@ -6,18 +6,18 @@
         android:enabled="true"
         android:icon="@mipmap/ic_action_action_event"
         android:title="Events"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/ic_bottom_new"
         android:enabled="true"
         android:icon="@mipmap/ic_action_action_subject"
         android:title="Timeline"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/ic_bottom_profil"
         android:enabled="true"
         android:icon="@mipmap/ic_action_action_perm_identity"
         android:title="Profil"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
 </menu>

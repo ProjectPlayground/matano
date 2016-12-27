@@ -41,7 +41,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.event.privates.EventPrivateTchatHolder;
@@ -126,7 +125,6 @@ public class EventPrivateTchatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_event_private_tchat, container, false);
-        ButterKnife.bind(this, view);
 
         imageButtonPhotoPicker = (ImageButton) view.findViewById(R.id.imageButtonPhotoPicker);
         buttonButtonSendMessage = (ImageButton) view.findViewById(R.id.buttonButtonSendMessage);

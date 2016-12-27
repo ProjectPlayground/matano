@@ -20,7 +20,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import butterknife.ButterKnife;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.fragment.profil.friend.ProfilFriendFollowerFragment;
 import matano.apkode.net.matano.fragment.profil.friend.ProfilFriendFollowingFragment;
@@ -91,7 +90,6 @@ public class ProfilFriendFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_profil_friend, container, false);
-        ButterKnife.bind(this, view);
 
         buttonFollower = (Button) view.findViewById(R.id.buttonFollower);
         buttonFollowing = (Button) view.findViewById(R.id.buttonFollowing);
