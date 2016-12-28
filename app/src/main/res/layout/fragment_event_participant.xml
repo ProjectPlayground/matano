@@ -7,7 +7,6 @@
         android:id="@+id/textViewParticipantNumer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Participants"
         android:padding="8dp"
         android:textAlignment="center"
         android:textColor="@color/cardview_dark_background" />
@@ -16,19 +15,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/button_participer"
         android:layout_below="@+id/textViewParticipantNumer"
         android:scrollbars="none" />
-
-    <Button
-        android:id="@+id/button_participer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary"
-        android:src="@mipmap/ic_action_action_favorite_outline_padding"
-        android:text="Je participe"
-        android:textColor="@android:color/background_light"
-        android:textSize="13sp" />
 
 </RelativeLayout>

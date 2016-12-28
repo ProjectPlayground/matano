@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.activity;
+package matano.apkode.net.matano;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -10,7 +10,6 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.LocalStorage;
 
 public class CityActivity extends ListActivity {

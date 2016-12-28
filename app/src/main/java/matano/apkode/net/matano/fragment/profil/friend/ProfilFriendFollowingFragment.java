@@ -28,8 +28,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.activity.ProfilActivity;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.profil.ProfilFriendHolder;
 import matano.apkode.net.matano.model.User;

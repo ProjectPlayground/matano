@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.activity;
+package matano.apkode.net.matano;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.fragmentpageradapter.ProfilPagerAdapter;
 
 public class ProfilActivity extends AppCompatActivity {

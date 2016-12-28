@@ -13,8 +13,6 @@ public class User implements Serializable {
     private String username;
     private String firstName;
     private String lastName;
-    private String contry;
-    private String city;
     private String email;
     private String telephone;
     private String sexe;
@@ -38,12 +36,10 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String username, String firstName, String lastName, String contry, String city, String email, String telephone, String sexe, Date birthday, String presentation, String photoProfl) {
+    public User(String username, String firstName, String lastName, String email, String telephone, String sexe, Date birthday, String presentation, String photoProfl) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.contry = contry;
-        this.city = city;
         this.email = email;
         this.telephone = telephone;
         this.sexe = sexe;
@@ -52,12 +48,10 @@ public class User implements Serializable {
         this.photoProfl = photoProfl;
     }
 
-    public User(String username, String firstName, String lastName, String contry, String city, String email, String telephone, String sexe, Date birthday, String presentation, String photoProfl, Map<String, String> events, Map<String, String> followers, Map<String, String> followings, Map<String, String> photos, Map<String, String> videos, Map<String, String> tickets, Map<String, String> pLikes) {
+    public User(String username, String firstName, String lastName, String email, String telephone, String sexe, Date birthday, String presentation, String photoProfl, Map<String, String> events, Map<String, String> followers, Map<String, String> followings, Map<String, String> photos, Map<String, String> videos, Map<String, String> tickets, Map<String, String> pLikes) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.contry = contry;
-        this.city = city;
         this.email = email;
         this.telephone = telephone;
         this.sexe = sexe;
@@ -95,22 +89,6 @@ public class User implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getContry() {
-        return contry;
-    }
-
-    public void setContry(String contry) {
-        this.contry = contry;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
     }
 
     public String getEmail() {

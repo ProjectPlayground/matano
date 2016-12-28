@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.activity;
+package matano.apkode.net.matano;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,48 +15,39 @@ import android.widget.FrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.MainEventFragment;
 import matano.apkode.net.matano.fragment.MainTimelineFragment;
 
 
 public class MainActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     private MainEventFragment mainEventFragment;
     private MainTimelineFragment mainTimelineFragment;
-    private FrameLayout frameLayout;
-    private LocalStorage localStorage;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseUser user;
+    private String currentUserUid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        localStorage = new LocalStorage(this);
+        // FirebaseAuth.getInstance().signOut();
 
         mAuth = FirebaseAuth.getInstance();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                user = firebaseAuth.getCurrentUser();
                 if (user == null) {
-                    goLoginActivity();
-                    finish();
+                    finishActivity();
+                } else {
+                    currentUserUid = user.getUid();
                 }
             }
         };
-
-        if (!localStorage.isContryStored()) {
-            goContryActivity();
-        }
-
-        if (!localStorage.isCityStored()) {
-            goCityActivity();
-        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -64,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         mainEventFragment = new MainEventFragment();
         mainTimelineFragment = new MainTimelineFragment();
 
-        frameLayout = (FrameLayout) findViewById(R.id.fragment_container);
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.fragment_container);
 
         if (frameLayout != null) {
             if (savedInstanceState != null) {
@@ -104,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.ic_bottom_profil:
                         Intent intent = new Intent(getApplicationContext(), ProfilActivity.class);
-                        intent.putExtra(Utils.ARG_USER_UID, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        intent.putExtra(Utils.ARG_USER_UID, currentUserUid);
                         startActivity(intent);
                         break;
 
@@ -119,15 +110,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        if (mAuth != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     @Override
@@ -161,23 +152,8 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void goLoginActivity() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+    private void finishActivity() {
         finish();
     }
-
-    private void goContryActivity() {
-        Intent intent = new Intent(this, ContryActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void goCityActivity() {
-        Intent intent = new Intent(this, CityActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
 
 }

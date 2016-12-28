@@ -107,6 +107,7 @@
     <string name="cancel_login">Cancel login</string>
     <string name="search_title">Search</string>
     <string name="action_search">Search</string>
+    <string name="network_error">Network Error</string>
     <string-array name="contry">
         <item>Niger</item>
         <item>Sénégal</item>

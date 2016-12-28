@@ -1,11 +1,13 @@
 package matano.apkode.net.matano.fragment.event;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +19,17 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import matano.apkode.net.matano.CityActivity;
+import matano.apkode.net.matano.ContryActivity;
+import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.event.privates.EventPrivatePhotoFragment;
 import matano.apkode.net.matano.fragment.event.privates.EventPrivateTchatFragment;
 
 public class EventPrivateFragment extends Fragment {
-    private static String ARG_EVENT_UID = "eventUid";
+    private static final String CURRENT_FRAGMENT = "Private";
     private Context context;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -34,42 +41,68 @@ public class EventPrivateFragment extends Fragment {
     private FrameLayout fragmentLayoutContainer;
     private EventPrivateTchatFragment eventPrivateTchatFragment;
     private EventPrivatePhotoFragment eventPrivatePhotoFragment;
+    private String currentUserContry;
+    private String currentUserCity;
+    private LocalStorage localStorage;
+    private FirebaseUser user;
+    private String currentUserUid;
+    private String eventUid;
 
     public EventPrivateFragment() {
     }
 
-    public EventPrivateFragment newInstance(Context ctx, String eventUid) {
-        context = ctx;
+    public static EventPrivateFragment newInstance(String eventUid) {
         EventPrivateFragment eventPrivateFragment = new EventPrivateFragment();
+
         Bundle bundle = new Bundle();
-        bundle.putString(ARG_EVENT_UID, eventUid);
+        bundle.putString(Utils.TAG_EVENT_UID, eventUid);
+
         eventPrivateFragment.setArguments(bundle);
-        ARG_EVENT_UID = eventUid;
         return eventPrivateFragment;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
+
+        eventUid = getArguments().getString(Utils.TAG_EVENT_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        localStorage = new LocalStorage(context);
+        currentUserContry = localStorage.getContry();
+        currentUserCity = localStorage.getCity();
+
+        if (eventUid == null) {
+            finishActivity();
+        }
+
+        if (!localStorage.isContryStored() || currentUserContry == null) {
+            goContryActivity();
+        }
+
+        if (!localStorage.isCityStored() || currentUserCity == null) {
+            goCityActivity();
+        }
+
+
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
-        refEvent = mRootRef.child("event").child(ARG_EVENT_UID);
+        refEvent = mRootRef.child("event").child(eventUid);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-
+                user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    finishActivity();
                 } else {
-                    // TODO go sign in
+                    currentUserUid = user.getUid();
                 }
             }
         };
@@ -80,6 +113,14 @@ public class EventPrivateFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
+
+        ActionBar supportActionBar = ((EventActivity) getActivity()).getSupportActionBar();
+
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(CURRENT_FRAGMENT);
+        }
+
         View view = inflater.inflate(R.layout.fragment_event_private, container, false);
 
         buttonPrivateTchat = (Button) view.findViewById(R.id.buttonPrivateTchat);
@@ -87,8 +128,9 @@ public class EventPrivateFragment extends Fragment {
 
         fragmentLayoutContainer = (FrameLayout) view.findViewById(R.id.fragmentLayoutContainer);
 
-        eventPrivateTchatFragment = new EventPrivateTchatFragment().newInstance(getContext(), ARG_EVENT_UID);
-        eventPrivatePhotoFragment = new EventPrivatePhotoFragment().newInstance(getContext(), ARG_EVENT_UID);
+        eventPrivateTchatFragment = EventPrivateTchatFragment.newInstance(eventUid);
+        eventPrivatePhotoFragment = EventPrivatePhotoFragment.newInstance(eventUid);
+
 
         getFragmentManager().beginTransaction().add(R.id.fragmentLayoutContainer, eventPrivateTchatFragment).commit();
 
@@ -98,6 +140,7 @@ public class EventPrivateFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
 
         if (buttonPrivateTchat != null) {
             buttonPrivateTchat.setOnClickListener(new View.OnClickListener() {
@@ -163,4 +206,21 @@ public class EventPrivateFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
+
+    private void goContryActivity() {
+        Intent intent = new Intent(context, ContryActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void goCityActivity() {
+        Intent intent = new Intent(context, CityActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void finishActivity() {
+        getActivity().finish();
+    }
+
 }

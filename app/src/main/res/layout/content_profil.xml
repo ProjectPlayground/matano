@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="matano.apkode.net.matano.activity.ProfilActivity"
+    tools:context="matano.apkode.net.matano.ProfilActivity"
     tools:showIn="@layout/activity_profil">
 
 

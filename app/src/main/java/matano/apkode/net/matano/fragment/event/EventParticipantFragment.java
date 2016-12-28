@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,7 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -26,24 +27,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import matano.apkode.net.matano.CityActivity;
+import matano.apkode.net.matano.ContryActivity;
+import matano.apkode.net.matano.EventActivity;
+import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.activity.ProfilActivity;
+import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.event.EventParticipantHolder;
 import matano.apkode.net.matano.model.User;
 
 public class EventParticipantFragment extends Fragment {
-    private static final String ARG_EVENT_KEY = null;
-    private static String ARG_USER_UID = "userUid";
+    private static final String CURRENT_FRAGMENT = "Participants";
     private Context context;
     private RecyclerView recyclerView;
-    private List<User> participants = new ArrayList<>();
-    private String eventKey;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase database;
@@ -55,55 +55,74 @@ public class EventParticipantFragment extends Fragment {
     private TextView textViewParticipantNumer;
     private Button button_participer;
     private DatabaseReference refEventUser;
+    private String currentUserContry;
+    private String currentUserCity;
+    private LocalStorage localStorage;
+    private FirebaseUser user;
+    private String currentUserUid;
+    private String eventUid;
 
 
     public EventParticipantFragment() {
     }
 
-    public EventParticipantFragment newInstance(Context ctx, String key) {
-        context = ctx;
-        eventKey = key;
+    public static EventParticipantFragment newInstance(String eventUid) {
         EventParticipantFragment eventParticipantFragment = new EventParticipantFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_EVENT_KEY, key);
-        eventParticipantFragment.setArguments(args);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(Utils.TAG_EVENT_UID, eventUid);
+
+        eventParticipantFragment.setArguments(bundle);
+
         return eventParticipantFragment;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
+
+        eventUid = getArguments().getString(Utils.TAG_EVENT_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
+        localStorage = new LocalStorage(context);
+        currentUserContry = localStorage.getContry();
+        currentUserCity = localStorage.getCity();
 
-                } else {
+        if (eventUid == null) {
+            finishActivity();
+        }
 
-                }
-            }
-        };
+        if (!localStorage.isContryStored() || currentUserContry == null) {
+            goContryActivity();
+        }
+
+        if (!localStorage.isCityStored() || currentUserCity == null) {
+            goCityActivity();
+        }
 
         mAuth = FirebaseAuth.getInstance();
 
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
+        refEvent = mRootRef.child("event").child(eventUid);
         refUser = mRootRef.child("user");
 
-        String key = getArguments().getString(ARG_EVENT_KEY);
-
-        if (key == null) {
-            // TODO something
-        } else {
-            refEvent = mRootRef.child("event").child(key);
-        }
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    finishActivity();
+                } else {
+                    currentUserUid = user.getUid();
+                }
+            }
+        };
 
     }
 
@@ -111,6 +130,12 @@ public class EventParticipantFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
+        ActionBar supportActionBar = ((EventActivity) getActivity()).getSupportActionBar();
+
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(CURRENT_FRAGMENT);
+        }
 
         View view = inflater.inflate(R.layout.fragment_event_participant, container, false);
 
@@ -139,157 +164,117 @@ public class EventParticipantFragment extends Fragment {
 
         Query query = refEvent.child("users");
 
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if (textViewParticipantNumer != null) {
-                    if (dataSnapshot == null) {
-                        textViewParticipantNumer.setText("0 Participants");
-                    } else {
-                        textViewParticipantNumer.setText(dataSnapshot.getChildrenCount() + " Participants");
-                    }
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
         adapter = new FirebaseRecyclerAdapter<String, EventParticipantHolder>(String.class, R.layout.card_event_participant, EventParticipantHolder.class, query) {
             @Override
             protected void populateViewHolder(final EventParticipantHolder eventParticipantHolder, final String s, int position) {
                 if (s != null) {
-                    final String ref = getRef(position).getKey();
-                    refUser.child(ref).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            final User user = dataSnapshot.getValue(User.class);
+                    getUser(eventParticipantHolder, getRef(position).getKey());
+                    if (textViewParticipantNumer != null) {
+                        textViewParticipantNumer.setText(getItemCount() + " Participants");
+                    }
 
-                            if (user != null && user.getUsername() != null && user.getPhotoProfl() != null) {
-
-                                eventParticipantHolder.setImageViewPhoto(getContext(), user.getPhotoProfl());
-                                eventParticipantHolder.setTextViewUsername(user.getUsername());
-
-                                if (eventParticipantHolder.getImageButtonAddFollowing() != null) {
-
-                                    DatabaseReference reference = mRootRef.child("user").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("followings");
-
-                                    reference.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                            if (dataSnapshot.getChildrenCount() == 0) {
-                                                eventParticipantHolder.getImageButtonAddFollowing().setTag("1");
-                                                eventParticipantHolder.getImageButtonAddFollowing().setVisibility(View.VISIBLE);
-                                                if (!ref.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                                    eventParticipantHolder.getImageButtonAddFollowing().setImageResource(R.mipmap.ic_action_social_group_add_padding);
-                                                }
-                                            } else {
-                                                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-
-                                                    if (ref.equals(snap.getKey())) {
-                                                        eventParticipantHolder.getImageButtonAddFollowing().setTag(null);
-                                                        eventParticipantHolder.getImageButtonAddFollowing().setVisibility(View.VISIBLE);
-                                                        if (!ref.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                                            eventParticipantHolder.getImageButtonAddFollowing().setImageResource(R.mipmap.ic_action_social_people_padding);
-                                                        }
-                                                    } else {
-                                                        eventParticipantHolder.getImageButtonAddFollowing().setTag("1");
-                                                        eventParticipantHolder.getImageButtonAddFollowing().setVisibility(View.VISIBLE);
-                                                        if (!ref.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                                            eventParticipantHolder.getImageButtonAddFollowing().setImageResource(R.mipmap.ic_action_social_group_add_padding);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
-
-                                    eventParticipantHolder.getImageButtonAddFollowing().setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            addFollowing(ref, (String) view.getTag());
-                                        }
-                                    });
-
-                                }
-
-                                ImageView imageViewPhoto = eventParticipantHolder.getImageViewPhoto();
-
-                                if (imageViewPhoto != null) {
-
-                                    imageViewPhoto.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            Intent intent = new Intent(getContext(), ProfilActivity.class);
-                                            intent.putExtra(ARG_USER_UID, ref);
-                                            startActivity(intent);
-
-                                        }
-                                    });
-
-                                }
-
-                               /* TextView textViewUsername = eventParticipantHolder.getTextViewUsername();
-
-                                if(textViewUsername != null) {
-                                    textViewUsername.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            Intent intent = new Intent(getContext(), ProfilActivity.class);
-                                            intent.putExtra(ARG_USER_UID, ref);
-                                            startActivity(intent);
-                                        }
-                                    });
-                                }*/
-
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
+                } else {
+                    textViewParticipantNumer.setText("0 Participants");
                 }
+
             }
         };
 
         recyclerView.setAdapter(adapter);
 
-        if (button_participer != null) {
+    }
 
-            isUserParticipe();
+    private void getUser(final EventParticipantHolder eventParticipantHolder, final String userUid) {
+        Query query = refUser.child(userUid);
 
-            button_participer.setOnClickListener(new View.OnClickListener() {
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+
+                if (user != null) {
+                    displayLayout(eventParticipantHolder, user, userUid);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //TODO handle error
+            }
+        });
+    }
+
+    private void displayLayout(EventParticipantHolder eventParticipantHolder, User user, final String userUid) {
+        String photoProfl = user.getPhotoProfl();
+        String username = user.getUsername();
+
+        if (photoProfl != null && username != null) {
+
+            eventParticipantHolder.setTextViewUsername(username);
+            eventParticipantHolder.setImageViewPhoto(context, photoProfl);
+
+            ImageButton imageButtonAddFollowing = eventParticipantHolder.getImageButtonAddFollowing();
+
+            if (!userUid.equals(currentUserUid)) {
+                isUserMyFriend(imageButtonAddFollowing, userUid);
+            }
+
+            imageButtonAddFollowing.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    switch (button_participer.getTag().toString()) {
-                        case "9":
-                            button_participer.setTag("0");
-                            break;
-                        case "0":
-                            button_participer.setTag("9");
-                            break;
-                        case "1":
-                            button_participer.setTag("9");
-                            break;
-                    }
-                    setUserToEvent();
+                    addFollowing(userUid, (String) view.getTag());
+                }
+            });
+
+            eventParticipantHolder.setCardViewParticipant();
+
+            eventParticipantHolder.getImageViewPhoto().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ProfilActivity.class);
+                    intent.putExtra(Utils.ARG_USER_UID, userUid);
+                    startActivity(intent);
                 }
             });
         }
 
+    }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    private void isUserMyFriend(final ImageButton imageButtonAddFollowing, final String userUid) {
+        Query query = refUser.child(currentUserUid).child("followings");
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    imageButtonAddFollowing.setTag("1");
+                    imageButtonAddFollowing.setImageResource(R.mipmap.ic_action_social_group_add_padding);
+                } else {
+                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                        if (snap.getKey().equals(userUid)) {
+                            // We are friends
+                            imageButtonAddFollowing.setTag(null);
+                            imageButtonAddFollowing.setImageResource(R.mipmap.ic_action_social_people_padding);
+                        } else {
+                            // we are not friends
+                            imageButtonAddFollowing.setTag("1");
+                            imageButtonAddFollowing.setImageResource(R.mipmap.ic_action_social_group_add_padding);
+                        }
+                    }
+                }
+                imageButtonAddFollowing.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // TODO handle error
+            }
+        });
     }
 
     @Override
@@ -334,64 +319,11 @@ public class EventParticipantFragment extends Fragment {
         super.onDetach();
     }
 
-    private void isUserParticipe() {
 
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        assert currentUser != null;
-        refEventUser = refEvent.child("users").child(currentUser.getUid());
-
-        refEventUser.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() == null) {
-                    button_participer.setText("Participer");
-                    button_participer.setTag("9");
-                    button_participer.setVisibility(View.VISIBLE);
-                } else {
-                    String status = dataSnapshot.getValue(String.class);
-                    switch (status) {
-                        case "0":
-                            button_participer.setText("En attente");
-                            button_participer.setTag("0");
-                            button_participer.setVisibility(View.VISIBLE);
-                            break;
-                        case "1":
-                            button_participer.setText("Je participe");
-                            button_participer.setTag("1");
-                            button_participer.setVisibility(View.VISIBLE);
-                            break;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-    private void setUserToEvent() {
-
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        String tag = button_participer.getTag().toString();
-
-        switch (tag) {
-            case "9":
-                tag = null;
-                break;
-            case "0":
-                tag = "0";
-                break;
-        }
-
-
+    private void addFollowing(String userUid, String tag) {
         Map hashMap = new HashMap();
-        hashMap.put("event/" + getArguments().getString(ARG_EVENT_KEY) + "/users/" + currentUser.getUid(), tag);
-        hashMap.put("user/" + currentUser.getUid() + "/events/" + getArguments().getString(ARG_EVENT_KEY), tag);
+        hashMap.put("user/" + userUid + "/followers/" + currentUserUid, tag);
+        hashMap.put("user/" + currentUserUid + "/followings/" + userUid, tag);
 
         mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
@@ -403,27 +335,20 @@ public class EventParticipantFragment extends Fragment {
         });
     }
 
+    private void goContryActivity() {
+        Intent intent = new Intent(context, ContryActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
 
-    private void addFollowing(String uid, String tag) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    private void goCityActivity() {
+        Intent intent = new Intent(context, CityActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
 
-        assert currentUser != null;
-        String currentUserUid = currentUser.getUid();
-
-        Map hashMap = new HashMap();
-        hashMap.put("user/" + uid + "/followers/" + currentUserUid, tag);
-        hashMap.put("user/" + currentUserUid + "/followings/" + uid, tag);
-
-        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
-                }
-            }
-        });
-
-
+    private void finishActivity() {
+        getActivity().finish();
     }
 
 

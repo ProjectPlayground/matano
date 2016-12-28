@@ -1,10 +1,12 @@
 package matano.apkode.net.matano.fragment.event.privates;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,12 +24,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import matano.apkode.net.matano.CityActivity;
+import matano.apkode.net.matano.ContryActivity;
+import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.event.privates.EventPrivatePhotoHolder;
 import matano.apkode.net.matano.model.Photo;
 
 public class EventPrivatePhotoFragment extends Fragment {
-    private static String ARG_EVENT_UID = "eventUid";
+    private static final String CURRENT_FRAGMENT = "Tchat";
     private Context context;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -39,44 +46,71 @@ public class EventPrivatePhotoFragment extends Fragment {
     private RecyclerView recyclerView;
     private GridLayoutManager manager;
     private FirebaseRecyclerAdapter<String, EventPrivatePhotoHolder> adapter;
+    private String currentUserContry;
+    private String currentUserCity;
+    private LocalStorage localStorage;
+    private FirebaseUser user;
+    private String currentUserUid;
+    private String eventUid;
 
     public EventPrivatePhotoFragment() {
     }
 
-    public EventPrivatePhotoFragment newInstance(Context ctx, String eventUid) {
-        context = ctx;
+    public static EventPrivatePhotoFragment newInstance(String eventUid) {
         EventPrivatePhotoFragment eventPrivatePhotoFragment = new EventPrivatePhotoFragment();
+
         Bundle bundle = new Bundle();
-        bundle.putString(ARG_EVENT_UID, eventUid);
+        bundle.putString(Utils.TAG_EVENT_UID, eventUid);
+
         eventPrivatePhotoFragment.setArguments(bundle);
-        ARG_EVENT_UID = eventUid;
+
         return eventPrivatePhotoFragment;
     }
+
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
+
+        eventUid = getArguments().getString(Utils.TAG_EVENT_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        localStorage = new LocalStorage(context);
+        currentUserContry = localStorage.getContry();
+        currentUserCity = localStorage.getCity();
+
+        if (eventUid == null) {
+            finishActivity();
+        }
+
+        if (!localStorage.isContryStored() || currentUserContry == null) {
+            goContryActivity();
+        }
+
+        if (!localStorage.isCityStored() || currentUserCity == null) {
+            goCityActivity();
+        }
+
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
-        refEvent = mRootRef.child("event").child(ARG_EVENT_UID);
+        refEvent = mRootRef.child("event").child(eventUid);
         refPhotos = refEvent.child("photos");
         refPhoto = mRootRef.child("photo");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-
+                user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    finishActivity();
                 } else {
-                    // TODO go sign in
+                    currentUserUid = user.getUid();
                 }
             }
         };
@@ -88,6 +122,13 @@ public class EventPrivatePhotoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
+        ActionBar supportActionBar = ((EventActivity) getActivity()).getSupportActionBar();
+
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(CURRENT_FRAGMENT);
+        }
+
         View view = inflater.inflate(R.layout.fragment_event_private_photo, container, false);
         return view;
     }
@@ -208,6 +249,22 @@ public class EventPrivatePhotoFragment extends Fragment {
 
         }
 
+    }
+
+    private void goContryActivity() {
+        Intent intent = new Intent(context, ContryActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void goCityActivity() {
+        Intent intent = new Intent(context, CityActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void finishActivity() {
+        getActivity().finish();
     }
 
 }

@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.activity;
+package matano.apkode.net.matano;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -20,7 +20,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 
-import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.model.User;
 

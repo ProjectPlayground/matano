@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,15 +24,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import matano.apkode.net.matano.CityActivity;
+import matano.apkode.net.matano.ContryActivity;
+import matano.apkode.net.matano.EventActivity;
+import matano.apkode.net.matano.MainActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.activity.EventActivity;
-import matano.apkode.net.matano.activity.MainActivity;
+import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.MainEventHolder;
 import matano.apkode.net.matano.model.Event;
 
 public class MainEventFragment extends Fragment {
     private static final String CATEGORIE = "Culture";
+    private static final String CURRENT_FRAGMENT = "Evenement";
     private RecyclerView recyclerView;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -42,26 +46,38 @@ public class MainEventFragment extends Fragment {
     private FirebaseRecyclerAdapter<Event, MainEventHolder> adapter;
     private LinearLayoutManager manager;
     private Context context;
+    private String currentUserContry;
+    private String currentUserCity;
+    private LocalStorage localStorage;
+    private FirebaseUser user;
+    private String currentUserUid;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-        Log.e(Utils.TAG, "MainEventFragment onAttach");
 
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Evenement");
+        ActionBar supportActionBar = ((MainActivity) getActivity()).getSupportActionBar();
 
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(CURRENT_FRAGMENT);
+        }
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e(Utils.TAG, "MainEventFragment onCreate");
 
-        if (savedInstanceState == null) {
-            Log.e(Utils.TAG, "MainEventFragment onCreate savedInstanceState == null");
-        } else {
-            Log.e(Utils.TAG, "MainEventFragment onCreate savedInstanceState != null");
+        localStorage = new LocalStorage(context);
+        currentUserContry = localStorage.getContry();
+        currentUserCity = localStorage.getCity();
+
+        if (!localStorage.isContryStored() || currentUserContry == null) {
+            goContryActivity();
+        }
+
+        if (!localStorage.isCityStored() || currentUserCity == null) {
+            goCityActivity();
         }
 
         mAuth = FirebaseAuth.getInstance();
@@ -72,9 +88,11 @@ public class MainEventFragment extends Fragment {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    //TODO someting
+                user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    finishActivity();
+                } else {
+                    currentUserUid = user.getUid();
                 }
             }
         };
@@ -84,14 +102,6 @@ public class MainEventFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        Log.e(Utils.TAG, "MainEventFragment onCreateView");
-
-        if (savedInstanceState == null) {
-            Log.e(Utils.TAG, "MainEventFragment onCreateView savedInstanceState == null");
-        } else {
-            Log.e(Utils.TAG, "MainEventFragment onCreateView savedInstanceState != null");
-        }
-
 
         View view = inflater.inflate(R.layout.fragment_main_event, container, false);
 
@@ -102,13 +112,6 @@ public class MainEventFragment extends Fragment {
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.e(Utils.TAG, "MainEventFragment onViewCreated");
-
-        if (savedInstanceState == null) {
-            Log.e(Utils.TAG, "MainEventFragment onViewCreated savedInstanceState == null");
-        } else {
-            Log.e(Utils.TAG, "MainEventFragment onViewCreated savedInstanceState != null");
-        }
 
         manager = new LinearLayoutManager(getContext());
 
@@ -141,25 +144,21 @@ public class MainEventFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.e(Utils.TAG, "MainEventFragment onActivityCreated");
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.e(Utils.TAG, "MainEventFragment onStart");
         mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onResume() {
-        Log.e(Utils.TAG, "MainEventFragment onResume");
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        Log.e(Utils.TAG, "MainEventFragment onPause");
         super.onPause();
         if (mAuth != null) {
             mAuth.removeAuthStateListener(mAuthListener);
@@ -168,19 +167,16 @@ public class MainEventFragment extends Fragment {
 
     @Override
     public void onStop() {
-        Log.e(Utils.TAG, "MainEventFragment onStop");
         super.onStop();
     }
 
     @Override
     public void onDestroyView() {
-        Log.e(Utils.TAG, "MainEventFragment onDestroyView");
         super.onDestroyView();
     }
 
     @Override
     public void onDestroy() {
-        Log.e(Utils.TAG, "MainEventFragment onDestroy");
         super.onDestroy();
         if (adapter != null) {
             adapter.cleanup();
@@ -189,31 +185,9 @@ public class MainEventFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        Log.e(Utils.TAG, "MainEventFragment onDetach");
         super.onDetach();
     }
 
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Log.e(Utils.TAG, "MainEventFragment onSaveInstanceState");
-
-        outState.putString("title", "lundi");
-
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-
-        if (savedInstanceState == null) {
-            Log.e(Utils.TAG, "MainEventFragment onViewStateRestored savedInstanceState == null");
-        } else {
-            Log.e(Utils.TAG, "MainEventFragment onViewStateRestored savedInstanceState != null " + savedInstanceState.getString("title"));
-        }
-
-    }
 
     private void displayLayout(MainEventHolder mainEventHolder, Event event, final String refEvent) {
         String title = event.getTitle();
@@ -239,13 +213,29 @@ public class MainEventFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getContext(), EventActivity.class);
-                    intent.putExtra("eventKey", refEvent);
+                    intent.putExtra(Utils.TAG_EVENT_UID, refEvent);
                     startActivity(intent);
                 }
             });
 
         }
 
+    }
+
+    private void goContryActivity() {
+        Intent intent = new Intent(context, ContryActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void goCityActivity() {
+        Intent intent = new Intent(context, CityActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void finishActivity() {
+        getActivity().finish();
     }
 
 }

@@ -71,7 +71,6 @@ public class ProfilInfoFragment extends Fragment {
     private int ticketsNumber = 0;
 
     public ProfilInfoFragment() {
-        Log.e(Utils.TAG, "ProfilInfoFragment");
     }
 
     public ProfilInfoFragment newInstance(String userUid) {
@@ -213,12 +212,6 @@ public class ProfilInfoFragment extends Fragment {
         }
         if (user.getLastName() != null) {
             lastName = user.getLastName();
-        }
-        if (user.getContry() != null) {
-            contry = user.getContry();
-        }
-        if (user.getCity() != null) {
-            city = user.getCity();
         }
         if (user.getEmail() != null) {
             email = user.getEmail();

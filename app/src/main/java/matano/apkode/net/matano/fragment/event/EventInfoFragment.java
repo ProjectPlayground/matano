@@ -1,11 +1,13 @@
 package matano.apkode.net.matano.fragment.event;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,7 +38,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import matano.apkode.net.matano.CityActivity;
+import matano.apkode.net.matano.ContryActivity;
+import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.dialogfragment.PhotoDialog;
 import matano.apkode.net.matano.holder.event.EventPhotoHolder;
@@ -44,12 +50,12 @@ import matano.apkode.net.matano.model.Event;
 import matano.apkode.net.matano.model.Photo;
 
 public class EventInfoFragment extends Fragment {
-    private static String ARG_EVENT_UID = "eventUid";
+    private static final String CURRENT_FRAGMENT = "Info";
     private Context context;
     private RecyclerView recyclerViewTopPhoto;
     private RecyclerView recyclerViewTopUser;
     private List<Photo> photos = new ArrayList<>();
-    private String eventKey;
+    private String eventUid;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase database;
@@ -58,10 +64,11 @@ public class EventInfoFragment extends Fragment {
     private DatabaseReference refEvent;
     private DatabaseReference refPhotos;
     private DatabaseReference refPhoto;
-    private FirebaseUser user;
+    private String currentUserContry;
+    private String currentUserCity;
+    private LocalStorage localStorage;
     private FirebaseRecyclerAdapter<String, EventPhotoHolder> adapter;
     private LinearLayoutManager manager;
-
     private ImageView imageViewPhotoProfil;
     private TextView textViewTitle;
     private TextView textViewPlace;
@@ -70,9 +77,7 @@ public class EventInfoFragment extends Fragment {
     private TextView textViewTarification;
     private TextView textViewPresentation;
     private Button button_participer;
-
     private SimpleDateFormat simpleDateFormat;
-
     private String title = null;
     private String category = null;
     private String subCategory = null;
@@ -92,47 +97,67 @@ public class EventInfoFragment extends Fragment {
     private List<String> tarifs = null; // Uid
     private Map<String, String> users = null;  // uId - status
 
+    private FirebaseUser user;
+    private String currentUserUid;
+
 
     public EventInfoFragment() {
     }
 
-    public EventInfoFragment newInstance(Context context, String eventUid) {
-        this.context = context;
-        eventKey = eventUid;
-
+    public static EventInfoFragment newInstance(String eventUid) {
         EventInfoFragment eventInfoFragment = new EventInfoFragment();
 
-        Bundle args = new Bundle();
-        args.putString(ARG_EVENT_UID, eventUid);
-        eventInfoFragment.setArguments(args);
-        ARG_EVENT_UID = eventUid;
+        Bundle bundle = new Bundle();
+        bundle.putString(Utils.TAG_EVENT_UID, eventUid);
+
+        eventInfoFragment.setArguments(bundle);
+
         return eventInfoFragment;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
+
+        eventUid = getArguments().getString(Utils.TAG_EVENT_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        localStorage = new LocalStorage(context);
+        currentUserContry = localStorage.getContry();
+        currentUserCity = localStorage.getCity();
+
+        if (eventUid == null) {
+            finishActivity();
+        }
+
+        if (!localStorage.isContryStored() || currentUserContry == null) {
+            goContryActivity();
+        }
+
+        if (!localStorage.isCityStored() || currentUserCity == null) {
+            goCityActivity();
+        }
+
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
-        refEvent = mRootRef.child("event").child(ARG_EVENT_UID);
+        refEvent = mRootRef.child("event").child(eventUid);
         refPhotos = refEvent.child("photos");
         refPhoto = mRootRef.child("photo");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-
+                user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    finishActivity();
                 } else {
-                    // TODO go sign in
+                    currentUserUid = user.getUid();
                 }
             }
         };
@@ -143,6 +168,14 @@ public class EventInfoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
+        ActionBar supportActionBar = ((EventActivity) getActivity()).getSupportActionBar();
+
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(CURRENT_FRAGMENT);
+        }
+
+
         View view = inflater.inflate(R.layout.fragment_event_info, container, false);
 
         imageViewPhotoProfil = (ImageView) view.findViewById(R.id.imageViewPhotoProfil);
@@ -332,6 +365,7 @@ public class EventInfoFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -342,6 +376,9 @@ public class EventInfoFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        if (mAuth != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
 
@@ -421,8 +458,8 @@ public class EventInfoFragment extends Fragment {
 
 
         Map hashMap = new HashMap();
-        hashMap.put("event/" + ARG_EVENT_UID + "/users/" + currentUser.getUid(), tag);
-        hashMap.put("user/" + currentUser.getUid() + "/events/" + ARG_EVENT_UID, tag);
+        hashMap.put("event/" + eventUid + "/users/" + currentUser.getUid(), tag);
+        hashMap.put("user/" + currentUser.getUid() + "/events/" + eventUid, tag);
 
         mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
@@ -483,6 +520,22 @@ public class EventInfoFragment extends Fragment {
 
         }
 
+    }
+
+    private void goContryActivity() {
+        Intent intent = new Intent(context, ContryActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void goCityActivity() {
+        Intent intent = new Intent(context, CityActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void finishActivity() {
+        getActivity().finish();
     }
 
 }

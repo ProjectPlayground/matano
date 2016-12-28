@@ -32,20 +32,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.ProfilActivity"
+            android:name=".ProfilActivity"
             android:label="@string/title_activity_prrofil"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.EventActivity"
+            android:name=".EventActivity"
             android:label="@string/title_activity_event"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.LoginActivity"
+            android:name=".LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,8 +53,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ContryActivity" />
-        <activity android:name=".activity.CityActivity"></activity>
+        <activity android:name=".ContryActivity" />
+        <activity android:name=".CityActivity"></activity>
     </application>
 
 </manifest>

@@ -1,11 +1,13 @@
 package matano.apkode.net.matano.fragment.event;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,13 +29,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import matano.apkode.net.matano.CityActivity;
+import matano.apkode.net.matano.ContryActivity;
+import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.dialogfragment.PhotoDialog;
 import matano.apkode.net.matano.holder.event.EventPhotoHolder;
 import matano.apkode.net.matano.model.Photo;
 
 public class EventPhotoFragment extends Fragment {
-    private static String ARG_EVENT_UID = "eventUid";
+    private static final String CURRENT_FRAGMENT = "Galerie Photo";
     private Context context;
     private RecyclerView recyclerView;
     private List<Photo> photos = new ArrayList<>();
@@ -46,45 +53,71 @@ public class EventPhotoFragment extends Fragment {
     private DatabaseReference refPhoto;
     private GridLayoutManager manager;
     private FirebaseRecyclerAdapter<String, EventPhotoHolder> adapter;
+    private String currentUserContry;
+    private String currentUserCity;
+    private LocalStorage localStorage;
+    private FirebaseUser user;
+    private String currentUserUid;
+    private String eventUid;
 
     public EventPhotoFragment() {
     }
 
-    public EventPhotoFragment newInstance(Context ctx, String eventUid) {
-        context = ctx;
+    public static EventPhotoFragment newInstance(String eventUid) {
         EventPhotoFragment eventPhotoFragment = new EventPhotoFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_EVENT_UID, eventUid);
-        eventPhotoFragment.setArguments(args);
-        ARG_EVENT_UID = eventUid;
+
+        Bundle bundle = new Bundle();
+        bundle.putString(Utils.TAG_EVENT_UID, eventUid);
+
+        eventPhotoFragment.setArguments(bundle);
+
         return eventPhotoFragment;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
+
+        eventUid = getArguments().getString(Utils.TAG_EVENT_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        localStorage = new LocalStorage(context);
+        currentUserContry = localStorage.getContry();
+        currentUserCity = localStorage.getCity();
+
+        if (eventUid == null) {
+            finishActivity();
+        }
+
+        if (!localStorage.isContryStored() || currentUserContry == null) {
+            goContryActivity();
+        }
+
+        if (!localStorage.isCityStored() || currentUserCity == null) {
+            goCityActivity();
+        }
+
         mAuth = FirebaseAuth.getInstance();
 
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
-        refEvent = mRootRef.child("event").child(ARG_EVENT_UID);
+        refEvent = mRootRef.child("event").child(eventUid);
         refPhotos = refEvent.child("photos");
         refPhoto = mRootRef.child("photo");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-
+                user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    finishActivity();
                 } else {
-
+                    currentUserUid = user.getUid();
                 }
             }
         };
@@ -96,6 +129,13 @@ public class EventPhotoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
+
+        ActionBar supportActionBar = ((EventActivity) getActivity()).getSupportActionBar();
+
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(CURRENT_FRAGMENT);
+        }
+
         View view = inflater.inflate(R.layout.fragment_event_photo, container, false);
 
         return view;
@@ -105,7 +145,7 @@ public class EventPhotoFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        manager = new GridLayoutManager(getContext(), 2);
+        manager = new GridLayoutManager(context, 2);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -196,7 +236,7 @@ public class EventPhotoFragment extends Fragment {
         String url = photo.getUrl();
 
         if (url != null) {
-            eventPhotoHolder.setImageViewPhoto(getContext(), photo.getUrl());
+            eventPhotoHolder.setImageViewPhoto(context, photo.getUrl());
 
             eventPhotoHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -219,6 +259,22 @@ public class EventPhotoFragment extends Fragment {
 
         }
 
+    }
+
+    private void goContryActivity() {
+        Intent intent = new Intent(context, ContryActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void goCityActivity() {
+        Intent intent = new Intent(context, CityActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void finishActivity() {
+        getActivity().finish();
     }
 
 }

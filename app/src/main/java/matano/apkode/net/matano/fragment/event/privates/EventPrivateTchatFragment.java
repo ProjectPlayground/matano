@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -41,7 +42,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import matano.apkode.net.matano.CityActivity;
+import matano.apkode.net.matano.ContryActivity;
+import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.event.privates.EventPrivateTchatHolder;
 import matano.apkode.net.matano.model.Photo;
@@ -52,8 +57,8 @@ import static android.app.Activity.RESULT_OK;
 
 public class EventPrivateTchatFragment extends Fragment {
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 1000;
+    private static final String CURRENT_FRAGMENT = "Tchat";
     private static final int ARG_PHOTO_PICKER = 2;
-    private static String ARG_EVENT_UID = "eventUid";
     private Context context;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -71,29 +76,56 @@ public class EventPrivateTchatFragment extends Fragment {
     private ImageButton imageButtonPhotoPicker;
     private EditText editTextMessage;
     private ImageButton buttonButtonSendMessage;
-
+    private String currentUserContry;
+    private String currentUserCity;
+    private LocalStorage localStorage;
+    private FirebaseUser user;
+    private String currentUserUid;
+    private String eventUid;
 
     public EventPrivateTchatFragment() {
     }
 
-    public EventPrivateTchatFragment newInstance(Context ctx, String eventUid) {
-        context = ctx;
+    public static EventPrivateTchatFragment newInstance(String eventUid) {
         EventPrivateTchatFragment eventPrivateTchatFragment = new EventPrivateTchatFragment();
+
         Bundle bundle = new Bundle();
-        bundle.putString(ARG_EVENT_UID, eventUid);
+        bundle.putString(Utils.TAG_EVENT_UID, eventUid);
+
         eventPrivateTchatFragment.setArguments(bundle);
-        ARG_EVENT_UID = eventUid;
+
         return eventPrivateTchatFragment;
     }
+
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
+
+        eventUid = getArguments().getString(Utils.TAG_EVENT_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        localStorage = new LocalStorage(context);
+        currentUserContry = localStorage.getContry();
+        currentUserCity = localStorage.getCity();
+
+        if (eventUid == null) {
+            finishActivity();
+        }
+
+        if (!localStorage.isContryStored() || currentUserContry == null) {
+            goContryActivity();
+        }
+
+        if (!localStorage.isCityStored() || currentUserCity == null) {
+            goCityActivity();
+        }
+
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -109,11 +141,11 @@ public class EventPrivateTchatFragment extends Fragment {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-
+                user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    finishActivity();
                 } else {
-                    // TODO go sign in
+                    currentUserUid = user.getUid();
                 }
             }
         };
@@ -125,6 +157,12 @@ public class EventPrivateTchatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_event_private_tchat, container, false);
+
+        ActionBar supportActionBar = ((EventActivity) getActivity()).getSupportActionBar();
+
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(CURRENT_FRAGMENT);
+        }
 
         imageButtonPhotoPicker = (ImageButton) view.findViewById(R.id.imageButtonPhotoPicker);
         buttonButtonSendMessage = (ImageButton) view.findViewById(R.id.buttonButtonSendMessage);
@@ -144,7 +182,7 @@ public class EventPrivateTchatFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
 
-        Query query = refTchat.child(ARG_EVENT_UID);
+        Query query = refTchat.child(eventUid);
 
         adapter = new FirebaseRecyclerAdapter<Tchat, EventPrivateTchatHolder>(Tchat.class, R.layout.card_event_private_tchat, EventPrivateTchatHolder.class, query) {
             @Override
@@ -335,10 +373,6 @@ public class EventPrivateTchatFragment extends Fragment {
     }
 
     private void displayLayoutMessage(final EventPrivateTchatHolder eventPrivateTchatHolder, Tchat tchat, User user) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        assert currentUser != null;
-        String currentUserUid = currentUser.getUid();
-
         String username = user.getUsername();
         String photoProfil = user.getPhotoProfl();
         String messsage = tchat.getMesssage();
@@ -357,10 +391,6 @@ public class EventPrivateTchatFragment extends Fragment {
     }
 
     private void displayLayoutPhoto(EventPrivateTchatHolder eventPrivateTchatHolder, Tchat tchat, User user, Photo p) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        assert currentUser != null;
-        String currentUserUid = currentUser.getUid();
-
         String username = user.getUsername();
         String photoProfil = user.getPhotoProfl();
         String photo = p.getUrl();
@@ -380,13 +410,9 @@ public class EventPrivateTchatFragment extends Fragment {
 
 
     private void addTchatMessage(String message) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        assert currentUser != null;
-        String currentUserUid = currentUser.getUid();
-
         Tchat tchat = new Tchat(currentUserUid, new Date(), message, null, null);
 
-        refTchat.child(ARG_EVENT_UID).push().setValue(tchat, new DatabaseReference.CompletionListener() {
+        refTchat.child(eventUid).push().setValue(tchat, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 
@@ -434,19 +460,15 @@ public class EventPrivateTchatFragment extends Fragment {
 
     private void addTchatPhoto(Uri downloadUri, String uuid) {
 
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        assert currentUser != null;
-        String currentUserUid = currentUser.getUid();
-
-        Photo photo = new Photo(ARG_EVENT_UID, currentUserUid, downloadUri.toString(), new Date(), "1", null);
+        Photo photo = new Photo(eventUid, currentUserUid, downloadUri.toString(), new Date(), "1", null);
         Tchat tchat = new Tchat(currentUserUid, new Date(), null, uuid, null);
 
         Map hashMap = new HashMap();
 
-        hashMap.put("event/" + ARG_EVENT_UID + "/photos/" + uuid, "1");
+        hashMap.put("event/" + eventUid + "/photos/" + uuid, "1");
         hashMap.put("photo/" + uuid, photo);
-        hashMap.put("user/" + currentUser.getUid() + "/photos/" + uuid, "1");
-        hashMap.put("tchat/" + ARG_EVENT_UID + "/" + uuid, tchat);
+        hashMap.put("user/" + currentUserUid + "/photos/" + uuid, "1");
+        hashMap.put("tchat/" + eventUid + "/" + uuid, tchat);
 
         mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
@@ -457,6 +479,22 @@ public class EventPrivateTchatFragment extends Fragment {
             }
         });
 
+    }
+
+    private void goContryActivity() {
+        Intent intent = new Intent(context, ContryActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void goCityActivity() {
+        Intent intent = new Intent(context, CityActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void finishActivity() {
+        getActivity().finish();
     }
 
 }

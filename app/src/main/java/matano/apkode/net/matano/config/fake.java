@@ -115,4 +115,5 @@ recyclerView.addOnItemTouchListener(new ImageGalerieAdapter.RecyclerTouchListene
         //  refEvent.push().setValue(event);
 
      */
+
 }
