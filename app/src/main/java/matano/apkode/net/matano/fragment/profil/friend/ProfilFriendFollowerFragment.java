@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -28,61 +29,91 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import matano.apkode.net.matano.CityActivity;
+import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.profil.ProfilFriendHolder;
 import matano.apkode.net.matano.model.User;
 
 
 public class ProfilFriendFollowerFragment extends Fragment {
-    private static String ARG_USER_UID = "userUid";
+    private static final String CURRENT_FRAGMENT = "Mes Followers";
     private FirebaseAuth mAuth;
     private Context context;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase database;
     private DatabaseReference mRootRef;
     private DatabaseReference refUser;
+    private DatabaseReference refFollowers;
     private FirebaseRecyclerAdapter<String, ProfilFriendHolder> adapter;
     private LinearLayoutManager manager;
     private RecyclerView recyclerView;
+    private String currentUserContry;
+    private String currentUserCity;
+    private LocalStorage localStorage;
+    private FirebaseUser user;
+    private String currentUserUid;
+    private String userUid;
 
 
     public ProfilFriendFollowerFragment() {
     }
 
-    public ProfilFriendFollowerFragment newInstance(Context ctx, String userUid) {
-        context = ctx;
+    public static ProfilFriendFollowerFragment newInstance(String userUid) {
         ProfilFriendFollowerFragment profilFriendFollowerFragment = new ProfilFriendFollowerFragment();
+
         Bundle bundle = new Bundle();
-        bundle.putString(ARG_USER_UID, userUid);
+        bundle.putString(Utils.ARG_USER_UID, userUid);
+
         profilFriendFollowerFragment.setArguments(bundle);
-        ARG_USER_UID = userUid;
+
         return profilFriendFollowerFragment;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
+        userUid = getArguments().getString(Utils.ARG_USER_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        localStorage = new LocalStorage(context);
+        currentUserContry = localStorage.getContry();
+        currentUserCity = localStorage.getCity();
+
+        if (userUid == null) {
+            finishActivity();
+        }
+
+        if (!localStorage.isContryStored() || currentUserContry == null) {
+            goContryActivity();
+        }
+
+        if (!localStorage.isCityStored() || currentUserCity == null) {
+            goCityActivity();
+        }
+
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
-        refUser = mRootRef.child("user").child(ARG_USER_UID);
+        refUser = mRootRef.child("user").child(userUid);
+        refFollowers = refUser.child("followers");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-
+                user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    finishActivity();
                 } else {
-                    // TODO go sign in
+                    currentUserUid = user.getUid();
                 }
             }
         };
@@ -93,7 +124,20 @@ public class ProfilFriendFollowerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
+        ActionBar supportActionBar = ((ProfilActivity) getActivity()).getSupportActionBar();
+
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(CURRENT_FRAGMENT);
+        }
+
+
         View view = inflater.inflate(R.layout.fragment_profil_friend_follower, container, false);
+
+        manager = new LinearLayoutManager(getContext());
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(manager);
+
 
         return view;
     }
@@ -102,12 +146,7 @@ public class ProfilFriendFollowerFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        manager = new LinearLayoutManager(getContext());
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(manager);
-
-        Query query = refUser.child("followers");
+        Query query = refFollowers;
 
         adapter = new FirebaseRecyclerAdapter<String, ProfilFriendHolder>(String.class, R.layout.card_profil_friend_following, ProfilFriendHolder.class, query) {
             @Override
@@ -165,9 +204,6 @@ public class ProfilFriendFollowerFragment extends Fragment {
     }
 
     private void displayInformationFollowers(final ProfilFriendHolder profilFriendHolder, final String userUid) {
-        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        assert currentUser != null;
-        final String currentUserUid = currentUser.getUid();
 
         DatabaseReference reference = mRootRef.child("user").child(userUid);
 
@@ -283,6 +319,23 @@ public class ProfilFriendFollowerFragment extends Fragment {
             }
         });
     }
+
+    private void goContryActivity() {
+        Intent intent = new Intent(context, ContryActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void goCityActivity() {
+        Intent intent = new Intent(context, CityActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void finishActivity() {
+        getActivity().finish();
+    }
+
 
 
 }

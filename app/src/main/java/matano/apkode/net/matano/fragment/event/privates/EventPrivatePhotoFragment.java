@@ -60,7 +60,7 @@ public class EventPrivatePhotoFragment extends Fragment {
         EventPrivatePhotoFragment eventPrivatePhotoFragment = new EventPrivatePhotoFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putString(Utils.TAG_EVENT_UID, eventUid);
+        bundle.putString(Utils.ARG_EVENT_UID, eventUid);
 
         eventPrivatePhotoFragment.setArguments(bundle);
 
@@ -73,7 +73,7 @@ public class EventPrivatePhotoFragment extends Fragment {
         super.onAttach(context);
         this.context = context;
 
-        eventUid = getArguments().getString(Utils.TAG_EVENT_UID);
+        eventUid = getArguments().getString(Utils.ARG_EVENT_UID);
     }
 
     @Override

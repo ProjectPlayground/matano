@@ -55,7 +55,7 @@ public class EventPrivateFragment extends Fragment {
         EventPrivateFragment eventPrivateFragment = new EventPrivateFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putString(Utils.TAG_EVENT_UID, eventUid);
+        bundle.putString(Utils.ARG_EVENT_UID, eventUid);
 
         eventPrivateFragment.setArguments(bundle);
         return eventPrivateFragment;
@@ -66,7 +66,7 @@ public class EventPrivateFragment extends Fragment {
         super.onAttach(context);
         this.context = context;
 
-        eventUid = getArguments().getString(Utils.TAG_EVENT_UID);
+        eventUid = getArguments().getString(Utils.ARG_EVENT_UID);
     }
 
     @Override

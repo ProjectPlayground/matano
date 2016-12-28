@@ -1,10 +1,12 @@
 package matano.apkode.net.matano.fragment.profil;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,12 +27,17 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import matano.apkode.net.matano.CityActivity;
+import matano.apkode.net.matano.ContryActivity;
+import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.profil.ProfilPhotoHolder;
 import matano.apkode.net.matano.model.Photo;
 
 public class ProfilPhotoFragment extends Fragment {
-    private static String ARG_USER_UID = "userUid";
+    private static final String CURRENT_FRAGMENT = "Mes Photos";
     private Context context;
     private RecyclerView recyclerView;
     private List<Photo> photos = new ArrayList<>();
@@ -39,19 +46,26 @@ public class ProfilPhotoFragment extends Fragment {
     private FirebaseDatabase database;
     private DatabaseReference mRootRef;
     private DatabaseReference refUser;
+    private DatabaseReference refPhotos;
     private DatabaseReference refUserPhoto;
     private FirebaseRecyclerAdapter<String, ProfilPhotoHolder> adapter;
     private GridLayoutManager manager;
+    private String currentUserContry;
+    private String currentUserCity;
+    private LocalStorage localStorage;
+    private FirebaseUser user;
+    private String currentUserUid;
+    private String userUid;
 
-    public ProfilPhotoFragment() {
-    }
 
-    public ProfilPhotoFragment newInstance(String userUid) {
+    public static ProfilPhotoFragment newInstance(String userUid) {
         ProfilPhotoFragment profilPhotoFragment = new ProfilPhotoFragment();
+
         Bundle bundle = new Bundle();
-        bundle.putString(ARG_USER_UID, userUid);
+        bundle.putString(Utils.ARG_USER_UID, userUid);
+
         profilPhotoFragment.setArguments(bundle);
-        ARG_USER_UID = userUid;
+
         return profilPhotoFragment;
     }
 
@@ -59,26 +73,43 @@ public class ProfilPhotoFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
+        userUid = getArguments().getString(Utils.ARG_USER_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        localStorage = new LocalStorage(context);
+        currentUserContry = localStorage.getContry();
+        currentUserCity = localStorage.getCity();
+
+        if (userUid == null) {
+            finishActivity();
+        }
+
+        if (!localStorage.isContryStored() || currentUserContry == null) {
+            goContryActivity();
+        }
+
+        if (!localStorage.isCityStored() || currentUserCity == null) {
+            goCityActivity();
+        }
+
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
-        refUser = mRootRef.child("user").child(ARG_USER_UID);
+        refUser = mRootRef.child("user").child(userUid);
+        refPhotos = refUser.child("photos");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-
+                user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    finishActivity();
                 } else {
-
-                    // TODO go sign in
+                    currentUserUid = user.getUid();
                 }
             }
         };
@@ -88,14 +119,18 @@ public class ProfilPhotoFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_profil_photo, container, false);
-        return view;
-    }
+        super.onCreateView(inflater, container, savedInstanceState);
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        manager = new GridLayoutManager(getContext(), 2);
+        ActionBar supportActionBar = ((ProfilActivity) getActivity()).getSupportActionBar();
+
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(CURRENT_FRAGMENT);
+        }
+
+
+        View view = inflater.inflate(R.layout.fragment_profil_photo, container, false);
+
+        manager = new GridLayoutManager(context, 2);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -103,7 +138,14 @@ public class ProfilPhotoFragment extends Fragment {
         recyclerView.setLayoutManager(manager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        Query query = refUser.child("photos");
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Query query = refPhotos;
 
         adapter = new FirebaseRecyclerAdapter<String, ProfilPhotoHolder>(String.class, R.layout.card_profil_photo, ProfilPhotoHolder.class, query) {
             @Override
@@ -173,7 +215,7 @@ public class ProfilPhotoFragment extends Fragment {
 
                     String url = photo.getUrl();
                     if (url != null) {
-                        profilPhotoHolder.setImageViewPhoto(getContext(), url);
+                        profilPhotoHolder.setImageViewPhoto(context, url);
                     }
 
                 }
@@ -182,10 +224,27 @@ public class ProfilPhotoFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                // TODO handle error
             }
         });
 
+    }
+
+
+    private void goContryActivity() {
+        Intent intent = new Intent(context, ContryActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void goCityActivity() {
+        Intent intent = new Intent(context, CityActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void finishActivity() {
+        getActivity().finish();
     }
 
 

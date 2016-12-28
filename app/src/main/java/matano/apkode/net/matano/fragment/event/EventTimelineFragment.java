@@ -85,7 +85,6 @@ public class EventTimelineFragment extends Fragment {
     private FirebaseUser user;
     private String currentUserUid;
 
-
     public EventTimelineFragment() {
     }
 
@@ -93,7 +92,7 @@ public class EventTimelineFragment extends Fragment {
         EventTimelineFragment eventTimelineFragment = new EventTimelineFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putString(Utils.TAG_EVENT_UID, eventUid);
+        bundle.putString(Utils.ARG_EVENT_UID, eventUid);
 
         eventTimelineFragment.setArguments(bundle);
 
@@ -104,7 +103,7 @@ public class EventTimelineFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-        eventUid = getArguments().getString(Utils.TAG_EVENT_UID);
+        eventUid = getArguments().getString(Utils.ARG_EVENT_UID);
 
     }
 
@@ -319,7 +318,7 @@ public class EventTimelineFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getChildrenCount() == 0) {
-                    imageButtonLikePhoto.setTag("1");
+                    imageButtonLikePhoto.setTag("0");
                     imageButtonLikePhoto.setVisibility(View.VISIBLE);
                     imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
                 } else {
@@ -329,7 +328,7 @@ public class EventTimelineFragment extends Fragment {
                             imageButtonLikePhoto.setVisibility(View.VISIBLE);
                             imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_padding);
                         } else {
-                            imageButtonLikePhoto.setTag("1");
+                            imageButtonLikePhoto.setTag("0");
                             imageButtonLikePhoto.setVisibility(View.VISIBLE);
                             imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
                         }
@@ -410,13 +409,13 @@ public class EventTimelineFragment extends Fragment {
 
     private void savePhoto(Uri downloadUri, String uuid) {
 
-        Photo photo = new Photo(eventUid, currentUserUid, downloadUri.toString(), new Date(), "1", null);
+        Photo photo = new Photo(eventUid, currentUserUid, downloadUri.toString(), new Date(), "0", null);
 
         Map hashMap = new HashMap();
 
-        hashMap.put("event/" + eventUid + "/photos/" + uuid, "1");
+        hashMap.put("event/" + eventUid + "/photos/" + uuid, "0");
         hashMap.put("photo/" + uuid, photo);
-        hashMap.put("user/" + currentUserUid + "/photos/" + uuid, "1");
+        hashMap.put("user/" + currentUserUid + "/photos/" + uuid, "0");
 
         mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override

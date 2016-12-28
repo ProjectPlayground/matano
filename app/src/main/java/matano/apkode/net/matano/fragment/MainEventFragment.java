@@ -213,7 +213,7 @@ public class MainEventFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getContext(), EventActivity.class);
-                    intent.putExtra(Utils.TAG_EVENT_UID, refEvent);
+                    intent.putExtra(Utils.ARG_EVENT_UID, refEvent);
                     startActivity(intent);
                 }
             });

@@ -108,7 +108,7 @@ public class EventInfoFragment extends Fragment {
         EventInfoFragment eventInfoFragment = new EventInfoFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putString(Utils.TAG_EVENT_UID, eventUid);
+        bundle.putString(Utils.ARG_EVENT_UID, eventUid);
 
         eventInfoFragment.setArguments(bundle);
 
@@ -120,7 +120,7 @@ public class EventInfoFragment extends Fragment {
         super.onAttach(context);
         this.context = context;
 
-        eventUid = getArguments().getString(Utils.TAG_EVENT_UID);
+        eventUid = getArguments().getString(Utils.ARG_EVENT_UID);
     }
 
     @Override

@@ -1,10 +1,12 @@
 package matano.apkode.net.matano.fragment.profil;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,12 +23,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import matano.apkode.net.matano.CityActivity;
+import matano.apkode.net.matano.ContryActivity;
+import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.profil.ProfilEventHolder;
 import matano.apkode.net.matano.model.Event;
 
 public class ProfilEventFragment extends Fragment {
-    private static String ARG_USER_UID = "userUid";
+    private static final String CURRENT_FRAGMENT = "Mes Evenements";
     private Context context;
     private RecyclerView recyclerView;
     private FirebaseAuth mAuth;
@@ -34,18 +41,28 @@ public class ProfilEventFragment extends Fragment {
     private FirebaseDatabase database;
     private DatabaseReference mRootRef;
     private DatabaseReference refUser;
+    private DatabaseReference refEvents;
     private FirebaseRecyclerAdapter<String, ProfilEventHolder> adapter;
     private LinearLayoutManager manager;
+    private String currentUserContry;
+    private String currentUserCity;
+    private LocalStorage localStorage;
+    private FirebaseUser user;
+    private String currentUserUid;
+    private String userUid;
 
     public ProfilEventFragment() {
     }
 
-    public ProfilEventFragment newInstance(String userUid) {
+    public static ProfilEventFragment newInstance(String userUid) {
         ProfilEventFragment profilEventFragment = new ProfilEventFragment();
+
+
         Bundle bundle = new Bundle();
-        bundle.putString(ARG_USER_UID, userUid);
+        bundle.putString(Utils.ARG_USER_UID, userUid);
+
         profilEventFragment.setArguments(bundle);
-        ARG_USER_UID = userUid;
+
         return profilEventFragment;
     }
 
@@ -53,25 +70,44 @@ public class ProfilEventFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
+        userUid = getArguments().getString(Utils.ARG_USER_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        localStorage = new LocalStorage(context);
+        currentUserContry = localStorage.getContry();
+        currentUserCity = localStorage.getCity();
+
+        if (userUid == null) {
+            finishActivity();
+        }
+
+        if (!localStorage.isContryStored() || currentUserContry == null) {
+            goContryActivity();
+        }
+
+        if (!localStorage.isCityStored() || currentUserCity == null) {
+            goCityActivity();
+        }
+
+
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
-        refUser = mRootRef.child("user").child(ARG_USER_UID);
+        refUser = mRootRef.child("user").child(userUid);
+        refEvents = refUser.child("events");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-
+                user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    finishActivity();
                 } else {
-                    // TODO go sign in
+                    currentUserUid = user.getUid();
                 }
             }
         };
@@ -82,13 +118,15 @@ public class ProfilEventFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_profil_event, container, false);
-        return view;
-    }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        ActionBar supportActionBar = ((ProfilActivity) getActivity()).getSupportActionBar();
+
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(CURRENT_FRAGMENT);
+        }
+
+
+        View view = inflater.inflate(R.layout.fragment_profil_event, container, false);
 
         manager = new LinearLayoutManager(getContext());
 
@@ -96,7 +134,15 @@ public class ProfilEventFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
 
-        Query query = refUser.child("events");
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Query query = refEvents;
+        refUser.child("events");
 
         adapter = new FirebaseRecyclerAdapter<String, ProfilEventHolder>(String.class, R.layout.card_profil_event, ProfilEventHolder.class, query) {
             @Override
@@ -194,11 +240,27 @@ public class ProfilEventFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                // TODO handle error
             }
         });
 
     }
 
+
+    private void goContryActivity() {
+        Intent intent = new Intent(context, ContryActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void goCityActivity() {
+        Intent intent = new Intent(context, CityActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void finishActivity() {
+        getActivity().finish();
+    }
 
 }

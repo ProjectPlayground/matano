@@ -30,6 +30,12 @@ public class PhotoDialog extends DialogFragment {
         return photoDialog;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -77,6 +83,11 @@ public class PhotoDialog extends DialogFragment {
         return v;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
     private void setCurrentItem(int position) {
         viewPager.setCurrentItem(position, false);
         displayMetaInfo(selectedPosition);
@@ -88,16 +99,5 @@ public class PhotoDialog extends DialogFragment {
         //  ImageGalerie imageGalerie = imageGaleries.get(position);
     }
 
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
-    }
 
 }

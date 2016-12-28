@@ -70,7 +70,7 @@ public class EventParticipantFragment extends Fragment {
         EventParticipantFragment eventParticipantFragment = new EventParticipantFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putString(Utils.TAG_EVENT_UID, eventUid);
+        bundle.putString(Utils.ARG_EVENT_UID, eventUid);
 
         eventParticipantFragment.setArguments(bundle);
 
@@ -82,7 +82,7 @@ public class EventParticipantFragment extends Fragment {
         super.onAttach(context);
         this.context = context;
 
-        eventUid = getArguments().getString(Utils.TAG_EVENT_UID);
+        eventUid = getArguments().getString(Utils.ARG_EVENT_UID);
     }
 
     @Override
@@ -170,11 +170,11 @@ public class EventParticipantFragment extends Fragment {
                 if (s != null) {
                     getUser(eventParticipantHolder, getRef(position).getKey());
                     if (textViewParticipantNumer != null) {
-                        textViewParticipantNumer.setText(getItemCount() + " Participants");
+                        textViewParticipantNumer.setText(getItemCount() + " " + getResources().getString(R.string.participants));
                     }
 
                 } else {
-                    textViewParticipantNumer.setText("0 Participants");
+                    textViewParticipantNumer.setText("0" + " " + getResources().getString(R.string.participants));
                 }
 
             }

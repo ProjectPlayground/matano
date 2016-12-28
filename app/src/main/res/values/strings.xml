@@ -108,6 +108,10 @@
     <string name="search_title">Search</string>
     <string name="action_search">Search</string>
     <string name="network_error">Network Error</string>
+    <string name="followers">Followers</string>
+    <string name="followings">Followings</string>
+    <string name="photos">Photos</string>
+    <string name="participants">Participants</string>
     <string-array name="contry">
         <item>Niger</item>
         <item>Sénégal</item>

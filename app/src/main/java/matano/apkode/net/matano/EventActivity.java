@@ -1,5 +1,6 @@
 package matano.apkode.net.matano;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.event.EventInfoFragment;
 import matano.apkode.net.matano.fragment.event.EventParticipantFragment;
@@ -36,16 +38,31 @@ public class EventActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser user;
     private String currentUserUid;
+    private String currentUserContry;
+    private String currentUserCity;
+    private LocalStorage localStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
 
-        eventUid = getIntent().getStringExtra(Utils.TAG_EVENT_UID);
+        eventUid = getIntent().getStringExtra(Utils.ARG_EVENT_UID);
+
+        localStorage = new LocalStorage(this);
+        currentUserContry = localStorage.getContry();
+        currentUserCity = localStorage.getCity();
 
         if (eventUid == null) {
             finishActivity();
+        }
+
+        if (!localStorage.isContryStored() || currentUserContry == null) {
+            goContryActivity();
+        }
+
+        if (!localStorage.isCityStored() || currentUserCity == null) {
+            goCityActivity();
         }
 
         mAuth = FirebaseAuth.getInstance();
@@ -133,6 +150,18 @@ public class EventActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    private void goContryActivity() {
+        Intent intent = new Intent(this, ContryActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void goCityActivity() {
+        Intent intent = new Intent(this, CityActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
 
     private void finishActivity() {
         finish();

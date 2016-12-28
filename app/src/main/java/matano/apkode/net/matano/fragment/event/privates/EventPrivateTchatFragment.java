@@ -90,7 +90,7 @@ public class EventPrivateTchatFragment extends Fragment {
         EventPrivateTchatFragment eventPrivateTchatFragment = new EventPrivateTchatFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putString(Utils.TAG_EVENT_UID, eventUid);
+        bundle.putString(Utils.ARG_EVENT_UID, eventUid);
 
         eventPrivateTchatFragment.setArguments(bundle);
 
@@ -103,7 +103,7 @@ public class EventPrivateTchatFragment extends Fragment {
         super.onAttach(context);
         this.context = context;
 
-        eventUid = getArguments().getString(Utils.TAG_EVENT_UID);
+        eventUid = getArguments().getString(Utils.ARG_EVENT_UID);
     }
 
     @Override

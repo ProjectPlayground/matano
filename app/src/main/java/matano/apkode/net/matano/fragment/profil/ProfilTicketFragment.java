@@ -1,6 +1,7 @@
 package matano.apkode.net.matano.fragment.profil;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,13 +21,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+import matano.apkode.net.matano.CityActivity;
+import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.profil.ProfilTicketHolder;
 import matano.apkode.net.matano.model.Event;
 import matano.apkode.net.matano.model.Ticket;
 
 public class ProfilTicketFragment extends Fragment {
-    private static String ARG_USER_UID = "userUid";
+    private static final String CURRENT_FRAGMENT = "Mes Tickets";
     private Context context;
     private RecyclerView recyclerView;
     private List<Event> events = new ArrayList<>();
@@ -35,47 +40,76 @@ public class ProfilTicketFragment extends Fragment {
     private FirebaseDatabase database;
     private DatabaseReference mRootRef;
     private DatabaseReference refUser;
-    private DatabaseReference refUserTicket;
+    private DatabaseReference refTickets;
     private FirebaseRecyclerAdapter<Ticket, ProfilTicketHolder> adapter;
     private LinearLayoutManager manager;
+    private String currentUserContry;
+    private String currentUserCity;
+    private LocalStorage localStorage;
+    private FirebaseUser user;
+    private String currentUserUid;
+    private String userUid;
+
+
+    public static ProfilTicketFragment newInstance(String userUid) {
+        ProfilTicketFragment profilTicketFragment = new ProfilTicketFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(Utils.ARG_USER_UID, userUid);
+
+        profilTicketFragment.setArguments(bundle);
+
+        return profilTicketFragment;
+    }
+
+
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
+        userUid = getArguments().getString(Utils.ARG_USER_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        localStorage = new LocalStorage(context);
+        currentUserContry = localStorage.getContry();
+        currentUserCity = localStorage.getCity();
+
+        if (userUid == null) {
+            finishActivity();
+        }
+
+        if (!localStorage.isContryStored() || currentUserContry == null) {
+            goContryActivity();
+        }
+
+        if (!localStorage.isCityStored() || currentUserCity == null) {
+            goCityActivity();
+        }
+
+
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
-        refUser = mRootRef.child("user").child(ARG_USER_UID);
+        refUser = mRootRef.child("user").child(userUid);
+        refTickets = refUser.child("tickets");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-
+                user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    finishActivity();
                 } else {
-
-                    // TODO go sign in
+                    currentUserUid = user.getUid();
                 }
             }
         };
 
-    }
-
-    public ProfilTicketFragment newInstance(String userUid) {
-        ProfilTicketFragment profilTicketFragment = new ProfilTicketFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ARG_USER_UID, userUid);
-        profilTicketFragment.setArguments(bundle);
-        ARG_USER_UID = userUid;
-        return profilTicketFragment;
     }
 
     @Nullable
@@ -140,5 +174,23 @@ public class ProfilTicketFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
+
+
+    private void goContryActivity() {
+        Intent intent = new Intent(context, ContryActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void goCityActivity() {
+        Intent intent = new Intent(context, CityActivity.class);
+        startActivity(intent);
+        finishActivity();
+    }
+
+    private void finishActivity() {
+        getActivity().finish();
+    }
+
 
 }
