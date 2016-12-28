@@ -58,6 +58,8 @@ public class ProfilFriendFollowingFragment extends Fragment {
     private String currentUserUid;
     private String userUid;
 
+    public ProfilFriendFollowingFragment() {
+    }
 
     public static ProfilFriendFollowingFragment newInstance(String userUid) {
         ProfilFriendFollowingFragment profilFriendFollowingFragment = new ProfilFriendFollowingFragment();

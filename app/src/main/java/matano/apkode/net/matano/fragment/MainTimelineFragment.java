@@ -54,6 +54,8 @@ public class MainTimelineFragment extends Fragment {
     private FirebaseUser user;
     private String currentUserUid;
 
+    public MainTimelineFragment() {
+    }
 
     @Override
     public void onAttach(Context context) {

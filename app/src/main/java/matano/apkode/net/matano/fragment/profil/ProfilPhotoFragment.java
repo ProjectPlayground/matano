@@ -57,6 +57,8 @@ public class ProfilPhotoFragment extends Fragment {
     private String currentUserUid;
     private String userUid;
 
+    public ProfilPhotoFragment() {
+    }
 
     public static ProfilPhotoFragment newInstance(String userUid) {
         ProfilPhotoFragment profilPhotoFragment = new ProfilPhotoFragment();

@@ -52,6 +52,9 @@ public class MainEventFragment extends Fragment {
     private FirebaseUser user;
     private String currentUserUid;
 
+    public MainEventFragment() {
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

@@ -50,6 +50,8 @@ public class ProfilTicketFragment extends Fragment {
     private String currentUserUid;
     private String userUid;
 
+    public ProfilTicketFragment() {
+    }
 
     public static ProfilTicketFragment newInstance(String userUid) {
         ProfilTicketFragment profilTicketFragment = new ProfilTicketFragment();

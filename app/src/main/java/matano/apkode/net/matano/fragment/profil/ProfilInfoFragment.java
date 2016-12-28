@@ -58,6 +58,10 @@ public class ProfilInfoFragment extends Fragment {
     private FirebaseUser user;
     private String currentUserUid;
 
+
+    public ProfilInfoFragment() {
+    }
+
     public static ProfilInfoFragment newInstance(String userUid) {
         ProfilInfoFragment profilInfoFragment = new ProfilInfoFragment();
 
