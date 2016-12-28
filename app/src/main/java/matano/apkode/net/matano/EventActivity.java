@@ -27,7 +27,6 @@ import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.event.EventInfoFragment;
 import matano.apkode.net.matano.fragment.event.EventParticipantFragment;
-import matano.apkode.net.matano.fragment.event.EventPhotoFragment;
 import matano.apkode.net.matano.fragment.event.EventPrivateFragment;
 import matano.apkode.net.matano.fragment.event.EventTimelineFragment;
 
@@ -172,7 +171,7 @@ public class EventActivity extends AppCompatActivity {
      * FragmentPagerAdapter
      */
     public class EventPagerAdapter extends FragmentPagerAdapter {
-        private int icons[] = {R.mipmap.ic_action_notification_event_note_padding, R.mipmap.ic_action_action_list_padding, R.mipmap.ic_action_image_image_padding, R.mipmap.ic_action_action_account_child_padding, R.mipmap.ic_action_communication_chat_padding};
+        private int icons[] = {R.mipmap.ic_action_notification_event_note_padding, R.mipmap.ic_action_action_list_padding, R.mipmap.ic_action_action_account_child_padding, R.mipmap.ic_action_communication_chat_padding};
 
 
         public EventPagerAdapter(FragmentManager fm) {
@@ -197,20 +196,18 @@ public class EventActivity extends AppCompatActivity {
                 case 2:
                     return EventTimelineFragment.newInstance(eventUid);
                 case 3:
-                    return EventPhotoFragment.newInstance(eventUid);
-                case 4:
                     return EventParticipantFragment.newInstance(eventUid);
-                case 5:
+                case 4:
                     return EventPrivateFragment.newInstance(eventUid);
                 default:
-                    return EventInfoFragment.newInstance(eventUid);
+                    return null;
             }
 
         }
 
         @Override
         public int getCount() {
-            return 5;
+            return 4;
         }
 
         @Override

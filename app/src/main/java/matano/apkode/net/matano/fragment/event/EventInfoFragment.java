@@ -211,7 +211,7 @@ public class EventInfoFragment extends Fragment {
             @Override
             protected void populateViewHolder(EventPhotoHolder eventPhotoHolder, String s, int position) {
                 if (s != null) {
-                    getPhoto(eventPhotoHolder, getRef(position).getKey());
+                    getPhoto(eventPhotoHolder, getRef(position).getKey(), position);
                 }
             }
         };
@@ -472,7 +472,7 @@ public class EventInfoFragment extends Fragment {
     }
 
 
-    private void getPhoto(final EventPhotoHolder eventPhotoHolder, String s) {
+    private void getPhoto(final EventPhotoHolder eventPhotoHolder, String s, final int position) {
         Query query = refPhoto.child(s);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -481,7 +481,12 @@ public class EventInfoFragment extends Fragment {
                 Photo photo = dataSnapshot.getValue(Photo.class);
 
                 if (photo != null) {
-                    displayLayout(eventPhotoHolder, photo);
+                    displayLayout(eventPhotoHolder, photo, position);
+
+                    if (!photos.contains(photo)) {
+                        photos.add(photo);
+                    }
+
                 }
 
             }
@@ -493,8 +498,9 @@ public class EventInfoFragment extends Fragment {
         });
     }
 
-    private void displayLayout(EventPhotoHolder eventPhotoHolder, Photo photo) {
+    private void displayLayout(EventPhotoHolder eventPhotoHolder, Photo photo, final int position) {
         String url = photo.getUrl();
+        final String userUid = photo.getUser();
 
         if (url != null) {
             eventPhotoHolder.setImageViewPhoto(getContext(), photo.getUrl());
@@ -503,10 +509,9 @@ public class EventInfoFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("Photo", (Serializable) photos);
-                    // TODO fix position
-                    int position = 1;
-                    bundle.putInt("position", position);
+                    bundle.putSerializable(Utils.ARG_PHOTO_DIALOG, (Serializable) photos);
+                    bundle.putInt(Utils.ARG_PHOTO_DIALOG_POSITION, position);
+                    bundle.putString(Utils.ARG_USER_UID, userUid);
 
                     FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
@@ -514,7 +519,7 @@ public class EventInfoFragment extends Fragment {
 
                     photoDialog.setArguments(bundle);
 
-                    photoDialog.show(fragmentTransaction, "PhotoDialog");
+                    photoDialog.show(fragmentTransaction, Utils.TAG_PHOTO_DIALOG);
                 }
             });
 

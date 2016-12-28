@@ -1,20 +1,26 @@
 package matano.apkode.net.matano.dialogfragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.model.Photo;
-import matano.apkode.net.matano.pageradapter.PhotoPageAdapter;
 
 
 public class PhotoDialog extends DialogFragment {
@@ -24,6 +30,8 @@ public class PhotoDialog extends DialogFragment {
     private TextView lblCount;
     private ArrayList<Photo> photos;
     private ImageButton closePhotoDialog;
+    private String userUid;
+
 
     public static PhotoDialog newInstance() {
         PhotoDialog photoDialog = new PhotoDialog();
@@ -55,10 +63,15 @@ public class PhotoDialog extends DialogFragment {
         }
 
 
-        photos = (ArrayList<Photo>) getArguments().getSerializable("Photo");
-        selectedPosition = getArguments().getInt("position");
+        photos = (ArrayList<Photo>) getArguments().getSerializable(Utils.ARG_PHOTO_DIALOG);
+        selectedPosition = getArguments().getInt(Utils.ARG_PHOTO_DIALOG_POSITION);
+        userUid = getArguments().getString(Utils.ARG_USER_UID);
 
-        photoPageAdapter = new PhotoPageAdapter(photos, getActivity(), getContext());
+        if (photos == null || userUid == null) {
+            finishActivity();
+        }
+
+        photoPageAdapter = new PhotoPageAdapter(getActivity(), getContext());
         viewPager.setAdapter(photoPageAdapter);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -95,9 +108,78 @@ public class PhotoDialog extends DialogFragment {
 
     private void displayMetaInfo(int position) {
         lblCount.setText((position + 1) + "/" + photos.size());
-
         //  ImageGalerie imageGalerie = imageGaleries.get(position);
     }
 
+    private void finishActivity() {
+        getActivity().finish();
+    }
+
+
+    /**
+     * PagerAdapter
+     */
+
+    public class PhotoPageAdapter extends PagerAdapter {
+        private LayoutInflater layoutInflater;
+        private Context context;
+        private Activity activity;
+
+        public PhotoPageAdapter(Activity act, Context ctx) {
+            this.context = ctx;
+            this.activity = act;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+
+            layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            View view = layoutInflater.inflate(R.layout.card_photo_galerie, container, false);
+
+            Photo photo = photos.get(position);
+
+            ImageView imageViewPhoto = (ImageView) view.findViewById(R.id.imageViewPhoto);
+
+            final String url = photo.getUrl();
+
+            if (imageViewPhoto != null && url != null) {
+                Glide
+                        .with(context)
+                        .load(url)
+                        //  .centerCrop()
+                        .into(imageViewPhoto);
+
+                imageViewPhoto.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+            }
+
+            container.addView(view);
+
+            return view;
+
+        }
+
+
+        @Override
+        public int getCount() {
+            return photos.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
+    }
 
 }

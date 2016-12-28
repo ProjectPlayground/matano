@@ -201,7 +201,7 @@ public class ProfilActivity extends AppCompatActivity {
                 case 5:
                     return ProfilFriendFragment.newInstance(userUid);
                 default:
-                    return ProfilInfoFragment.newInstance(userUid);
+                    return null;
             }
 
         }

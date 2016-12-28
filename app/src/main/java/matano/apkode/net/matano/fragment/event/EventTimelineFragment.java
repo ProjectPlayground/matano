@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,6 +36,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,9 +49,11 @@ import java.util.UUID;
 import matano.apkode.net.matano.CityActivity;
 import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.EventActivity;
+import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
+import matano.apkode.net.matano.dialogfragment.PhotoDialog;
 import matano.apkode.net.matano.holder.event.EventTimelineHolder;
 import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.User;
@@ -62,7 +66,7 @@ public class EventTimelineFragment extends Fragment {
     private static final int ARG_PHOTO_PICKER = 2;
     private Context context;
     private RecyclerView recyclerView;
-    private List<Photo> aNews = new ArrayList<>();
+    private List<Photo> photos = new ArrayList<>();
     private String eventUid;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -190,7 +194,7 @@ public class EventTimelineFragment extends Fragment {
             @Override
             protected void populateViewHolder(EventTimelineHolder eventTimelineHolder, String s, int position) {
                 if (s != null) {
-                    getPhoto(eventTimelineHolder, getRef(position).getKey());
+                    getPhoto(eventTimelineHolder, getRef(position).getKey(), position);
                 }
             }
         };
@@ -251,7 +255,7 @@ public class EventTimelineFragment extends Fragment {
         super.onDetach();
     }
 
-    private void getPhoto(final EventTimelineHolder eventTimelineHolder, final String photoUid) {
+    private void getPhoto(final EventTimelineHolder eventTimelineHolder, final String photoUid, final int position) {
         Query query = refPhoto.child(photoUid);
 
         query.addValueEventListener(new ValueEventListener() {
@@ -259,8 +263,13 @@ public class EventTimelineFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Photo photo = dataSnapshot.getValue(Photo.class);
 
-                if (photo != null && photo.getUrl() != null && photo.getDate() != null) {
-                    getUser(eventTimelineHolder, photoUid, photo);
+                if (photo != null && photo.getUrl() != null && photo.getDate() != null && photo.getUser() != null) {
+                    getUser(eventTimelineHolder, photoUid, photo, position);
+
+                    if (!photos.contains(photo)) {
+                        photos.add(photo);
+                    }
+
                 }
 
             }
@@ -272,7 +281,7 @@ public class EventTimelineFragment extends Fragment {
         });
     }
 
-    private void getUser(final EventTimelineHolder eventTimelineHolder, final String photoUid, final Photo photo) {
+    private void getUser(final EventTimelineHolder eventTimelineHolder, final String photoUid, final Photo photo, final int position) {
         String userUid = photo.getUser();
 
         Query query = refUser.child(userUid);
@@ -282,7 +291,7 @@ public class EventTimelineFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 if (user != null && user.getPhotoProfl() != null && user.getUsername() != null) {
-                    displayLayout(eventTimelineHolder, photoUid, photo, user);
+                    displayLayout(eventTimelineHolder, photoUid, photo, user, position);
                 }
             }
 
@@ -293,7 +302,7 @@ public class EventTimelineFragment extends Fragment {
         });
     }
 
-    private void displayLayout(EventTimelineHolder eventTimelineHolder, final String photoUid, Photo photo, User user) {
+    private void displayLayout(EventTimelineHolder eventTimelineHolder, final String photoUid, Photo photo, User user, final int position) {
         final String userUid = photo.getUser();
         String url = photo.getUrl();
         Date date = photo.getDate();
@@ -301,14 +310,35 @@ public class EventTimelineFragment extends Fragment {
         eventTimelineHolder.setTextViewUsername(user.getUsername());
         eventTimelineHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
         eventTimelineHolder.setImageViewPhoto(context, url);
-        eventTimelineHolder.itemView.setOnClickListener(new View.OnClickListener() {
+        eventTimelineHolder.getImageViewPhoto().setTag(position);
+        eventTimelineHolder.getImageViewPhoto().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(Utils.ARG_PHOTO_DIALOG, (Serializable) photos);
+                bundle.putInt(Utils.ARG_PHOTO_DIALOG_POSITION, position);
+                bundle.putString(Utils.ARG_USER_UID, userUid);
+
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
+                PhotoDialog photoDialog = new PhotoDialog();
+
+                photoDialog.setArguments(bundle);
+
+                photoDialog.show(fragmentTransaction, Utils.TAG_PHOTO_DIALOG);
 
             }
         });
 
         eventTimelineHolder.setImageViewPhotoProfil(context, user.getPhotoProfl());
+
+        eventTimelineHolder.getLinearLayoutUser().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goProfilActivity(userUid);
+            }
+        });
 
         final ImageButton imageButtonLikePhoto = eventTimelineHolder.getImageButtonLikePhoto();
 
@@ -345,10 +375,10 @@ public class EventTimelineFragment extends Fragment {
         imageButtonLikePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 addPhotoLike(photoUid, (String) view.getTag());
             }
         });
+
 
     }
 
@@ -438,6 +468,12 @@ public class EventTimelineFragment extends Fragment {
         }
     }
 
+
+    private void goProfilActivity(String userUid) {
+        Intent intent = new Intent(context, ProfilActivity.class);
+        intent.putExtra(Utils.ARG_USER_UID, userUid);
+        startActivity(intent);
+    }
 
     private void goContryActivity() {
         Intent intent = new Intent(context, ContryActivity.class);

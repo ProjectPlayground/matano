@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,6 +21,7 @@ public class EventTimelineHolder extends RecyclerView.ViewHolder {
     private ImageView imageViewPhotoProfil;
     private ImageButton imageButtonLikePhoto;
     private ImageButton imageButtonSharePhoto;
+    private LinearLayout linearLayoutUser;
 
     public EventTimelineHolder(View itemView) {
         super(itemView);
@@ -29,6 +31,7 @@ public class EventTimelineHolder extends RecyclerView.ViewHolder {
         imageViewPhotoProfil = (ImageView) itemView.findViewById(R.id.imageViewPhotoProfil);
         imageButtonLikePhoto = (ImageButton) itemView.findViewById(R.id.imageButtonLikePhoto);
         imageButtonSharePhoto = (ImageButton) itemView.findViewById(R.id.imageButtonSharePhoto);
+        linearLayoutUser = (LinearLayout) itemView.findViewById(R.id.linearLayoutUser);
     }
 
     public void bind(Photo photo) {
@@ -87,5 +90,17 @@ public class EventTimelineHolder extends RecyclerView.ViewHolder {
 
     public ImageButton getImageButtonSharePhoto() {
         return imageButtonSharePhoto;
+    }
+
+    public ImageView getImageViewPhoto() {
+        return imageViewPhoto;
+    }
+
+    public ImageView getImageViewPhotoProfil() {
+        return imageViewPhotoProfil;
+    }
+
+    public LinearLayout getLinearLayoutUser() {
+        return linearLayoutUser;
     }
 }
