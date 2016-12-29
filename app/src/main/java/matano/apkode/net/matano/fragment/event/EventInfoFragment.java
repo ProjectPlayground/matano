@@ -19,7 +19,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -281,7 +280,7 @@ public class EventInfoFragment extends Fragment {
                         users = event.getUsers();
                     }
 
-                    if (imageViewPhotoProfil != null) {
+                    /*if (imageViewPhotoProfil != null) {
                         if (photoProfil != null) {
                             Glide
                                     .with(getContext())
@@ -289,7 +288,7 @@ public class EventInfoFragment extends Fragment {
                                     //  .centerCrop()
                                     .into(imageViewPhotoProfil);
                         }
-                    }
+                    }*/
                     if (textViewTitle != null) {
                         if (title != null) {
                             textViewTitle.setText(title);

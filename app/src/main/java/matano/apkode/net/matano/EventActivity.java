@@ -19,7 +19,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -40,6 +42,8 @@ public class EventActivity extends AppCompatActivity {
     private String currentUserContry;
     private String currentUserCity;
     private LocalStorage localStorage;
+    private ImageView imageViewCover;
+    private TextView textViewToolbarTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +88,12 @@ public class EventActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        imageViewCover = (ImageView) findViewById(R.id.imageViewCover);
+        textViewToolbarTitle = (TextView) findViewById(R.id.textViewToolbarTitle);
+
+        Glide.with(this).load("http://2.bp.blogspot.com/-WPu45Bfj0gc/Tyq68PDD6wI/AAAAAAACDfU/bwIKOTt_PAA/s1600/Grand+finale+Mustafa+Hassanali+collection+at+FIMA+in+Niamey+in+Niger+on+26+November+2011+(2).JPG").into(imageViewCover);
 
 
         EventPagerAdapter eventPagerAdapter = new EventPagerAdapter(getSupportFragmentManager());
@@ -96,10 +106,9 @@ public class EventActivity extends AppCompatActivity {
 
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
+            assert tab != null;
             tab.setCustomView(eventPagerAdapter.getTabView(i));
         }
-
-
     }
 
 

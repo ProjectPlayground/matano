@@ -6,4 +6,6 @@
     <color name="gray">#f1f1f1f1</color>
     <color name="transparent">#80000000</color>
     <color name="hidden">#00000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 </resources>
