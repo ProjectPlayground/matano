@@ -4,15 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textViewFollowerNumber"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Followers"
-        android:padding="8dp"
-        android:textAlignment="center"
-        android:textColor="@color/cardview_dark_background" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

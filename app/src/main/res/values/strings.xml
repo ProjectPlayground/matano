@@ -112,6 +112,15 @@
     <string name="followings">Followings</string>
     <string name="photos">Photos</string>
     <string name="participants">Participants</string>
+    <string name="page_event_info">Info</string>
+    <string name="page_event_timeline">Timeline</string>
+    <string name="page_event_participant">Participants</string>
+    <string name="page_event_tchat">Tchat</string>
+    <string name="page_profil_info">Profil</string>
+    <string name="page_profil_timeline">Timeline</string>
+    <string name="page_profil_event">Event</string>
+    <string name="page_profil_ticket">TIcket</string>
+    <string name="page_profil_tchat">Friends</string>
     <string-array name="contry">
         <item>Niger</item>
         <item>Sénégal</item>

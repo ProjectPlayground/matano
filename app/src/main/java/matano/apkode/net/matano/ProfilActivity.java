@@ -1,6 +1,7 @@
 package matano.apkode.net.matano;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,6 +44,7 @@ public class ProfilActivity extends AppCompatActivity {
     private LocalStorage localStorage;
     private FirebaseUser user;
     private String currentUserUid;
+    private TextView textViewToolbarTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +90,14 @@ public class ProfilActivity extends AppCompatActivity {
 
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        Drawable upArrow = ContextCompat.getDrawable(this, R.mipmap.ic_action_navigation_arrow_back_padding);
+        upArrow.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+
+        textViewToolbarTitle = (TextView) findViewById(R.id.textViewToolbarTitle);
+        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_info));
 
         ProfilPagerAdapter profilPagerAdapter = new ProfilPagerAdapter(getSupportFragmentManager());
 
@@ -99,6 +111,39 @@ public class ProfilActivity extends AppCompatActivity {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             tab.setCustomView(profilPagerAdapter.getTabView(i));
         }
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position + 1) {
+                    case 1:
+                        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_info));
+                        break;
+                    case 2:
+                        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_timeline));
+                        break;
+                    case 3:
+                        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_event));
+                        break;
+                    case 4:
+                        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_ticket));
+                        break;
+                    case 5:
+                        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_tchat));
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
     }
 

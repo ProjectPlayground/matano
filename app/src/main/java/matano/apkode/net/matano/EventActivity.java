@@ -1,6 +1,7 @@
 package matano.apkode.net.matano;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -90,8 +92,13 @@ public class EventActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        Drawable upArrow = ContextCompat.getDrawable(this, R.mipmap.ic_action_navigation_arrow_back_padding);
+        upArrow.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+
         imageViewCover = (ImageView) findViewById(R.id.imageViewCover);
         textViewToolbarTitle = (TextView) findViewById(R.id.textViewToolbarTitle);
+        textViewToolbarTitle.setText(getResources().getString(R.string.page_event_info));
 
         Glide.with(this).load("http://2.bp.blogspot.com/-WPu45Bfj0gc/Tyq68PDD6wI/AAAAAAACDfU/bwIKOTt_PAA/s1600/Grand+finale+Mustafa+Hassanali+collection+at+FIMA+in+Niamey+in+Niger+on+26+November+2011+(2).JPG").into(imageViewCover);
 
@@ -109,6 +116,38 @@ public class EventActivity extends AppCompatActivity {
             assert tab != null;
             tab.setCustomView(eventPagerAdapter.getTabView(i));
         }
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position + 1) {
+
+                    case 1:
+                        textViewToolbarTitle.setText(getResources().getString(R.string.page_event_info));
+                        break;
+                    case 2:
+                        textViewToolbarTitle.setText(getResources().getString(R.string.page_event_timeline));
+                        break;
+                    case 3:
+                        textViewToolbarTitle.setText(getResources().getString(R.string.page_event_participant));
+                        break;
+                    case 4:
+                        textViewToolbarTitle.setText(getResources().getString(R.string.page_event_tchat));
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
     }
 
 

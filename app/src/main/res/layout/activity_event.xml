@@ -40,8 +40,7 @@
                     android:id="@+id/textViewToolbarTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FIMA"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/colorPrimary" />
 
             </android.support.v7.widget.Toolbar>
 
