@@ -11,30 +11,22 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-
-        <Button
-            android:id="@+id/buttonPrivateTchat"
-            android:layout_width="0dp"
+        <ImageButton
+            android:id="@+id/imageButtonPrivateTchat"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="1dp"
-            android:layout_marginTop="1dp"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:text="Tchat"
-            android:textColor="@android:color/background_light"
-            android:textSize="13sp" />
+            android:background="@color/white"
+            android:padding="8dp"
+            android:src="@mipmap/ic_action_communication_chat_padding" />
 
-        <Button
-            android:id="@+id/buttonPrivatePhoto"
-            android:layout_width="0dp"
+        <ImageButton
+            android:id="@+id/imageButtonPrivatePhoto"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="1dp"
-            android:layout_marginTop="1dp"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:text="Photos"
-            android:textColor="@android:color/background_light"
-            android:textSize="13sp" />
+            android:layout_marginLeft="2dp"
+            android:background="@color/white"
+            android:padding="8dp"
+            android:src="@mipmap/ic_action_navigation_apps_padding" />
 
     </LinearLayout>
 

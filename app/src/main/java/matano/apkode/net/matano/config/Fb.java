@@ -2,12 +2,14 @@ package matano.apkode.net.matano.config;
 
 import android.app.Application;
 
+import com.bumptech.glide.request.target.ViewTarget;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 
 import io.fabric.sdk.android.Fabric;
+import matano.apkode.net.matano.R;
 
 
 public class Fb extends Application {
@@ -34,6 +36,8 @@ public class Fb extends Application {
         Fabric.with(this, new Twitter(authConfig));
         rootDatabase = FirebaseDatabase.getInstance();
         refMessage = rootDatabase.getReference("message");
+
+        ViewTarget.setTagId(R.id.glide_tag);
     }
 
     public FirebaseDatabase getRootDatabase() {

@@ -2,6 +2,7 @@ package matano.apkode.net.matano.fragment.event;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,8 +12,8 @@ import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,8 +37,8 @@ public class EventPrivateFragment extends Fragment {
     private FirebaseDatabase database;
     private DatabaseReference mRootRef;
     private DatabaseReference refEvent;
-    private Button buttonPrivateTchat;
-    private Button buttonPrivatePhoto;
+    private ImageButton imageButtonPrivateTchat;
+    private ImageButton imageButtonPrivatePhoto;
     private FrameLayout fragmentLayoutContainer;
     private EventPrivateTchatFragment eventPrivateTchatFragment;
     private EventPrivatePhotoFragment eventPrivatePhotoFragment;
@@ -123,8 +124,10 @@ public class EventPrivateFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_event_private, container, false);
 
-        buttonPrivateTchat = (Button) view.findViewById(R.id.buttonPrivateTchat);
-        buttonPrivatePhoto = (Button) view.findViewById(R.id.buttonPrivatePhoto);
+        imageButtonPrivateTchat = (ImageButton) view.findViewById(R.id.imageButtonPrivateTchat);
+        imageButtonPrivatePhoto = (ImageButton) view.findViewById(R.id.imageButtonPrivatePhoto);
+
+        imageButtonPrivateTchat.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
 
         fragmentLayoutContainer = (FrameLayout) view.findViewById(R.id.fragmentLayoutContainer);
 
@@ -142,29 +145,31 @@ public class EventPrivateFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-        if (buttonPrivateTchat != null) {
-            buttonPrivateTchat.setOnClickListener(new View.OnClickListener() {
+        imageButtonPrivateTchat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    imageButtonPrivateTchat.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+                    imageButtonPrivatePhoto.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
                     transaction.replace(R.id.fragmentLayoutContainer, eventPrivateTchatFragment);
                     transaction.commit();
                 }
             });
-        }
 
-        if (buttonPrivatePhoto != null) {
-            buttonPrivatePhoto.setOnClickListener(new View.OnClickListener() {
+
+        imageButtonPrivatePhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    imageButtonPrivatePhoto.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+                    imageButtonPrivateTchat.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
                     transaction.replace(R.id.fragmentLayoutContainer, eventPrivatePhotoFragment);
                     transaction.commit();
                 }
             });
-        }
 
     }
 

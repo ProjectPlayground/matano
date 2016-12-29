@@ -6,9 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,17 +23,25 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 import matano.apkode.net.matano.CityActivity;
 import matano.apkode.net.matano.ContryActivity;
-import matano.apkode.net.matano.EventActivity;
+import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
+import matano.apkode.net.matano.dialogfragment.PhotoDialog;
 import matano.apkode.net.matano.holder.event.privates.EventPrivatePhotoHolder;
 import matano.apkode.net.matano.model.Photo;
+import matano.apkode.net.matano.model.User;
 
 public class EventPrivatePhotoFragment extends Fragment {
-    private static final String CURRENT_FRAGMENT = "Tchat";
     private Context context;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -43,8 +50,9 @@ public class EventPrivatePhotoFragment extends Fragment {
     private DatabaseReference refEvent;
     private DatabaseReference refPhotos;
     private DatabaseReference refPhoto;
+    private DatabaseReference refUser;
     private RecyclerView recyclerView;
-    private GridLayoutManager manager;
+    private LinearLayoutManager manager;
     private FirebaseRecyclerAdapter<String, EventPrivatePhotoHolder> adapter;
     private String currentUserContry;
     private String currentUserCity;
@@ -52,6 +60,7 @@ public class EventPrivatePhotoFragment extends Fragment {
     private FirebaseUser user;
     private String currentUserUid;
     private String eventUid;
+    private List<Photo> photos = new ArrayList<>();
 
     public EventPrivatePhotoFragment() {
     }
@@ -102,6 +111,7 @@ public class EventPrivatePhotoFragment extends Fragment {
         refEvent = mRootRef.child("event").child(eventUid);
         refPhotos = refEvent.child("photos");
         refPhoto = mRootRef.child("photo");
+        refUser = mRootRef.child("user");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -123,12 +133,6 @@ public class EventPrivatePhotoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        ActionBar supportActionBar = ((EventActivity) getActivity()).getSupportActionBar();
-
-        if (supportActionBar != null) {
-            supportActionBar.setTitle(CURRENT_FRAGMENT);
-        }
-
         View view = inflater.inflate(R.layout.fragment_event_private_photo, container, false);
         return view;
     }
@@ -137,13 +141,11 @@ public class EventPrivatePhotoFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        manager = new GridLayoutManager(getContext(), 2);
+        manager = new LinearLayoutManager(getContext());
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-
         recyclerView.setLayoutManager(manager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         Query query = refPhotos;
 
@@ -151,7 +153,7 @@ public class EventPrivatePhotoFragment extends Fragment {
             @Override
             protected void populateViewHolder(EventPrivatePhotoHolder eventPrivatePhotoHolder, String s, int position) {
                 if (s != null) {
-                    getPhoto(eventPrivatePhotoHolder, getRef(position).getKey());
+                    getPhoto(eventPrivatePhotoHolder, getRef(position).getKey(), position);
                 }
             }
         };
@@ -201,16 +203,22 @@ public class EventPrivatePhotoFragment extends Fragment {
         super.onDetach();
     }
 
-    private void getPhoto(final EventPrivatePhotoHolder eventPrivatePhotoHolder, String s) {
-        Query query = refPhoto.child(s);
+    private void getPhoto(final EventPrivatePhotoHolder eventPrivatePhotoHolder, final String photoUid, final int position) {
+        Query query = refPhoto.child(photoUid);
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Photo photo = dataSnapshot.getValue(Photo.class);
 
-                if (photo != null) {
-                    displayLayout(eventPrivatePhotoHolder, photo);
+                if (photo != null && photo.getUrl() != null && photo.getUser() != null) {
+                    getUser(eventPrivatePhotoHolder, photoUid, photo, position);
+
+                    if (!photos.contains(photo)) {
+                        photos.add(photo);
+                    }
+
+
                 }
 
             }
@@ -222,33 +230,73 @@ public class EventPrivatePhotoFragment extends Fragment {
         });
     }
 
-    private void displayLayout(EventPrivatePhotoHolder eventPrivatePhotoHolder, Photo photo) {
-        String url = photo.getUrl();
 
-        if (url != null) {
-            eventPrivatePhotoHolder.setImageViewPhoto(getContext(), photo.getUrl());
+    private void getUser(final EventPrivatePhotoHolder eventPrivatePhotoHolder, final String photoUid, final Photo photo, final int position) {
+        String userUid = photo.getUser();
 
-            eventPrivatePhotoHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    /*Bundle bundle = new Bundle();
-                    bundle.putSerializable("Photo", (Serializable) photos);
-                    // TODO fix position
-                    int position = 1;
-                    bundle.putInt("position", position);
+        Query query = refUser.child(userUid);
 
-                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-
-                    PhotoDialog photoDialog = new PhotoDialog();
-
-                    photoDialog.setArguments(bundle);
-
-                    photoDialog.show(fragmentTransaction, "PhotoDialog");*/
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (user != null && user.getPhotoProfl() != null && user.getUsername() != null) {
+                    displayLayout(eventPrivatePhotoHolder, photoUid, photo, user, position);
                 }
-            });
+            }
 
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+    }
+
+    private void displayLayout(EventPrivatePhotoHolder eventPrivatePhotoHolder, final String photoUid, Photo photo, User user, final int position) {
+        final String userUid = photo.getUser();
+        String url = photo.getUrl();
+        Date date = photo.getDate();
+
+        eventPrivatePhotoHolder.setTextViewUsername(user.getUsername());
+        eventPrivatePhotoHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
+        eventPrivatePhotoHolder.setImageViewPhoto(context, url);
+        eventPrivatePhotoHolder.getImageViewPhoto().setTag(position);
+        eventPrivatePhotoHolder.getImageViewPhoto().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(Utils.ARG_PHOTO_DIALOG, (Serializable) photos);
+                bundle.putInt(Utils.ARG_PHOTO_DIALOG_POSITION, position);
+                bundle.putString(Utils.ARG_USER_UID, userUid);
+
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
+                PhotoDialog photoDialog = new PhotoDialog();
+
+                photoDialog.setArguments(bundle);
+
+                photoDialog.show(fragmentTransaction, Utils.TAG_PHOTO_DIALOG);
+
+            }
+        });
+
+        eventPrivatePhotoHolder.setImageViewPhotoProfil(context, user.getPhotoProfl());
+
+        eventPrivatePhotoHolder.getLinearLayoutUser().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goProfilActivity(userUid);
+            }
+        });
+
+
+    }
+
+    private void goProfilActivity(String userUid) {
+        Intent intent = new Intent(context, ProfilActivity.class);
+        intent.putExtra(Utils.ARG_USER_UID, userUid);
+        startActivity(intent);
     }
 
     private void goContryActivity() {

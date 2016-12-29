@@ -45,6 +45,7 @@ import java.util.UUID;
 import matano.apkode.net.matano.CityActivity;
 import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.EventActivity;
+import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
@@ -394,7 +395,7 @@ public class EventPrivateTchatFragment extends Fragment {
         String username = user.getUsername();
         String photoProfil = user.getPhotoProfl();
         String photo = p.getUrl();
-        String userUid = tchat.getUser();
+        final String userUid = tchat.getUser();
 
         eventPrivateTchatHolder.setTextViewUsername(username);
         eventPrivateTchatHolder.setImageViewPhotoProfil(getContext(), photoProfil);
@@ -405,6 +406,14 @@ public class EventPrivateTchatFragment extends Fragment {
         } else {
             eventPrivateTchatHolder.setIsSender(getContext(), false);
         }
+
+        eventPrivateTchatHolder.getImageViewPhotoProfil().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e(Utils.TAG, "click");
+                goProfilActivity(userUid);
+            }
+        });
 
     }
 
@@ -478,7 +487,12 @@ public class EventPrivateTchatFragment extends Fragment {
                 }
             }
         });
+    }
 
+    private void goProfilActivity(String userUid) {
+        Intent intent = new Intent(context, ProfilActivity.class);
+        intent.putExtra(Utils.ARG_USER_UID, userUid);
+        startActivity(intent);
     }
 
     private void goContryActivity() {

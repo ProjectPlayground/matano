@@ -92,4 +92,8 @@ public class EventPrivateTchatHolder extends RecyclerView.ViewHolder {
             //cardViewPhotoProfil.setLayoutParams(layoutParams);
         }
     }
+
+    public ImageView getImageViewPhotoProfil() {
+        return imageViewPhotoProfil;
+    }
 }

@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -48,7 +47,6 @@ import java.util.UUID;
 
 import matano.apkode.net.matano.CityActivity;
 import matano.apkode.net.matano.ContryActivity;
-import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.LocalStorage;
@@ -62,7 +60,6 @@ import static android.app.Activity.RESULT_OK;
 
 
 public class EventTimelineFragment extends Fragment {
-    private static final String CURRENT_FRAGMENT = "Timeline";
     private static final int ARG_PHOTO_PICKER = 2;
     private Context context;
     private RecyclerView recyclerView;
@@ -163,12 +160,6 @@ public class EventTimelineFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-
-        ActionBar supportActionBar = ((EventActivity) getActivity()).getSupportActionBar();
-
-        if (supportActionBar != null) {
-            supportActionBar.setTitle(CURRENT_FRAGMENT);
-        }
 
         View view = inflater.inflate(R.layout.fragment_event_timeline, container, false);
 
