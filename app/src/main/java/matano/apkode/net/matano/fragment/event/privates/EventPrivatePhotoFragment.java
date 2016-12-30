@@ -36,6 +36,7 @@ import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.PhotoDialogFragment;
 import matano.apkode.net.matano.holder.event.privates.EventPrivatePhotoHolder;
 import matano.apkode.net.matano.model.Photo;
+import matano.apkode.net.matano.model.Tchat;
 import matano.apkode.net.matano.model.User;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -123,19 +124,20 @@ public class EventPrivatePhotoFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = app.getRefEventPhotos(incomeEventUid);
+        Query query = app.getRefEventTchats(incomeEventUid);
 
         adapter = new FirebaseRecyclerAdapter<String, EventPrivatePhotoHolder>(String.class, R.layout.card_event_private_photo, EventPrivatePhotoHolder.class, query) {
             @Override
             protected void populateViewHolder(EventPrivatePhotoHolder eventPrivatePhotoHolder, String s, int position) {
                 if (s != null) {
-                    getPhoto(eventPrivatePhotoHolder, getRef(position).getKey(), position);
+                    getTchat(eventPrivatePhotoHolder, getRef(position).getKey(), position);
                 }
             }
         };
 
         recyclerView.setAdapter(adapter);
     }
+
 
     @Override
     public void onStart() {
@@ -177,6 +179,25 @@ public class EventPrivatePhotoFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    private void getTchat(final EventPrivatePhotoHolder eventPrivatePhotoHolder, String tchatUid, final int position) {
+        Query query = app.getRefTchat(tchatUid);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Tchat tchat = dataSnapshot.getValue(Tchat.class);
+                if (tchat != null && tchat.getPhoto() != null) {
+                    getPhoto(eventPrivatePhotoHolder, dataSnapshot.getKey(), position);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void getPhoto(final EventPrivatePhotoHolder eventPrivatePhotoHolder, final String photoUid, final int position) {
@@ -263,6 +284,9 @@ public class EventPrivatePhotoFragment extends Fragment {
                 goProfilActivity(userUid);
             }
         });
+
+        eventPrivatePhotoHolder.getCardViewContainer().setVisibility(View.VISIBLE);
+        eventPrivatePhotoHolder.getLinearLayoutContainer().setVisibility(View.VISIBLE);
 
 
     }

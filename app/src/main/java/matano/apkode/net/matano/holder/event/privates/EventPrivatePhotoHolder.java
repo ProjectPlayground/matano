@@ -1,6 +1,7 @@
 package matano.apkode.net.matano.holder.event.privates;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,6 +18,8 @@ public class EventPrivatePhotoHolder extends RecyclerView.ViewHolder {
     private ImageView imageViewPhoto;
     private ImageView imageViewPhotoProfil;
     private LinearLayout linearLayoutUser;
+    private CardView cardViewContainer;
+    private LinearLayout linearLayoutContainer;
 
     public EventPrivatePhotoHolder(View itemView) {
         super(itemView);
@@ -25,6 +28,8 @@ public class EventPrivatePhotoHolder extends RecyclerView.ViewHolder {
         imageViewPhoto = (ImageView) itemView.findViewById(R.id.imageViewPhoto);
         imageViewPhotoProfil = (ImageView) itemView.findViewById(R.id.imageViewPhotoProfil);
         linearLayoutUser = (LinearLayout) itemView.findViewById(R.id.linearLayoutUser);
+        cardViewContainer = (CardView) itemView.findViewById(R.id.cardViewContainer);
+        linearLayoutContainer = (LinearLayout) itemView.findViewById(R.id.linearLayoutContainer);
     }
 
 
@@ -86,5 +91,11 @@ public class EventPrivatePhotoHolder extends RecyclerView.ViewHolder {
         return linearLayoutUser;
     }
 
+    public CardView getCardViewContainer() {
+        return cardViewContainer;
+    }
 
+    public LinearLayout getLinearLayoutContainer() {
+        return linearLayoutContainer;
+    }
 }
