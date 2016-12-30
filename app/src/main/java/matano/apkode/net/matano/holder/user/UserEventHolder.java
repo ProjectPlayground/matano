@@ -1,33 +1,32 @@
-package matano.apkode.net.matano.holder.profil;
+package matano.apkode.net.matano.holder.user;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.model.Event;
 
 
-public class ProfilEventHolder extends RecyclerView.ViewHolder {
+public class UserEventHolder extends RecyclerView.ViewHolder {
     private ImageView imageViewPhotoProfil;
     private TextView textViewTitle;
     private TextView textViewPlace;
     private TextView textViewTarification;
+    private LinearLayout linearLayoutEvent;
 
-    public ProfilEventHolder(View itemView) {
+    public UserEventHolder(View itemView) {
         super(itemView);
         imageViewPhotoProfil = (ImageView) itemView.findViewById(R.id.imageViewPhotoProfil);
         textViewTitle = (TextView) itemView.findViewById(R.id.textViewTitle);
         textViewPlace = (TextView) itemView.findViewById(R.id.textViewPlace);
         textViewTarification = (TextView) itemView.findViewById(R.id.textViewTarification);
+        linearLayoutEvent = (LinearLayout) itemView.findViewById(R.id.linearLayoutEvent);
 
-    }
-
-    public void bind(Event event) {
     }
 
     public void setImageViewPhotoProfil(Context context, String s) {
@@ -66,4 +65,7 @@ public class ProfilEventHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    public LinearLayout getLinearLayoutEvent() {
+        return linearLayoutEvent;
+    }
 }

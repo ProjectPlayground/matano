@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.fragment.profil;
+package matano.apkode.net.matano.fragment.user;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,41 +6,43 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import matano.apkode.net.matano.CityActivity;
 import matano.apkode.net.matano.ContryActivity;
-import matano.apkode.net.matano.ProfilActivity;
+import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
-import matano.apkode.net.matano.fragment.profil.friend.ProfilFriendFollowerFragment;
-import matano.apkode.net.matano.fragment.profil.friend.ProfilFriendFollowingFragment;
+import matano.apkode.net.matano.holder.user.UserEventHolder;
+import matano.apkode.net.matano.model.Event;
 
-public class ProfilFriendFragment extends Fragment {
-    private static final String CURRENT_FRAGMENT = "Mes Friends";
+public class UserEventFragment extends Fragment {
     private Context context;
+    private RecyclerView recyclerView;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase database;
     private DatabaseReference mRootRef;
     private DatabaseReference refUser;
-    private Button buttonFollower;
-    private Button buttonFollowing;
-    private FrameLayout fragmentLayoutContainer;
-    private ProfilFriendFollowerFragment profilFriendFollowerFragment;
-    private ProfilFriendFollowingFragment profilFriendFollowingFragment;
+    private DatabaseReference refEvents;
+    private DatabaseReference refEvent;
+    private FirebaseRecyclerAdapter<String, UserEventHolder> adapter;
+    private LinearLayoutManager manager;
     private String currentUserContry;
     private String currentUserCity;
     private LocalStorage localStorage;
@@ -48,17 +50,19 @@ public class ProfilFriendFragment extends Fragment {
     private String currentUserUid;
     private String userUid;
 
-    public ProfilFriendFragment() {
+    public UserEventFragment() {
     }
 
-    public static ProfilFriendFragment newInstance(String userUid) {
-        ProfilFriendFragment profilFriendFragment = new ProfilFriendFragment();
+    public static UserEventFragment newInstance(String userUid) {
+        UserEventFragment userEventFragment = new UserEventFragment();
+
 
         Bundle bundle = new Bundle();
         bundle.putString(Utils.ARG_USER_UID, userUid);
 
-        profilFriendFragment.setArguments(bundle);
-        return profilFriendFragment;
+        userEventFragment.setArguments(bundle);
+
+        return userEventFragment;
     }
 
     @Override
@@ -93,6 +97,8 @@ public class ProfilFriendFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
         refUser = mRootRef.child("user").child(userUid);
+        refEvents = refUser.child("events");
+        refEvent = mRootRef.child("event");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -113,23 +119,13 @@ public class ProfilFriendFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        ActionBar supportActionBar = ((ProfilActivity) getActivity()).getSupportActionBar();
+        View view = inflater.inflate(R.layout.fragment_user_event, container, false);
 
-        if (supportActionBar != null) {
-            supportActionBar.setTitle(CURRENT_FRAGMENT);
-        }
+        manager = new LinearLayoutManager(getContext());
 
-        View view = inflater.inflate(R.layout.fragment_profil_friend, container, false);
-
-        buttonFollower = (Button) view.findViewById(R.id.buttonFollower);
-        buttonFollowing = (Button) view.findViewById(R.id.buttonFollowing);
-
-        fragmentLayoutContainer = (FrameLayout) view.findViewById(R.id.fragmentLayoutContainer);
-
-        profilFriendFollowerFragment = ProfilFriendFollowerFragment.newInstance(userUid);
-        profilFriendFollowingFragment = ProfilFriendFollowingFragment.newInstance(userUid);
-
-        getFragmentManager().beginTransaction().add(R.id.fragmentLayoutContainer, profilFriendFollowerFragment).commit();
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(manager);
 
         return view;
     }
@@ -138,31 +134,19 @@ public class ProfilFriendFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (buttonFollower != null) {
-            buttonFollower.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        Query query = refEvents;
 
-                    transaction.replace(R.id.fragmentLayoutContainer, profilFriendFollowerFragment);
-                    transaction.commit();
+        adapter = new FirebaseRecyclerAdapter<String, UserEventHolder>(String.class, R.layout.card_user_event, UserEventHolder.class, query) {
+            @Override
+            protected void populateViewHolder(UserEventHolder userEventHolder, String s, int position) {
+                if (s != null) {
+                    getEvent(userEventHolder, getRef(position).getKey());
                 }
-            });
-        }
+            }
+        };
 
+        recyclerView.setAdapter(adapter);
 
-        if (buttonFollowing != null) {
-            buttonFollowing.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                    transaction.replace(R.id.fragmentLayoutContainer, profilFriendFollowingFragment);
-                    transaction.commit();
-                }
-            });
-        }
-        
     }
 
     @Override
@@ -197,6 +181,9 @@ public class ProfilFriendFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (adapter != null) {
+            adapter.cleanup();
+        }
     }
 
     @Override
@@ -204,6 +191,53 @@ public class ProfilFriendFragment extends Fragment {
         super.onDetach();
     }
 
+    private void getEvent(final UserEventHolder userEventHolder, final String eventUid) {
+
+        Query query = refEvent.child(eventUid);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final Event event = dataSnapshot.getValue(Event.class);
+                if (event != null && event.getPhotoProfil() != null && event.getTitle() != null && event.getPlace() != null && event.getTarification() != null) {
+                    displayLayout(userEventHolder, eventUid, event);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void displayLayout(UserEventHolder userEventHolder, final String eventUid, Event event) {
+
+        String photoProfil = event.getPhotoProfil();
+        String title = event.getTitle();
+        String place = event.getPlace();
+        String tarification = event.getTarification();
+
+        userEventHolder.setImageViewPhotoProfil(context, photoProfil);
+        userEventHolder.setTextViewTitle(title);
+        userEventHolder.setTextViewPlace(place);
+        userEventHolder.setTextViewTarification(tarification);
+
+        userEventHolder.getLinearLayoutEvent().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goEventActivity(eventUid);
+            }
+        });
+
+
+    }
+
+    private void goEventActivity(String eventUid) {
+        Intent intent = new Intent(context, EventActivity.class);
+        intent.putExtra(Utils.ARG_EVENT_UID, eventUid);
+        startActivity(intent);
+    }
 
     private void goContryActivity() {
         Intent intent = new Intent(context, ContryActivity.class);
@@ -220,6 +254,5 @@ public class ProfilFriendFragment extends Fragment {
     private void finishActivity() {
         getActivity().finish();
     }
-
 
 }

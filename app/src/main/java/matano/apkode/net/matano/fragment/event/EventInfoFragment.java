@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,17 +38,15 @@ import java.util.Map;
 
 import matano.apkode.net.matano.CityActivity;
 import matano.apkode.net.matano.ContryActivity;
-import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
-import matano.apkode.net.matano.dialogfragment.PhotoDialog;
+import matano.apkode.net.matano.fragment.PhotoDialogFragment;
 import matano.apkode.net.matano.holder.event.EventPhotoHolder;
 import matano.apkode.net.matano.model.Event;
 import matano.apkode.net.matano.model.Photo;
 
 public class EventInfoFragment extends Fragment {
-    private static final String CURRENT_FRAGMENT = "Info";
     private Context context;
     private RecyclerView recyclerViewTopPhoto;
     private RecyclerView recyclerViewTopUser;
@@ -167,13 +164,6 @@ public class EventInfoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-
-        ActionBar supportActionBar = ((EventActivity) getActivity()).getSupportActionBar();
-
-        if (supportActionBar != null) {
-            supportActionBar.setTitle(CURRENT_FRAGMENT);
-        }
-
 
         View view = inflater.inflate(R.layout.fragment_event_info, container, false);
 
@@ -514,11 +504,11 @@ public class EventInfoFragment extends Fragment {
 
                     FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
-                    PhotoDialog photoDialog = new PhotoDialog();
+                    PhotoDialogFragment photoDialogFragment = new PhotoDialogFragment();
 
-                    photoDialog.setArguments(bundle);
+                    photoDialogFragment.setArguments(bundle);
 
-                    photoDialog.show(fragmentTransaction, Utils.TAG_PHOTO_DIALOG);
+                    photoDialogFragment.show(fragmentTransaction, Utils.TAG_PHOTO_DIALOG);
                 }
             });
 

@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.fragment.profil;
+package matano.apkode.net.matano.fragment.user.friend;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,34 +15,35 @@ import android.view.ViewGroup;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import matano.apkode.net.matano.CityActivity;
 import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.UserActivity;
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
-import matano.apkode.net.matano.holder.profil.ProfilTicketHolder;
-import matano.apkode.net.matano.model.Event;
-import matano.apkode.net.matano.model.Ticket;
+import matano.apkode.net.matano.holder.user.UserFriendHolder;
+import matano.apkode.net.matano.model.User;
 
-public class ProfilTicketFragment extends Fragment {
-    private static final String CURRENT_FRAGMENT = "Mes Tickets";
-    private Context context;
-    private RecyclerView recyclerView;
-    private List<Event> events = new ArrayList<>();
+
+public class ProfilFriendFollowingFragment extends Fragment {
     private FirebaseAuth mAuth;
+    private Context context;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase database;
     private DatabaseReference mRootRef;
     private DatabaseReference refUser;
-    private DatabaseReference refTickets;
-    private FirebaseRecyclerAdapter<Ticket, ProfilTicketHolder> adapter;
+    private DatabaseReference refUserObject;
+    private DatabaseReference refFollowings;
+    private FirebaseRecyclerAdapter<String, UserFriendHolder> adapter;
     private LinearLayoutManager manager;
+    private RecyclerView recyclerView;
     private String currentUserContry;
     private String currentUserCity;
     private LocalStorage localStorage;
@@ -50,21 +51,19 @@ public class ProfilTicketFragment extends Fragment {
     private String currentUserUid;
     private String userUid;
 
-    public ProfilTicketFragment() {
+    public ProfilFriendFollowingFragment() {
     }
 
-    public static ProfilTicketFragment newInstance(String userUid) {
-        ProfilTicketFragment profilTicketFragment = new ProfilTicketFragment();
+    public static ProfilFriendFollowingFragment newInstance(String userUid) {
+        ProfilFriendFollowingFragment profilFriendFollowingFragment = new ProfilFriendFollowingFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString(Utils.ARG_USER_UID, userUid);
 
-        profilTicketFragment.setArguments(bundle);
+        profilFriendFollowingFragment.setArguments(bundle);
 
-        return profilTicketFragment;
+        return profilFriendFollowingFragment;
     }
-
-
 
     @Override
     public void onAttach(Context context) {
@@ -93,12 +92,12 @@ public class ProfilTicketFragment extends Fragment {
             goCityActivity();
         }
 
-
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
         refUser = mRootRef.child("user").child(userUid);
-        refTickets = refUser.child("tickets");
+        refUserObject = mRootRef.child("user");
+        refFollowings = refUser.child("followings");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -111,14 +110,21 @@ public class ProfilTicketFragment extends Fragment {
                 }
             }
         };
-
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_profil_ticket, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_user_friend_following, container, false);
+
+        manager = new LinearLayoutManager(getContext());
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(manager);
+
+
         return view;
     }
 
@@ -126,13 +132,19 @@ public class ProfilTicketFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        manager = new LinearLayoutManager(getContext());
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(manager);
+        Query query = refFollowings;
+
+        adapter = new FirebaseRecyclerAdapter<String, UserFriendHolder>(String.class, R.layout.card_user_friend, UserFriendHolder.class, query) {
+            @Override
+            protected void populateViewHolder(UserFriendHolder userFriendHolder, String s, int position) {
+                if (s != null) {
+                    getUser(userFriendHolder, getRef(position).getKey());
+                }
+            }
+        };
+
 
         recyclerView.setAdapter(adapter);
-
     }
 
     @Override
@@ -172,9 +184,55 @@ public class ProfilTicketFragment extends Fragment {
         }
     }
 
+
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    private void getUser(final UserFriendHolder userFriendHolder, final String userUid) {
+        Query query = refUserObject.child(userUid);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+
+                if (user != null) {
+                    displayLayout(userFriendHolder, user, userUid);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //TODO handle error
+            }
+        });
+    }
+
+    private void displayLayout(final UserFriendHolder userFriendHolder, User user, final String userUid) {
+        String photoProfl = user.getPhotoProfl();
+        String username = user.getUsername();
+
+        if (photoProfl != null && username != null) {
+
+            userFriendHolder.setTextViewUsername(username);
+            userFriendHolder.setImageViewPhoto(context, photoProfl);
+
+            userFriendHolder.setCardViewParticipant();
+
+            userFriendHolder.getImageViewPhoto().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, UserActivity.class);
+                    intent.putExtra(Utils.ARG_USER_UID, userUid);
+                    startActivity(intent);
+                }
+            });
+
+            userFriendHolder.getRelativeLayoutFriend().setVisibility(View.VISIBLE);
+        }
+
     }
 
 
@@ -193,6 +251,5 @@ public class ProfilTicketFragment extends Fragment {
     private void finishActivity() {
         getActivity().finish();
     }
-
 
 }

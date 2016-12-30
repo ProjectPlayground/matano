@@ -25,7 +25,7 @@ public class Event implements Serializable {
     private String videoProfil; //  idVideo
     private String tarification; // gratuit - payant - free
 
-    private Map<String, String> tarifs = new HashMap<>(); // Uid
+    private Map<String, String> tickets = new HashMap<>(); // Uid
     private Map<String, String> users = new HashMap<>();  // uId - status (0, 1, 2)
     private Map<String, String> photos = new HashMap<>(); // Uid
 
@@ -33,7 +33,7 @@ public class Event implements Serializable {
     public Event() {
     }
 
-    public Event(String title, String category, String subCategory, String contry, String city, String place, String address, Double longitude, Double latitude, Double altitude, Date date, String presentation, String photoProfil, String videoProfil, String tarification, Map<String, String> tarifs, Map<String, String> users, Map<String, String> photos) {
+    public Event(String title, String category, String subCategory, String contry, String city, String place, String address, Double longitude, Double latitude, Double altitude, Date date, String presentation, String photoProfil, String videoProfil, String tarification, Map<String, String> tickets, Map<String, String> users, Map<String, String> photos) {
         this.title = title;
         this.category = category;
         this.subCategory = subCategory;
@@ -49,7 +49,7 @@ public class Event implements Serializable {
         this.photoProfil = photoProfil;
         this.videoProfil = videoProfil;
         this.tarification = tarification;
-        this.tarifs = tarifs;
+        this.tickets = tickets;
         this.users = users;
         this.photos = photos;
     }
@@ -175,12 +175,12 @@ public class Event implements Serializable {
         this.tarification = tarification;
     }
 
-    public Map<String, String> getTarifs() {
-        return tarifs;
+    public Map<String, String> getTickets() {
+        return tickets;
     }
 
-    public void setTarifs(Map<String, String> tarifs) {
-        this.tarifs = tarifs;
+    public void setTickets(Map<String, String> tickets) {
+        this.tickets = tickets;
     }
 
     public Map<String, String> getUsers() {

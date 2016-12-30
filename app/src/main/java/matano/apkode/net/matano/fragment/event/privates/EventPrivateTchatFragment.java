@@ -45,8 +45,8 @@ import java.util.UUID;
 import matano.apkode.net.matano.CityActivity;
 import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.EventActivity;
-import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.UserActivity;
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.event.privates.EventPrivateTchatHolder;
@@ -490,7 +490,7 @@ public class EventPrivateTchatFragment extends Fragment {
     }
 
     private void goProfilActivity(String userUid) {
-        Intent intent = new Intent(context, ProfilActivity.class);
+        Intent intent = new Intent(context, UserActivity.class);
         intent.putExtra(Utils.ARG_USER_UID, userUid);
         startActivity(intent);
     }

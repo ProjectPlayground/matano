@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.fragment.profil;
+package matano.apkode.net.matano.fragment.user;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,14 +29,12 @@ import java.util.Map;
 
 import matano.apkode.net.matano.CityActivity;
 import matano.apkode.net.matano.ContryActivity;
-import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.model.User;
 
-public class ProfilInfoFragment extends Fragment {
-    private static final String CURRENT_FRAGMENT = "Info";
+public class UserInfoFragment extends Fragment {
     TextView textViewFollowersNumber;
     TextView textViewFollowingsNumber;
     TextView textViewPhotosNumber;
@@ -59,18 +56,18 @@ public class ProfilInfoFragment extends Fragment {
     private String currentUserUid;
 
 
-    public ProfilInfoFragment() {
+    public UserInfoFragment() {
     }
 
-    public static ProfilInfoFragment newInstance(String userUid) {
-        ProfilInfoFragment profilInfoFragment = new ProfilInfoFragment();
+    public static UserInfoFragment newInstance(String userUid) {
+        UserInfoFragment userInfoFragment = new UserInfoFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString(Utils.ARG_USER_UID, userUid);
 
-        profilInfoFragment.setArguments(bundle);
+        userInfoFragment.setArguments(bundle);
 
-        return profilInfoFragment;
+        return userInfoFragment;
     }
 
     @Override
@@ -125,13 +122,7 @@ public class ProfilInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        ActionBar supportActionBar = ((ProfilActivity) getActivity()).getSupportActionBar();
-
-        if (supportActionBar != null) {
-            supportActionBar.setTitle(CURRENT_FRAGMENT);
-        }
-
-        View view = inflater.inflate(R.layout.fragment_profil_info, container, false);
+        View view = inflater.inflate(R.layout.fragment_user_info, container, false);
 
         textViewFollowersNumber = (TextView) view.findViewById(R.id.textViewFollowersNumber);
         textViewFollowingsNumber = (TextView) view.findViewById(R.id.textViewFollowingsNumber);

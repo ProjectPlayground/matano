@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.dialogfragment;
+package matano.apkode.net.matano.fragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,7 +23,7 @@ import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.model.Photo;
 
 
-public class PhotoDialog extends DialogFragment {
+public class PhotoDialogFragment extends DialogFragment {
     private ViewPager viewPager;
     private PhotoPageAdapter photoPageAdapter;
     private int selectedPosition = 0;
@@ -33,9 +33,9 @@ public class PhotoDialog extends DialogFragment {
     private String userUid;
 
 
-    public static PhotoDialog newInstance() {
-        PhotoDialog photoDialog = new PhotoDialog();
-        return photoDialog;
+    public static PhotoDialogFragment newInstance() {
+        PhotoDialogFragment photoDialogFragment = new PhotoDialogFragment();
+        return photoDialogFragment;
     }
 
     @Override

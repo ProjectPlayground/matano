@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.holder.profil;
+package matano.apkode.net.matano.holder.user;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -6,9 +6,9 @@ import android.view.View;
 import matano.apkode.net.matano.model.Event;
 
 
-public class ProfilTicketHolder extends RecyclerView.ViewHolder {
+public class UserTicketHolder extends RecyclerView.ViewHolder {
 
-    public ProfilTicketHolder(View itemView) {
+    public UserTicketHolder(View itemView) {
         super(itemView);
     }
 

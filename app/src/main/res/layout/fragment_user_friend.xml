@@ -5,36 +5,32 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/linearLayoutButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/buttonFollower"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="1dp"
-            android:layout_marginTop="1dp"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:text="Followers"
-            android:textColor="@android:color/background_light"
-            android:textSize="13sp" />
+            android:background="@color/white"
+            android:padding="8dp"
+            android:text="Followers" />
 
         <Button
             android:id="@+id/buttonFollowing"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="1dp"
-            android:layout_marginTop="1dp"
+            android:layout_marginLeft="2dp"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:text="Followings"
-            android:textColor="@android:color/background_light"
-            android:textSize="13sp" />
+            android:background="@color/white"
+            android:padding="8dp"
+            android:text="Followings" />
 
     </LinearLayout>
-
     <FrameLayout
         android:id="@+id/fragmentLayoutContainer"
         android:layout_width="match_parent"

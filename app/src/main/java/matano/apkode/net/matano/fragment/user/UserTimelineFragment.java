@@ -1,12 +1,10 @@
-package matano.apkode.net.matano.fragment.event;
+package matano.apkode.net.matano.fragment.user;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,12 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,10 +24,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -43,69 +33,61 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 
 import matano.apkode.net.matano.CityActivity;
 import matano.apkode.net.matano.ContryActivity;
+import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.UserActivity;
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.PhotoDialogFragment;
-import matano.apkode.net.matano.holder.event.EventTimelineHolder;
+import matano.apkode.net.matano.holder.user.UserTimelineHolder;
+import matano.apkode.net.matano.model.Event;
 import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.User;
 
-import static android.app.Activity.RESULT_OK;
-
-
-public class EventTimelineFragment extends Fragment {
-    private static final int ARG_PHOTO_PICKER = 2;
+public class UserTimelineFragment extends Fragment {
     private Context context;
     private RecyclerView recyclerView;
     private List<Photo> photos = new ArrayList<>();
-    private String eventUid;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase database;
     private DatabaseReference mRootRef;
-    private DatabaseReference refEvent;
     private DatabaseReference refUser;
     private DatabaseReference refPhotos;
     private DatabaseReference refPhoto;
-    private FirebaseStorage storage;
-    private StorageReference refStoragePhoto;
-    private StorageReference mRootStorageRef;
+    private DatabaseReference refEvent;
+    private DatabaseReference refUserGlobal;
+    private DatabaseReference refUserPhoto;
+    private FirebaseRecyclerAdapter<String, UserTimelineHolder> adapter;
     private LinearLayoutManager manager;
-    private FirebaseRecyclerAdapter<String, EventTimelineHolder> adapter;
-    private FloatingActionButton floatingButtonPhoto;
-    private ProgressBar progressBar;
     private String currentUserContry;
     private String currentUserCity;
     private LocalStorage localStorage;
     private FirebaseUser user;
     private String currentUserUid;
+    private String userUid;
 
-    public EventTimelineFragment() {
+    public UserTimelineFragment() {
     }
 
-    public static EventTimelineFragment newInstance(String eventUid) {
-        EventTimelineFragment eventTimelineFragment = new EventTimelineFragment();
+    public static UserTimelineFragment newInstance(String userUid) {
+        UserTimelineFragment userTimelineFragment = new UserTimelineFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putString(Utils.ARG_EVENT_UID, eventUid);
+        bundle.putString(Utils.ARG_USER_UID, userUid);
 
-        eventTimelineFragment.setArguments(bundle);
+        userTimelineFragment.setArguments(bundle);
 
-        return eventTimelineFragment;
+        return userTimelineFragment;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-        eventUid = getArguments().getString(Utils.ARG_EVENT_UID);
-
+        userUid = getArguments().getString(Utils.ARG_USER_UID);
     }
 
     @Override
@@ -116,7 +98,7 @@ public class EventTimelineFragment extends Fragment {
         currentUserContry = localStorage.getContry();
         currentUserCity = localStorage.getCity();
 
-        if (eventUid == null) {
+        if (userUid == null) {
             finishActivity();
         }
 
@@ -129,18 +111,13 @@ public class EventTimelineFragment extends Fragment {
         }
 
         mAuth = FirebaseAuth.getInstance();
-
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
-        refEvent = mRootRef.child("event").child(eventUid);
-        refPhotos = refEvent.child("photos");
+        refUser = mRootRef.child("user").child(userUid);
+        refUserGlobal = mRootRef.child("user");
+        refPhotos = refUser.child("photos");
         refPhoto = mRootRef.child("photo");
-        refUser = mRootRef.child("user");
-
-        storage = FirebaseStorage.getInstance();
-        mRootStorageRef = storage.getReference();
-
-        refStoragePhoto = mRootStorageRef.child("photos");
+        refEvent = mRootRef.child("event");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -161,16 +138,13 @@ public class EventTimelineFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View view = inflater.inflate(R.layout.fragment_event_timeline, container, false);
+        View view = inflater.inflate(R.layout.fragment_user_timeline, container, false);
 
         manager = new LinearLayoutManager(getContext());
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
-
-        floatingButtonPhoto = (FloatingActionButton) view.findViewById(R.id.floatingButtonPhoto);
-        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
         return view;
     }
@@ -181,28 +155,18 @@ public class EventTimelineFragment extends Fragment {
 
         Query query = refPhotos;
 
-        adapter = new FirebaseRecyclerAdapter<String, EventTimelineHolder>(String.class, R.layout.card_event_timeline, EventTimelineHolder.class, query) {
+        adapter = new FirebaseRecyclerAdapter<String, UserTimelineHolder>(String.class, R.layout.card_user_timeline, UserTimelineHolder.class, query) {
             @Override
-            protected void populateViewHolder(EventTimelineHolder eventTimelineHolder, String s, int position) {
+            protected void populateViewHolder(UserTimelineHolder userTimelineHolder, String s, int position) {
                 if (s != null) {
-                    getPhoto(eventTimelineHolder, getRef(position).getKey(), position);
+                    getPhoto(userTimelineHolder, getRef(position).getKey(), position);
                 }
             }
         };
 
         recyclerView.setAdapter(adapter);
-
-        floatingButtonPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/jpeg");
-                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                startActivityForResult(Intent.createChooser(intent, "Complete action using"), ARG_PHOTO_PICKER);
-            }
-        });
-
     }
+
 
     @Override
     public void onStart() {
@@ -246,7 +210,7 @@ public class EventTimelineFragment extends Fragment {
         super.onDetach();
     }
 
-    private void getPhoto(final EventTimelineHolder eventTimelineHolder, final String photoUid, final int position) {
+    private void getPhoto(final UserTimelineHolder userTimelineHolder, final String photoUid, final int position) {
         Query query = refPhoto.child(photoUid);
 
         query.addValueEventListener(new ValueEventListener() {
@@ -255,7 +219,7 @@ public class EventTimelineFragment extends Fragment {
                 Photo photo = dataSnapshot.getValue(Photo.class);
 
                 if (photo != null && photo.getUrl() != null && photo.getDate() != null && photo.getUser() != null) {
-                    getUser(eventTimelineHolder, photoUid, photo, position);
+                    getUser(userTimelineHolder, photoUid, photo, position);
 
                     if (!photos.contains(photo)) {
                         photos.add(photo);
@@ -272,17 +236,19 @@ public class EventTimelineFragment extends Fragment {
         });
     }
 
-    private void getUser(final EventTimelineHolder eventTimelineHolder, final String photoUid, final Photo photo, final int position) {
+    private void getUser(final UserTimelineHolder userTimelineHolder, final String photoUid, final Photo photo, final int position) {
         String userUid = photo.getUser();
 
-        Query query = refUser.child(userUid);
+        Query query = refUserGlobal.child(userUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
+                // getEvent(userTimelineHolder, photoUid, photo, user, position);
+                // TODO traiter l'erreur
                 if (user != null && user.getPhotoProfl() != null && user.getUsername() != null) {
-                    displayLayout(eventTimelineHolder, photoUid, photo, user, position);
+                    getEvent(userTimelineHolder, photoUid, photo, user, position);
                 }
             }
 
@@ -293,16 +259,39 @@ public class EventTimelineFragment extends Fragment {
         });
     }
 
-    private void displayLayout(EventTimelineHolder eventTimelineHolder, final String photoUid, Photo photo, User user, final int position) {
+    private void getEvent(final UserTimelineHolder userTimelineHolder, final String photoUid, final Photo photo, final User user, final int position) {
+        final String eventUid = photo.getEvent();
+
+        Query query = refEvent.child(eventUid);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final Event event = dataSnapshot.getValue(Event.class);
+                if (event != null) {
+                    displayLayout(userTimelineHolder, photoUid, eventUid, photo, user, event, position);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    private void displayLayout(UserTimelineHolder userTimelineHolder, final String photoUid, final String eventUid, Photo photo, User user, Event event, final int position) {
         final String userUid = photo.getUser();
         String url = photo.getUrl();
         Date date = photo.getDate();
+        String title = event.getTitle();
 
-        eventTimelineHolder.setTextViewUsername(user.getUsername());
-        eventTimelineHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
-        eventTimelineHolder.setImageViewPhoto(context, url);
-        eventTimelineHolder.getImageViewPhoto().setTag(position);
-        eventTimelineHolder.getImageViewPhoto().setOnClickListener(new View.OnClickListener() {
+        userTimelineHolder.setTextViewTitle(title);
+        userTimelineHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
+        userTimelineHolder.setImageViewPhoto(context, url);
+        userTimelineHolder.getImageViewPhoto().setTag(position);
+        userTimelineHolder.getImageViewPhoto().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -322,16 +311,15 @@ public class EventTimelineFragment extends Fragment {
             }
         });
 
-        eventTimelineHolder.setImageViewPhotoProfil(context, user.getPhotoProfl());
 
-        eventTimelineHolder.getLinearLayoutUser().setOnClickListener(new View.OnClickListener() {
+        userTimelineHolder.getLinearLayoutUser().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goProfilActivity(userUid);
+                goEventActivity(eventUid);
             }
         });
 
-        final ImageButton imageButtonLikePhoto = eventTimelineHolder.getImageButtonLikePhoto();
+        final ImageButton imageButtonLikePhoto = userTimelineHolder.getImageButtonLikePhoto();
 
         Query query = refUser.child(userUid).child("likes");
 
@@ -359,7 +347,7 @@ public class EventTimelineFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                // TODO handle error
             }
         });
 
@@ -389,80 +377,10 @@ public class EventTimelineFragment extends Fragment {
 
     }
 
-    private void uploadPhoto(Uri selectedImageUri) {
 
-        final String uuid = UUID.randomUUID().toString();
-
-        progressBar.setVisibility(View.VISIBLE);
-        Toast.makeText(getContext(), "En cours...", Toast.LENGTH_SHORT).show();
-
-        StorageReference photoRef = refStoragePhoto.child(uuid);
-        photoRef.putFile(selectedImageUri)
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        long totalByteCount = taskSnapshot.getTotalByteCount();
-                        long bytesTransferred = taskSnapshot.getBytesTransferred();
-
-                        Log.e(Utils.TAG, "bytesTransferred : " + bytesTransferred + " , totalByteCount : " + totalByteCount);
-
-                        progressBar.setMax((int) totalByteCount);
-                        progressBar.setProgress((int) bytesTransferred);
-                    }
-                })
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Uri downloadUri = taskSnapshot.getDownloadUrl();
-                        savePhoto(downloadUri, uuid);
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), "Uploaded", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void savePhoto(Uri downloadUri, String uuid) {
-
-        Photo photo = new Photo(eventUid, currentUserUid, downloadUri.toString(), new Date(), "0", null);
-
-        Map hashMap = new HashMap();
-
-        hashMap.put("event/" + eventUid + "/photos/" + uuid, "0");
-        hashMap.put("photo/" + uuid, photo);
-        hashMap.put("user/" + currentUserUid + "/photos/" + uuid, "0");
-
-        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
-                }
-            }
-        });
-
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ARG_PHOTO_PICKER && resultCode == RESULT_OK) {
-            Uri selectedImageUri = data.getData();
-            uploadPhoto(selectedImageUri);
-
-        }
-    }
-
-
-    private void goProfilActivity(String userUid) {
-        Intent intent = new Intent(context, UserActivity.class);
-        intent.putExtra(Utils.ARG_USER_UID, userUid);
+    private void goEventActivity(String eventUid) {
+        Intent intent = new Intent(context, EventActivity.class);
+        intent.putExtra(Utils.ARG_USER_UID, eventUid);
         startActivity(intent);
     }
 
@@ -481,5 +399,6 @@ public class EventTimelineFragment extends Fragment {
     private void finishActivity() {
         getActivity().finish();
     }
+
 
 }

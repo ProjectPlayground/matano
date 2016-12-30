@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.fragment.profil;
+package matano.apkode.net.matano.fragment.user;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,33 +15,32 @@ import android.view.ViewGroup;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import matano.apkode.net.matano.CityActivity;
 import matano.apkode.net.matano.ContryActivity;
-import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
-import matano.apkode.net.matano.holder.profil.ProfilEventHolder;
+import matano.apkode.net.matano.holder.user.UserTicketHolder;
 import matano.apkode.net.matano.model.Event;
+import matano.apkode.net.matano.model.Ticket;
 
-public class ProfilEventFragment extends Fragment {
-    private static final String CURRENT_FRAGMENT = "Mes Evenements";
+public class UserTicketFragment extends Fragment {
     private Context context;
     private RecyclerView recyclerView;
+    private List<Event> events = new ArrayList<>();
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase database;
     private DatabaseReference mRootRef;
     private DatabaseReference refUser;
-    private DatabaseReference refEvents;
-    private FirebaseRecyclerAdapter<String, ProfilEventHolder> adapter;
+    private DatabaseReference refTickets;
+    private FirebaseRecyclerAdapter<Ticket, UserTicketHolder> adapter;
     private LinearLayoutManager manager;
     private String currentUserContry;
     private String currentUserCity;
@@ -51,20 +49,21 @@ public class ProfilEventFragment extends Fragment {
     private String currentUserUid;
     private String userUid;
 
-    public ProfilEventFragment() {
+    public UserTicketFragment() {
     }
 
-    public static ProfilEventFragment newInstance(String userUid) {
-        ProfilEventFragment profilEventFragment = new ProfilEventFragment();
-
+    public static UserTicketFragment newInstance(String userUid) {
+        UserTicketFragment userTicketFragment = new UserTicketFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString(Utils.ARG_USER_UID, userUid);
 
-        profilEventFragment.setArguments(bundle);
+        userTicketFragment.setArguments(bundle);
 
-        return profilEventFragment;
+        return userTicketFragment;
     }
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -98,7 +97,7 @@ public class ProfilEventFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
         refUser = mRootRef.child("user").child(userUid);
-        refEvents = refUser.child("events");
+        refTickets = refUser.child("tickets");
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -119,20 +118,15 @@ public class ProfilEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        ActionBar supportActionBar = ((ProfilActivity) getActivity()).getSupportActionBar();
+        View view = inflater.inflate(R.layout.fragment_user_ticket, container, false);
 
-        if (supportActionBar != null) {
-            supportActionBar.setTitle(CURRENT_FRAGMENT);
-        }
-
-
-        View view = inflater.inflate(R.layout.fragment_profil_event, container, false);
 
         manager = new LinearLayoutManager(getContext());
-
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
+
+        recyclerView.setAdapter(adapter);
 
         return view;
     }
@@ -140,20 +134,6 @@ public class ProfilEventFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Query query = refEvents;
-        refUser.child("events");
-
-        adapter = new FirebaseRecyclerAdapter<String, ProfilEventHolder>(String.class, R.layout.card_profil_event, ProfilEventHolder.class, query) {
-            @Override
-            protected void populateViewHolder(ProfilEventHolder profilEventHolder, String s, int position) {
-                if (s != null) {
-                    displayUserInformation(profilEventHolder, getRef(position).getKey());
-                }
-            }
-        };
-
-        recyclerView.setAdapter(adapter);
 
     }
 
@@ -200,53 +180,6 @@ public class ProfilEventFragment extends Fragment {
     }
 
 
-    private void displayUserInformation(final ProfilEventHolder profilEventHolder, String eventUid) {
-
-        DatabaseReference reference = mRootRef.child("event").child(eventUid);
-
-
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Event event = dataSnapshot.getValue(Event.class);
-
-                if (event != null) {
-
-                    String photoProfil = event.getPhotoProfil();
-                    if (photoProfil != null) {
-                        profilEventHolder.setImageViewPhotoProfil(getContext(), photoProfil);
-                    }
-
-                    String title = event.getTitle();
-                    if (title != null) {
-                        profilEventHolder.setTextViewTitle(title);
-                    }
-
-                    String place = event.getPlace();
-
-                    if (place != null) {
-                        profilEventHolder.setTextViewPlace(place);
-                    }
-
-                    String tarification = event.getTarification();
-
-                    if (tarification != null) {
-                        profilEventHolder.setTextViewTarification(tarification);
-                    }
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // TODO handle error
-            }
-        });
-
-    }
-
-
     private void goContryActivity() {
         Intent intent = new Intent(context, ContryActivity.class);
         startActivity(intent);
@@ -262,5 +195,6 @@ public class ProfilEventFragment extends Fragment {
     private void finishActivity() {
         getActivity().finish();
     }
+
 
 }

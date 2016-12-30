@@ -14,18 +14,18 @@ public class Photo implements Serializable {
     private String url;
     private Date date;      // enregistrement
     private String status;
-    private Map<String, String> pLikes = new HashMap<>();   // idPhotos
+    private Map<String, String> likes = new HashMap<>();   // userUid
 
     public Photo() {
     }
 
-    public Photo(String event, String user, String url, Date date, String status, Map<String, String> pLikes) {
+    public Photo(String event, String user, String url, Date date, String status, Map<String, String> likes) {
         this.event = event;
         this.user = user;
         this.url = url;
         this.date = date;
         this.status = status;
-        this.pLikes = pLikes;
+        this.likes = likes;
     }
 
     public String getEvent() {
@@ -68,11 +68,11 @@ public class Photo implements Serializable {
         this.status = status;
     }
 
-    public Map<String, String> getpLikes() {
-        return pLikes;
+    public Map<String, String> getLikes() {
+        return likes;
     }
 
-    public void setpLikes(Map<String, String> pLikes) {
-        this.pLikes = pLikes;
+    public void setLikes(Map<String, String> likes) {
+        this.likes = likes;
     }
 }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,7 +26,6 @@ import java.util.Locale;
 import matano.apkode.net.matano.CityActivity;
 import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.EventActivity;
-import matano.apkode.net.matano.MainActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
@@ -35,8 +33,6 @@ import matano.apkode.net.matano.holder.MainEventHolder;
 import matano.apkode.net.matano.model.Event;
 
 public class MainEventFragment extends Fragment {
-    private static final String CATEGORIE = "Culture";
-    private static final String CURRENT_FRAGMENT = "Evenement";
     private RecyclerView recyclerView;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -51,6 +47,7 @@ public class MainEventFragment extends Fragment {
     private LocalStorage localStorage;
     private FirebaseUser user;
     private String currentUserUid;
+    private String CATEGORIE = "Culture";
 
     public MainEventFragment() {
     }
@@ -59,12 +56,6 @@ public class MainEventFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-
-        ActionBar supportActionBar = ((MainActivity) getActivity()).getSupportActionBar();
-
-        if (supportActionBar != null) {
-            supportActionBar.setTitle(CURRENT_FRAGMENT);
-        }
     }
 
     @Override
@@ -108,6 +99,12 @@ public class MainEventFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_main_event, container, false);
 
+        manager = new LinearLayoutManager(getContext());
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(manager);
+
         return view;
 
     }
@@ -115,12 +112,6 @@ public class MainEventFragment extends Fragment {
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        manager = new LinearLayoutManager(getContext());
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(manager);
 
         Query query = refEvent.orderByChild("category").equalTo(CATEGORIE);
 

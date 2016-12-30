@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,44 +22,35 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import matano.apkode.net.matano.CityActivity;
-import matano.apkode.net.matano.ContryActivity;
-import matano.apkode.net.matano.EventActivity;
-import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.UserActivity;
+import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.event.EventParticipantHolder;
 import matano.apkode.net.matano.model.User;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 public class EventParticipantFragment extends Fragment {
-    private static final String CURRENT_FRAGMENT = "Participants";
     private Context context;
     private RecyclerView recyclerView;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase database;
-    private DatabaseReference mRootRef;
-    private DatabaseReference refEvent;
-    private DatabaseReference refUser;
     private LinearLayoutManager manager;
     private FirebaseRecyclerAdapter<String, EventParticipantHolder> adapter;
     private TextView textViewParticipantNumer;
     private Button button_participer;
-    private DatabaseReference refEventUser;
-    private String currentUserContry;
-    private String currentUserCity;
-    private LocalStorage localStorage;
+    private App app;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser user;
+    private String incomeEventUid;
     private String currentUserUid;
-    private String eventUid;
+
 
 
     public EventParticipantFragment() {
@@ -81,37 +71,14 @@ public class EventParticipantFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-
-        eventUid = getArguments().getString(Utils.ARG_EVENT_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        localStorage = new LocalStorage(context);
-        currentUserContry = localStorage.getContry();
-        currentUserCity = localStorage.getCity();
-
-        if (eventUid == null) {
-            finishActivity();
-        }
-
-        if (!localStorage.isContryStored() || currentUserContry == null) {
-            goContryActivity();
-        }
-
-        if (!localStorage.isCityStored() || currentUserCity == null) {
-            goCityActivity();
-        }
+        app = (App) getApplicationContext();
 
         mAuth = FirebaseAuth.getInstance();
-
-        database = FirebaseDatabase.getInstance();
-        mRootRef = database.getReference();
-        refEvent = mRootRef.child("event").child(eventUid);
-        refUser = mRootRef.child("user");
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -123,7 +90,6 @@ public class EventParticipantFragment extends Fragment {
                 }
             }
         };
-
     }
 
     @Nullable
@@ -131,17 +97,16 @@ public class EventParticipantFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        ActionBar supportActionBar = ((EventActivity) getActivity()).getSupportActionBar();
-
-        if (supportActionBar != null) {
-            supportActionBar.setTitle(CURRENT_FRAGMENT);
-        }
-
         View view = inflater.inflate(R.layout.fragment_event_participant, container, false);
+
+        incomeEventUid = getArguments().getString(Utils.ARG_EVENT_UID);
+
+        if (incomeEventUid == null) {
+            finishActivity();
+        }
 
         textViewParticipantNumer = (TextView) view.findViewById(R.id.textViewParticipantNumer);
         button_participer = (Button) view.findViewById(R.id.button_participer);
-
 
         return view;
     }
@@ -162,7 +127,7 @@ public class EventParticipantFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
 
-        Query query = refEvent.child("users");
+        Query query = app.getRefEventUsers(incomeEventUid);
 
         adapter = new FirebaseRecyclerAdapter<String, EventParticipantHolder>(String.class, R.layout.card_event_participant, EventParticipantHolder.class, query) {
             @Override
@@ -181,11 +146,10 @@ public class EventParticipantFragment extends Fragment {
         };
 
         recyclerView.setAdapter(adapter);
-
     }
 
     private void getUser(final EventParticipantHolder eventParticipantHolder, final String userUid) {
-        Query query = refUser.child(userUid);
+        Query query = app.getRefUser(userUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -231,7 +195,7 @@ public class EventParticipantFragment extends Fragment {
             eventParticipantHolder.getImageViewPhoto().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, ProfilActivity.class);
+                    Intent intent = new Intent(context, UserActivity.class);
                     intent.putExtra(Utils.ARG_USER_UID, userUid);
                     startActivity(intent);
                 }
@@ -246,7 +210,7 @@ public class EventParticipantFragment extends Fragment {
     }
 
     private void isUserMyFriend(final ImageButton imageButtonAddFollowing, final String userUid) {
-        Query query = refUser.child(currentUserUid).child("followings");
+        Query query = app.getRefUserFollowings(currentUserUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -277,6 +241,7 @@ public class EventParticipantFragment extends Fragment {
         });
     }
 
+
     @Override
     public void onStart() {
         super.onStart();
@@ -291,14 +256,14 @@ public class EventParticipantFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (mAuth != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        if (mAuth != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -325,7 +290,7 @@ public class EventParticipantFragment extends Fragment {
         hashMap.put("user/" + userUid + "/followers/" + currentUserUid, tag);
         hashMap.put("user/" + currentUserUid + "/followings/" + userUid, tag);
 
-        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
@@ -335,21 +300,8 @@ public class EventParticipantFragment extends Fragment {
         });
     }
 
-    private void goContryActivity() {
-        Intent intent = new Intent(context, ContryActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
-    private void goCityActivity() {
-        Intent intent = new Intent(context, CityActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
     private void finishActivity() {
         getActivity().finish();
     }
-
 
 }

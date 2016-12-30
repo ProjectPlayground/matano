@@ -27,15 +27,17 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import matano.apkode.net.matano.config.Firebasesss;
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.event.EventInfoFragment;
 import matano.apkode.net.matano.fragment.event.EventParticipantFragment;
 import matano.apkode.net.matano.fragment.event.EventPrivateFragment;
 import matano.apkode.net.matano.fragment.event.EventTimelineFragment;
+import matano.apkode.net.matano.model.User;
 
 
-public class EventActivity extends AppCompatActivity {
+public class EventActivity extends AppCompatActivity implements Firebasesss.Interfaces {
     private String eventUid;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -214,6 +216,10 @@ public class EventActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    public void iGetUser(User user) {
+
+    }
 
     /**
      * FragmentPagerAdapter

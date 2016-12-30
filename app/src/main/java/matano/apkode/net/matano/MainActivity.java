@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.ic_bottom_profil:
-                        Intent intent = new Intent(getApplicationContext(), ProfilActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), UserActivity.class);
                         intent.putExtra(Utils.ARG_USER_UID, currentUserUid);
                         startActivity(intent);
                         break;

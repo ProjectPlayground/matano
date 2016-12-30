@@ -28,13 +28,13 @@ import com.google.firebase.auth.FirebaseUser;
 
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
-import matano.apkode.net.matano.fragment.profil.ProfilEventFragment;
-import matano.apkode.net.matano.fragment.profil.ProfilFriendFragment;
-import matano.apkode.net.matano.fragment.profil.ProfilInfoFragment;
-import matano.apkode.net.matano.fragment.profil.ProfilPhotoFragment;
-import matano.apkode.net.matano.fragment.profil.ProfilTicketFragment;
+import matano.apkode.net.matano.fragment.user.UserEventFragment;
+import matano.apkode.net.matano.fragment.user.UserFriendFragment;
+import matano.apkode.net.matano.fragment.user.UserInfoFragment;
+import matano.apkode.net.matano.fragment.user.UserTicketFragment;
+import matano.apkode.net.matano.fragment.user.UserTimelineFragment;
 
-public class ProfilActivity extends AppCompatActivity {
+public class UserActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -45,11 +45,12 @@ public class ProfilActivity extends AppCompatActivity {
     private FirebaseUser user;
     private String currentUserUid;
     private TextView textViewToolbarTitle;
+    private int countPage = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profil);
+        setContentView(R.layout.activity_user);
 
         userUid = getIntent().getStringExtra(Utils.ARG_USER_UID);
 
@@ -82,6 +83,10 @@ public class ProfilActivity extends AppCompatActivity {
                 }
             }
         };
+
+        if (userUid.equals(currentUserUid)) {
+            countPage = 5;
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_action_navigation_arrow_back_padding);
@@ -131,10 +136,10 @@ public class ProfilActivity extends AppCompatActivity {
                         textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_event));
                         break;
                     case 4:
-                        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_ticket));
+                        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_tchat));
                         break;
                     case 5:
-                        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_tchat));
+                        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_ticket));
                         break;
                 }
             }
@@ -216,7 +221,7 @@ public class ProfilActivity extends AppCompatActivity {
      * FragmentPagerAdapter
      */
     public class ProfilPagerAdapter extends FragmentPagerAdapter {
-        private int icons[] = {R.mipmap.ic_action_action_account_box_padding, R.mipmap.ic_action_image_image_padding, R.mipmap.ic_action_notification_event_note_padding, R.mipmap.ic_action_action_account_balance_wallet_padding, R.mipmap.ic_action_action_account_child_padding};
+        private int icons[] = {R.mipmap.ic_action_action_account_box_padding, R.mipmap.ic_action_image_image_padding, R.mipmap.ic_action_notification_event_note_padding, R.mipmap.ic_action_action_account_child_padding, R.mipmap.ic_action_action_account_balance_wallet_padding};
 
         public ProfilPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -236,15 +241,15 @@ public class ProfilActivity extends AppCompatActivity {
             switch (position + 1) {
 
                 case 1:
-                    return ProfilInfoFragment.newInstance(userUid);
+                    return UserInfoFragment.newInstance(userUid);
                 case 2:
-                    return ProfilPhotoFragment.newInstance(userUid);
+                    return UserTimelineFragment.newInstance(userUid);
                 case 3:
-                    return ProfilEventFragment.newInstance(userUid);
+                    return UserEventFragment.newInstance(userUid);
                 case 4:
-                    return ProfilTicketFragment.newInstance(userUid);
+                    return UserFriendFragment.newInstance(userUid);
                 case 5:
-                    return ProfilFriendFragment.newInstance(userUid);
+                    return UserTicketFragment.newInstance(userUid);
                 default:
                     return null;
             }
@@ -253,7 +258,7 @@ public class ProfilActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 5;
+            return countPage;
         }
 
         @Override

@@ -10,6 +10,7 @@ import java.util.Map;
 
 @IgnoreExtraProperties
 public class User implements Serializable {
+    private String uid;
     private String username;
     private String firstName;
     private String lastName;
@@ -48,7 +49,8 @@ public class User implements Serializable {
         this.photoProfl = photoProfl;
     }
 
-    public User(String username, String firstName, String lastName, String email, String telephone, String sexe, Date birthday, String presentation, String photoProfl, Map<String, String> events, Map<String, String> followers, Map<String, String> followings, Map<String, String> photos, Map<String, String> videos, Map<String, String> tickets, Map<String, String> likes) {
+    public User(String uid, String username, String firstName, String lastName, String email, String telephone, String sexe, Date birthday, String presentation, String photoProfl, Map<String, String> events, Map<String, String> followers, Map<String, String> followings, Map<String, String> photos, Map<String, String> videos, Map<String, String> tickets, Map<String, String> likes) {
+        this.uid = uid;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -65,6 +67,14 @@ public class User implements Serializable {
         this.videos = videos;
         this.tickets = tickets;
         this.likes = likes;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getUsername() {
@@ -189,5 +199,9 @@ public class User implements Serializable {
 
     public Map<String, String> getLikes() {
         return likes;
+    }
+
+    public void setLikes(Map<String, String> likes) {
+        this.likes = likes;
     }
 }

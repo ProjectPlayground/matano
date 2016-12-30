@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,7 +28,6 @@ import java.util.Locale;
 
 import matano.apkode.net.matano.CityActivity;
 import matano.apkode.net.matano.ContryActivity;
-import matano.apkode.net.matano.MainActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.holder.MainTimelineHolder;
@@ -38,7 +36,6 @@ import matano.apkode.net.matano.model.User;
 
 
 public class MainTimelineFragment extends Fragment {
-    private static final String CURRENT_FRAGMENT = "Timeline";
     private Context context;
     private String currentUserContry;
     private String currentUserCity;
@@ -61,12 +58,6 @@ public class MainTimelineFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-
-        ActionBar supportActionBar = ((MainActivity) getActivity()).getSupportActionBar();
-
-        if (supportActionBar != null) {
-            supportActionBar.setTitle(CURRENT_FRAGMENT);
-        }
     }
 
     @Override
@@ -108,12 +99,6 @@ public class MainTimelineFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_timeline, container, false);
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
         manager = new LinearLayoutManager(getContext());
 
@@ -121,9 +106,13 @@ public class MainTimelineFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
 
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        assert currentUser != null;
-        String currentUserUid = currentUser.getUid();
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         Query query = refUser.child(currentUserUid).child("followings");
 
@@ -282,5 +271,6 @@ public class MainTimelineFragment extends Fragment {
     private void finishActivity() {
         getActivity().finish();
     }
+
 
 }

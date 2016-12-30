@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.model.User;
 
 public class EventParticipantHolder extends RecyclerView.ViewHolder {
     private ImageView imageViewPhoto;
@@ -25,10 +24,6 @@ public class EventParticipantHolder extends RecyclerView.ViewHolder {
         textViewUsername = (TextView) itemView.findViewById(R.id.textViewUsername);
         imageButtonAddFollowing = (ImageButton) itemView.findViewById(R.id.imageButtonAddFollowing);
         cardViewParticipant = (CardView) itemView.findViewById(R.id.cardViewParticipant);
-    }
-
-    public void bind(User user) {
-
     }
 
     public ImageView getImageViewPhoto() {
