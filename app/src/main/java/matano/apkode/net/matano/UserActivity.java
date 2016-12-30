@@ -3,7 +3,6 @@ package matano.apkode.net.matano;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,9 +21,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
 import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
@@ -36,11 +32,7 @@ import matano.apkode.net.matano.fragment.user.UserTimelineFragment;
 
 public class UserActivity extends AppCompatActivity {
     private App app;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseUser user;
     private String incomeUserUid;
-    private String currentUserUid;
     private Db db;
 
     private ViewPager mViewPager;
@@ -53,19 +45,6 @@ public class UserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user);
         app = (App) getApplicationContext();
 
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    finishActivity();
-                } else {
-                    currentUserUid = user.getUid();
-                }
-            }
-        };
-
         incomeUserUid = getIntent().getStringExtra(Utils.ARG_USER_UID);
 
         if (incomeUserUid == null) {
@@ -73,7 +52,7 @@ public class UserActivity extends AppCompatActivity {
         }
 
 
-        if (incomeUserUid.equals(currentUserUid)) {
+        if (incomeUserUid.equals(app.getCurrentUserUid())) {
             countPage = 5;
         }
 
@@ -145,7 +124,6 @@ public class UserActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -156,9 +134,6 @@ public class UserActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mAuth != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     @Override

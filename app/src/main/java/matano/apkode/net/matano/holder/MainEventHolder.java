@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.model.Event;
 
 
 public class MainEventHolder extends RecyclerView.ViewHolder {
@@ -83,13 +82,5 @@ public class MainEventHolder extends RecyclerView.ViewHolder {
             }
         }
     }
-
-
-    public void bind(Event event) {
-        //  txtCategorie = (TextView)itemView.findViewById(R.id.txtCategorie);
-        //txtCategorie.setText(event.getCategorie());
-        // itemView.setOnClickListener(this);
-    }
-
 
 }

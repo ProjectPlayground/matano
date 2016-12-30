@@ -23,8 +23,6 @@ import android.widget.ImageButton;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -52,11 +50,7 @@ public class EventPrivateTchatFragment extends Fragment {
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 1000;
     private static final int ARG_PHOTO_PICKER = 2;
     private App app;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseUser user;
     private String incomeEventUid;
-    private String currentUserUid;
     private Db db;
     private Context context;
     private LinearLayoutManager manager;
@@ -92,20 +86,6 @@ public class EventPrivateTchatFragment extends Fragment {
         super.onCreate(savedInstanceState);
         app = (App) getApplicationContext();
         db = new Db(context);
-
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    finishActivity();
-                } else {
-                    currentUserUid = user.getUid();
-                }
-            }
-        };
-
     }
 
     @Nullable
@@ -227,7 +207,7 @@ public class EventPrivateTchatFragment extends Fragment {
 
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                db.setTchatMessage(editTextMessage.getText().toString(), UUID.randomUUID().toString(), incomeEventUid, currentUserUid);
+                db.setTchatMessage(editTextMessage.getText().toString(), UUID.randomUUID().toString(), incomeEventUid, app.getCurrentUserUid());
                 editTextMessage.setText("");
             }
         });
@@ -238,7 +218,6 @@ public class EventPrivateTchatFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -249,9 +228,6 @@ public class EventPrivateTchatFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (mAuth != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     @Override
@@ -360,7 +336,7 @@ public class EventPrivateTchatFragment extends Fragment {
         eventPrivateTchatHolder.setImageViewPhotoProfil(getContext(), photoProfil);
         eventPrivateTchatHolder.setTextViewMessage(messsage);
 
-        if (userUid.equals(currentUserUid)) {
+        if (userUid.equals(app.getCurrentUserUid())) {
             eventPrivateTchatHolder.setIsSender(getContext(), true);
         } else {
             eventPrivateTchatHolder.setIsSender(getContext(), false);
@@ -378,7 +354,7 @@ public class EventPrivateTchatFragment extends Fragment {
         eventPrivateTchatHolder.setImageViewPhotoProfil(getContext(), photoProfil);
         eventPrivateTchatHolder.setImageViewPhoto(getContext(), photo);
 
-        if (userUid.equals(currentUserUid)) {
+        if (userUid.equals(app.getCurrentUserUid())) {
             eventPrivateTchatHolder.setIsSender(getContext(), true);
         } else {
             eventPrivateTchatHolder.setIsSender(getContext(), false);
@@ -415,7 +391,7 @@ public class EventPrivateTchatFragment extends Fragment {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUri = taskSnapshot.getDownloadUrl();
-                        db.setTchatPhoto(downloadUri, uuid, incomeEventUid, currentUserUid);
+                        db.setTchatPhoto(downloadUri, uuid, incomeEventUid, app.getCurrentUserUid());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

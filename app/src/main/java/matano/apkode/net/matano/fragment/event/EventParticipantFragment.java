@@ -3,7 +3,6 @@ package matano.apkode.net.matano.fragment.event;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,8 +15,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -35,16 +32,11 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class EventParticipantFragment extends Fragment {
     private App app;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseUser user;
     private String incomeEventUid;
-    private String currentUserUid;
     private Db db;
 
     private Context context;
     private RecyclerView recyclerView;
-    private LinearLayoutManager manager;
     private FirebaseRecyclerAdapter<String, EventParticipantHolder> adapter;
     private TextView textViewParticipantNumer;
     private Button button_participer;
@@ -75,19 +67,6 @@ public class EventParticipantFragment extends Fragment {
         super.onCreate(savedInstanceState);
         app = (App) getApplicationContext();
         db = new Db(context);
-
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    finishActivity();
-                } else {
-                    currentUserUid = user.getUid();
-                }
-            }
-        };
     }
 
     @Nullable
@@ -102,6 +81,12 @@ public class EventParticipantFragment extends Fragment {
         if (incomeEventUid == null) {
             finishActivity();
         }
+
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(manager);
 
         textViewParticipantNumer = (TextView) view.findViewById(R.id.textViewParticipantNumer);
         button_participer = (Button) view.findViewById(R.id.button_participer);
@@ -118,12 +103,6 @@ public class EventParticipantFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        manager = new LinearLayoutManager(getContext());
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(manager);
 
         Query query = app.getRefEventUsers(incomeEventUid);
 
@@ -153,7 +132,6 @@ public class EventParticipantFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-
                 if (user != null) {
                     displayLayout(eventParticipantHolder, user, userUid);
                 }
@@ -177,14 +155,14 @@ public class EventParticipantFragment extends Fragment {
 
             ImageButton imageButtonAddFollowing = eventParticipantHolder.getImageButtonAddFollowing();
 
-            if (!userUid.equals(currentUserUid)) {
+            if (!userUid.equals(app.getCurrentUserUid())) {
                 isUserMyFriend(imageButtonAddFollowing, userUid);
             }
 
             imageButtonAddFollowing.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    db.setFollowing(userUid, (String) view.getTag(), currentUserUid);
+                    db.setFollowing(userUid, (String) view.getTag(), app.getCurrentUserUid());
                 }
             });
 
@@ -202,34 +180,30 @@ public class EventParticipantFragment extends Fragment {
 
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
 
-    private void isUserMyFriend(final ImageButton imageButtonAddFollowing, final String userUid) {
-        Query query = app.getRefUserFollowings(currentUserUid);
+    private void isUserMyFriend(final ImageButton imageButtonAddOrSetting, final String userUid) {
+        Query query = app.getRefUserFollowings(app.getCurrentUserUid());
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
-                    imageButtonAddFollowing.setTag("1");
-                    imageButtonAddFollowing.setImageResource(R.mipmap.ic_action_social_group_add_padding);
+                    imageButtonAddOrSetting.setTag("1");
+                    imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_social_group_add_padding);
                 } else {
                     for (DataSnapshot snap : dataSnapshot.getChildren()) {
                         if (snap.getKey().equals(userUid)) {
                             // We are friends
-                            imageButtonAddFollowing.setTag(null);
-                            imageButtonAddFollowing.setImageResource(R.mipmap.ic_action_social_people_padding);
+                            imageButtonAddOrSetting.setTag(null);
+                            imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_social_people_padding);
                         } else {
                             // we are not friends
-                            imageButtonAddFollowing.setTag("1");
-                            imageButtonAddFollowing.setImageResource(R.mipmap.ic_action_social_group_add_padding);
+                            imageButtonAddOrSetting.setTag("1");
+                            imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_social_group_add_padding);
                         }
                     }
                 }
-                imageButtonAddFollowing.setVisibility(View.VISIBLE);
+                imageButtonAddOrSetting.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -243,7 +217,6 @@ public class EventParticipantFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -259,9 +232,6 @@ public class EventParticipantFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuth != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     @Override

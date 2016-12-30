@@ -5,7 +5,6 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.bumptech.glide.request.target.ViewTarget;
 import com.facebook.FacebookSdk;
@@ -25,8 +24,6 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 import java.util.ArrayList;
 
 import io.fabric.sdk.android.Fabric;
-import matano.apkode.net.matano.CityActivity;
-import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.model.Event;
@@ -110,31 +107,20 @@ public class App extends Application implements Application.ActivityLifecycleCal
         currentUserContry = localStorage.getContry();
         currentUserCity = localStorage.getCity();
 
-        if (!localStorage.isContryStored() || currentUserContry == null) {
-            goContryActivity();
-        }
-
-        if (!localStorage.isCityStored() || currentUserCity == null) {
-            goCityActivity();
-        }
-
-
         // LOGIN
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 currentUser = firebaseAuth.getCurrentUser();
-                if (currentUser == null) {
-                    Log.e(Utils.TAG, "currentUser == null");
-                    finishActivity();
+                if (currentUser == null || !localStorage.isContryStored() || currentUserContry == null) {
+                    goLoginActivity();
                 } else {
-                    Log.e(Utils.TAG, "currentUser != null");
                     currentUserUid = currentUser.getUid();
                 }
             }
         };
-
+        mAuth.addAuthStateListener(mAuthListener);
 
         database = FirebaseDatabase.getInstance();
         refDatabaseRoot = database.getReference();
@@ -158,7 +144,6 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
     @Override
     public void onActivityStarted(Activity activity) {
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -697,25 +682,10 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
     private void goLoginActivity() {
         Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-        finishActivity();
     }
 
-    private void goContryActivity() {
-        Intent intent = new Intent(this, ContryActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
-    private void goCityActivity() {
-        Intent intent = new Intent(this, CityActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
-    private void finishActivity() {
-        // finish();
-    }
 
     public DatabaseReference getRefDatabaseRoot() {
         return refDatabaseRoot;

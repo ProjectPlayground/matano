@@ -3,7 +3,6 @@ package matano.apkode.net.matano.fragment.user.friend;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -34,11 +31,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class ProfilFriendFollowerFragment extends Fragment {
     private App app;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseUser user;
     private String incomeUserUid;
-    private String currentUserUid;
     private Db db;
 
     private Context context;
@@ -70,19 +63,6 @@ public class ProfilFriendFollowerFragment extends Fragment {
         super.onCreate(savedInstanceState);
         app = (App) getApplicationContext();
         db = new Db(context);
-
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    finishActivity();
-                } else {
-                    currentUserUid = user.getUid();
-                }
-            }
-        };
     }
 
     @Nullable
@@ -128,7 +108,6 @@ public class ProfilFriendFollowerFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -139,9 +118,6 @@ public class ProfilFriendFollowerFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (mAuth != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     @Override
@@ -198,14 +174,14 @@ public class ProfilFriendFollowerFragment extends Fragment {
 
             ImageButton imageButtonAddFollowing = userFriendHolder.getImageButtonAddFollowing();
 
-            if (!userUid.equals(currentUserUid)) {
+            if (!userUid.equals(app.getCurrentUserUid())) {
                 isUserMyFriend(imageButtonAddFollowing, userUid);
             }
 
             imageButtonAddFollowing.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    db.setFollowing(userUid, (String) view.getTag(), currentUserUid);
+                    db.setFollowing(userUid, (String) view.getTag(), app.getCurrentUserUid());
                 }
             });
 
@@ -227,7 +203,7 @@ public class ProfilFriendFollowerFragment extends Fragment {
     }
 
     private void isUserMyFriend(final ImageButton imageButtonAddFollowing, final String userUid) {
-        Query query = app.getRefUserFollowings(currentUserUid);
+        Query query = app.getRefUserFollowings(app.getCurrentUserUid());
 
         query.addValueEventListener(new ValueEventListener() {
             @Override

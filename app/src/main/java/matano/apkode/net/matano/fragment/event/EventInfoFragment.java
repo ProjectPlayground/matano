@@ -2,7 +2,6 @@ package matano.apkode.net.matano.fragment.event;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -17,8 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -44,19 +41,14 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class EventInfoFragment extends Fragment {
     private App app;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseUser user;
     private String incomeEventUid;
-    private String currentUserUid;
     private Db db;
 
     private Context context;
+
     private RecyclerView recyclerViewTopPhoto;
     private RecyclerView recyclerViewTopUser;
     private List<Photo> photos = new ArrayList<>();
-    private FirebaseRecyclerAdapter<String, EventPhotoHolder> adapter;
-    private LinearLayoutManager manager;
     private TextView textViewTitle;
     private TextView textViewPlace;
     private TextView textViewAddress;
@@ -91,20 +83,6 @@ public class EventInfoFragment extends Fragment {
         super.onCreate(savedInstanceState);
         app = (App) getApplicationContext();
         db = new Db(context);
-
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    finishActivity();
-                } else {
-                    currentUserUid = user.getUid();
-                }
-            }
-        };
-
     }
 
     @Nullable
@@ -130,7 +108,7 @@ public class EventInfoFragment extends Fragment {
         button_participer = (Button) view.findViewById(R.id.button_participer);
 
 
-        manager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
 
         recyclerViewTopPhoto = (RecyclerView) view.findViewById(R.id.recyclerViewTopPhoto);
         recyclerViewTopPhoto.setHasFixedSize(true);
@@ -147,7 +125,7 @@ public class EventInfoFragment extends Fragment {
 
         Query query = app.getRefEventPhotos(incomeEventUid).limitToFirst(10);
 
-        adapter = new FirebaseRecyclerAdapter<String, EventPhotoHolder>(String.class, R.layout.card_event_info_top_photo, EventPhotoHolder.class, query) {
+        FirebaseRecyclerAdapter<String, EventPhotoHolder> adapter = new FirebaseRecyclerAdapter<String, EventPhotoHolder>(String.class, R.layout.card_event_info_top_photo, EventPhotoHolder.class, query) {
             @Override
             protected void populateViewHolder(EventPhotoHolder eventPhotoHolder, String s, int position) {
                 if (s != null) {
@@ -229,19 +207,18 @@ public class EventInfoFragment extends Fragment {
                     switch (button_participer.getTag().toString()) {
                         case "9":
                             button_participer.setTag("0");
-                            // button_participer.setText("En attente");
                             break;
                         case "0":
                             button_participer.setTag("9");
-                            // button_participer.setText("Participer");
                             break;
                         case "1":
                             button_participer.setTag("9");
-                            //   button_participer.setText("Participer");
                             break;
                     }
                     String tag = button_participer.getTag().toString();
-                    db.setParticipantion(tag, incomeEventUid, currentUserUid);
+                    if (tag != null) {
+                        db.setParticipantion(tag, incomeEventUid, app.getCurrentUserUid());
+                    }
                 }
             });
         }
@@ -251,7 +228,6 @@ public class EventInfoFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -262,9 +238,6 @@ public class EventInfoFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (mAuth != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
 
@@ -290,7 +263,7 @@ public class EventInfoFragment extends Fragment {
 
     private void isUserParticipe() {
 
-        Query query = app.getRefUserEvents(currentUserUid).child(incomeEventUid);
+        Query query = app.getRefUserEvents(app.getCurrentUserUid()).child(incomeEventUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -298,22 +271,20 @@ public class EventInfoFragment extends Fragment {
                 if (dataSnapshot.getValue() == null) {
                     button_participer.setText("Participer");
                     button_participer.setTag("9");
-                    button_participer.setVisibility(View.VISIBLE);
                 } else {
                     String status = dataSnapshot.getValue(String.class);
                     switch (status) {
                         case "0":
                             button_participer.setText("En attente");
                             button_participer.setTag("0");
-                            button_participer.setVisibility(View.VISIBLE);
                             break;
                         case "1":
                             button_participer.setText("Je participe");
                             button_participer.setTag("1");
-                            button_participer.setVisibility(View.VISIBLE);
                             break;
                     }
                 }
+                button_participer.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -323,7 +294,6 @@ public class EventInfoFragment extends Fragment {
         });
 
     }
-
 
 
     private void getPhoto(final EventPhotoHolder eventPhotoHolder, String photoUid, final int position) {

@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.model.Photo;
 
 
 public class MainTimelineHolder extends RecyclerView.ViewHolder {
@@ -29,10 +28,6 @@ public class MainTimelineHolder extends RecyclerView.ViewHolder {
         imageViewPhotoProfil = (ImageView) itemView.findViewById(R.id.imageViewPhotoProfil);
         imageButtonLikePhoto = (ImageButton) itemView.findViewById(R.id.imageButtonLikePhoto);
         imageButtonSharePhoto = (ImageButton) itemView.findViewById(R.id.imageButtonSharePhoto);
-
-    }
-
-    public void bind(Photo photo) {
 
     }
 

@@ -2,7 +2,6 @@ package matano.apkode.net.matano.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,11 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -27,7 +23,6 @@ import java.util.Locale;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
-import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.MainTimelineHolder;
 import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.User;
@@ -37,11 +32,6 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class MainTimelineFragment extends Fragment {
     private App app;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseUser user;
-    private String incomeUserUid;
-    private String currentUserUid;
     private Db db;
 
     private Context context;
@@ -63,19 +53,6 @@ public class MainTimelineFragment extends Fragment {
         super.onCreate(savedInstanceState);
         app = (App) getApplicationContext();
         db = new Db(context);
-
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    finishActivity();
-                } else {
-                    currentUserUid = user.getUid();
-                }
-            }
-        };
     }
 
     @Nullable
@@ -83,13 +60,6 @@ public class MainTimelineFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_main_timeline, container, false);
-
-        incomeUserUid = getArguments().getString(Utils.ARG_USER_UID);
-
-        if (incomeUserUid == null) {
-            finishActivity();
-        }
-
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
 
@@ -105,17 +75,16 @@ public class MainTimelineFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = app.getRefUserFollowings(currentUserUid);
+        Query query = app.getRefUserFollowings(app.getCurrentUserUid());
 
         adapter = new FirebaseRecyclerAdapter<String, MainTimelineHolder>(String.class, R.layout.card_main_timeline, MainTimelineHolder.class, query) {
             @Override
             protected void populateViewHolder(MainTimelineHolder mainTimelineHolder, String s, int position) {
                 if (s != null) {
-                    getUserPhotos(mainTimelineHolder, getRef(position).getKey());
+                    getUser(mainTimelineHolder, getRef(position).getKey());
                 }
             }
         };
-
 
         recyclerView.setAdapter(adapter);
 
@@ -129,7 +98,6 @@ public class MainTimelineFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -140,9 +108,6 @@ public class MainTimelineFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (mAuth != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     @Override
@@ -168,74 +133,58 @@ public class MainTimelineFragment extends Fragment {
         super.onDetach();
     }
 
-    private void getUserPhotos(final MainTimelineHolder mainTimelineHolder, String userUid) {
-        DatabaseReference reference = app.getRefUserPhotos(userUid);
-
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    String photoUid = snap.getValue(String.class);
-                    if (photoUid != null) {
-                        getUserPhoto(mainTimelineHolder, snap.getKey());
-                    }
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-    private void getUserPhoto(final MainTimelineHolder mainTimelineHolder, final String photoUid) {
-        DatabaseReference reference = app.getRefPhoto(photoUid);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Photo photo = dataSnapshot.getValue(Photo.class);
-
-                if (photo != null) {
-                    displayLayout(mainTimelineHolder, photo);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void displayLayout(final MainTimelineHolder mainTimelineHolder, Photo p) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        assert currentUser != null;
-        String currentUserUid = currentUser.getUid();
-
-        final String photo = p.getUrl();
-        final Date date = p.getDate();
-
-        Query query = app.getRefUser(currentUserUid);
+    private void getUser(final MainTimelineHolder mainTimelineHolder, final String userUid) {
+        Query query = app.getRefUser(userUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
 
-                String username = user.getUsername();
-                String photoProfil = user.getPhotoProfl();
+                if (user != null) {
+                    getPhotos(mainTimelineHolder, user, userUid);
+                }
+            }
 
-                if (username != null && photoProfil != null && photo != null && date != null) {
-                    mainTimelineHolder.setImageViewPhotoProfil(getActivity(), photoProfil);
-                    mainTimelineHolder.setTextViewUsername(username);
-                    mainTimelineHolder.setImageViewPhoto(getActivity(), photo);
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                    mainTimelineHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
+            }
+        });
+    }
+
+
+    private void getPhotos(final MainTimelineHolder mainTimelineHolder, final User user, String userUid) {
+        Query query = app.getRefUserPhotos(userUid);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    String photoUid = snap.getKey();
+                    if (photoUid != null) {
+                        getPhoto(mainTimelineHolder, user, photoUid);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getPhoto(final MainTimelineHolder mainTimelineHolder, final User user, String photoUid) {
+        Query query = app.getRefPhoto(photoUid);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Photo photo = dataSnapshot.getValue(Photo.class);
+
+                if (photo != null) {
+                    displayLayout(mainTimelineHolder, user, photo);
                 }
 
             }
@@ -247,10 +196,20 @@ public class MainTimelineFragment extends Fragment {
         });
     }
 
+    private void displayLayout(final MainTimelineHolder mainTimelineHolder, User user, Photo photo) {
+        String username = user.getUsername();
+        String photoProfl = user.getPhotoProfl();
+        String url = photo.getUrl();
+        Date date = photo.getDate();
+        String dateString = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date);
 
-    private void finishActivity() {
-        getActivity().finish();
+        if (username != null && photoProfl != null && url != null && dateString != null) {
+            mainTimelineHolder.setImageViewPhotoProfil(context, photoProfl);
+            mainTimelineHolder.setTextViewUsername(username);
+            mainTimelineHolder.setImageViewPhoto(getActivity(), url);
+
+            mainTimelineHolder.setTextViewDate(dateString);
+        }
     }
-
 
 }

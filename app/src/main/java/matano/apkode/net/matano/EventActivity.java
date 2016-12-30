@@ -3,7 +3,6 @@ package matano.apkode.net.matano;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,8 +22,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
@@ -37,11 +34,7 @@ import matano.apkode.net.matano.fragment.event.EventTimelineFragment;
 
 public class EventActivity extends AppCompatActivity {
     private App app;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseUser user;
     private String incomeEventUid;
-    private String currentUserUid;
     private Db db;
 
     private TextView textViewToolbarTitle;
@@ -53,19 +46,6 @@ public class EventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event);
         app = (App) getApplicationContext();
         db = new Db(this);
-
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    finishActivity();
-                } else {
-                    currentUserUid = user.getUid();
-                }
-            }
-        };
 
         incomeEventUid = getIntent().getStringExtra(Utils.ARG_EVENT_UID);
 
@@ -143,7 +123,6 @@ public class EventActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -154,9 +133,6 @@ public class EventActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mAuth != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     @Override

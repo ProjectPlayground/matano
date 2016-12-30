@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.model.Photo;
 
 
 public class EventTimelineHolder extends RecyclerView.ViewHolder {
@@ -34,9 +33,6 @@ public class EventTimelineHolder extends RecyclerView.ViewHolder {
         linearLayoutUser = (LinearLayout) itemView.findViewById(R.id.linearLayoutUser);
     }
 
-    public void bind(Photo photo) {
-
-    }
 
     public void setTextViewUsername(String s) {
         if (s != null) {

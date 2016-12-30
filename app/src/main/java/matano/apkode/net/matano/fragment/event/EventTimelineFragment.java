@@ -22,8 +22,6 @@ import android.widget.Toast;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -57,11 +55,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class EventTimelineFragment extends Fragment {
     private static final int ARG_PHOTO_PICKER = 2;
     private App app;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseUser user;
     private String incomeEventUid;
-    private String currentUserUid;
 
     private Db db;
     private Context context;
@@ -97,20 +91,6 @@ public class EventTimelineFragment extends Fragment {
         super.onCreate(savedInstanceState);
         app = (App) getApplicationContext();
         db = new Db(context);
-
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    finishActivity();
-                } else {
-                    currentUserUid = user.getUid();
-                }
-            }
-        };
-
     }
 
     @Nullable
@@ -170,7 +150,6 @@ public class EventTimelineFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -181,9 +160,6 @@ public class EventTimelineFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (mAuth != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     @Override
@@ -329,7 +305,7 @@ public class EventTimelineFragment extends Fragment {
         imageButtonLikePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db.setPhotoLike(photoUid, (String) view.getTag(), currentUserUid);
+                db.setPhotoLike(photoUid, (String) view.getTag(), app.getCurrentUserUid());
             }
         });
 
@@ -361,7 +337,7 @@ public class EventTimelineFragment extends Fragment {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUri = taskSnapshot.getDownloadUrl();
-                        db.setPhotoTimeline(downloadUri, uuid, incomeEventUid, currentUserUid);
+                        db.setPhotoTimeline(downloadUri, uuid, incomeEventUid, app.getCurrentUserUid());
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Uploaded", Toast.LENGTH_SHORT).show();
                     }

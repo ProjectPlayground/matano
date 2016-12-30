@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import matano.apkode.net.matano.UserActivity;
-import matano.apkode.net.matano.model.User;
 
 
 public class EventTopParticipantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -14,9 +13,6 @@ public class EventTopParticipantHolder extends RecyclerView.ViewHolder implement
         super(itemView);
     }
 
-    public void bind(User user) {
-        itemView.setOnClickListener(this);
-    }
 
     @Override
     public void onClick(View view) {

@@ -3,15 +3,12 @@ package matano.apkode.net.matano;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,10 +27,6 @@ import static com.firebase.ui.auth.ui.ResultCodes.RESULT_NO_NETWORK;
 public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 1;
     private App app;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseUser user;
-    private String currentUserUid;
     private Db db;
     private LocalStorage localStorage;
     private TextView logo;
@@ -47,33 +40,26 @@ public class LoginActivity extends AppCompatActivity {
         db = new Db(this);
         localStorage = new LocalStorage(this);
 
-        mAuth = FirebaseAuth.getInstance();
+        if (app.getCurrentUser() == null) {
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                            .setLogo(R.mipmap.ic_action_action_account_balance_wallet)
+                            .setTheme(R.style.AppTheme_NoActionBar)
+                            .setProviders(Arrays.asList(
+                                    // new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                                    new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
+                                    new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build())
+                            )
+                            .build(),
+                    RC_SIGN_IN);
+        } else {
+            setIfUserExist();
+        }
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-                                    .setLogo(R.mipmap.ic_action_action_account_balance_wallet)
-                                    .setTheme(R.style.AppTheme_NoActionBar)
-                                    .setProviders(Arrays.asList(
-                                            // new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                                            new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
-                                            new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build())
-                                    )
-                                    .build(),
-                            RC_SIGN_IN);
-                } else {
-                    currentUserUid = user.getUid();
-                    setIfUserExist();
-                }
-            }
-        };
+
 
         logo = (TextView) findViewById(R.id.logo);
 
@@ -83,7 +69,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -94,9 +79,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mAuth != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     @Override
@@ -128,18 +110,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setIfUserExist() {
-        Query query = app.getRefUser(currentUserUid);
+        Query query = app.getRefUser(app.getCurrentUserUid());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
 
-                    String username = user.getDisplayName();
-                    String firstName = user.getDisplayName();
-                    String email = user.getEmail();
+                    String username = app.getCurrentUser().getDisplayName();
+                    String firstName = app.getCurrentUser().getDisplayName();
+                    String email = app.getCurrentUser().getEmail();
                     String photoProfil = null;
 
-                    Uri photoUrl = user.getPhotoUrl();
+                    Uri photoUrl = app.getCurrentUser().getPhotoUrl();
 
                     if (null != photoUrl) {
                         photoProfil = photoUrl.toString();
@@ -168,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void saveUser(User user) {
-        DatabaseReference databaseReference = app.getRefUser(currentUserUid);
+        DatabaseReference databaseReference = app.getRefUser(app.getCurrentUserUid());
         databaseReference.setValue(user, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -196,19 +178,13 @@ public class LoginActivity extends AppCompatActivity {
     private void setIfUserCityExist() {
 
         if (localStorage.isCityStored()) {
-            goMainAcivity();
+            finish();
         } else {
             Intent intent = new Intent(this, CityActivity.class);
             startActivity(intent);
             finish();
 
         }
-    }
-
-    private void goMainAcivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
     }
 
 }
