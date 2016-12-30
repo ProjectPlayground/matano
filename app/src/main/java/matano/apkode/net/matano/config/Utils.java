@@ -13,7 +13,7 @@ public class Utils {
     public static final String ARG_EVENT_UID = "eventUid";
 
 
-    // Firebasesss
+    // Firebase
     public static final String FIREBASE_CHILD_EVENTS = "event";
     public static final String FIREBASE_CHILD_TCHATS = "tchat";
     public static final String FIREBASE_CHILD_PHOTOS = "photo";

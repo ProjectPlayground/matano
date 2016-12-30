@@ -17,45 +17,35 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import matano.apkode.net.matano.CityActivity;
-import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.user.UserEventHolder;
 import matano.apkode.net.matano.model.Event;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 public class UserEventFragment extends Fragment {
-    private Context context;
-    private RecyclerView recyclerView;
+    private App app;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase database;
-    private DatabaseReference mRootRef;
-    private DatabaseReference refUser;
-    private DatabaseReference refEvents;
-    private DatabaseReference refEvent;
-    private FirebaseRecyclerAdapter<String, UserEventHolder> adapter;
-    private LinearLayoutManager manager;
-    private String currentUserContry;
-    private String currentUserCity;
-    private LocalStorage localStorage;
     private FirebaseUser user;
+    private String incomeUserUid;
     private String currentUserUid;
-    private String userUid;
+
+    private Context context;
+    private RecyclerView recyclerView;
+    private FirebaseRecyclerAdapter<String, UserEventHolder> adapter;
 
     public UserEventFragment() {
     }
 
     public static UserEventFragment newInstance(String userUid) {
         UserEventFragment userEventFragment = new UserEventFragment();
-
 
         Bundle bundle = new Bundle();
         bundle.putString(Utils.ARG_USER_UID, userUid);
@@ -69,37 +59,14 @@ public class UserEventFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-        userUid = getArguments().getString(Utils.ARG_USER_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        localStorage = new LocalStorage(context);
-        currentUserContry = localStorage.getContry();
-        currentUserCity = localStorage.getCity();
-
-        if (userUid == null) {
-            finishActivity();
-        }
-
-        if (!localStorage.isContryStored() || currentUserContry == null) {
-            goContryActivity();
-        }
-
-        if (!localStorage.isCityStored() || currentUserCity == null) {
-            goCityActivity();
-        }
-
+        app = (App) getApplicationContext();
 
         mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        mRootRef = database.getReference();
-        refUser = mRootRef.child("user").child(userUid);
-        refEvents = refUser.child("events");
-        refEvent = mRootRef.child("event");
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -121,7 +88,13 @@ public class UserEventFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_user_event, container, false);
 
-        manager = new LinearLayoutManager(getContext());
+        incomeUserUid = getArguments().getString(Utils.ARG_USER_UID);
+
+        if (incomeUserUid == null) {
+            finishActivity();
+        }
+
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -134,7 +107,7 @@ public class UserEventFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = refEvents;
+        Query query = app.getRefUserEvents(incomeUserUid);
 
         adapter = new FirebaseRecyclerAdapter<String, UserEventHolder>(String.class, R.layout.card_user_event, UserEventHolder.class, query) {
             @Override
@@ -193,7 +166,7 @@ public class UserEventFragment extends Fragment {
 
     private void getEvent(final UserEventHolder userEventHolder, final String eventUid) {
 
-        Query query = refEvent.child(eventUid);
+        Query query = app.getRefEvent(eventUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -237,18 +210,6 @@ public class UserEventFragment extends Fragment {
         Intent intent = new Intent(context, EventActivity.class);
         intent.putExtra(Utils.ARG_EVENT_UID, eventUid);
         startActivity(intent);
-    }
-
-    private void goContryActivity() {
-        Intent intent = new Intent(context, ContryActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
-    private void goCityActivity() {
-        Intent intent = new Intent(context, CityActivity.class);
-        startActivity(intent);
-        finishActivity();
     }
 
     private void finishActivity() {

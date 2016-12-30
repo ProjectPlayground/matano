@@ -1,7 +1,6 @@
 package matano.apkode.net.matano.fragment.user;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,35 +14,29 @@ import android.widget.FrameLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import matano.apkode.net.matano.CityActivity;
-import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.user.friend.ProfilFriendFollowerFragment;
 import matano.apkode.net.matano.fragment.user.friend.ProfilFriendFollowingFragment;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 public class UserFriendFragment extends Fragment {
-    private Context context;
+    private App app;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase database;
-    private DatabaseReference mRootRef;
-    private DatabaseReference refUser;
+    private FirebaseUser user;
+    private String incomeUserUid;
+    private String currentUserUid;
+
+    private Context context;
     private Button buttonFollower;
     private Button buttonFollowing;
     private FrameLayout fragmentLayoutContainer;
     private ProfilFriendFollowerFragment profilFriendFollowerFragment;
     private ProfilFriendFollowingFragment profilFriendFollowingFragment;
-    private String currentUserContry;
-    private String currentUserCity;
-    private LocalStorage localStorage;
-    private FirebaseUser user;
-    private String currentUserUid;
-    private String userUid;
 
     public UserFriendFragment() {
     }
@@ -62,35 +55,14 @@ public class UserFriendFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-        userUid = getArguments().getString(Utils.ARG_USER_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        localStorage = new LocalStorage(context);
-        currentUserContry = localStorage.getContry();
-        currentUserCity = localStorage.getCity();
-
-        if (userUid == null) {
-            finishActivity();
-        }
-
-        if (!localStorage.isContryStored() || currentUserContry == null) {
-            goContryActivity();
-        }
-
-        if (!localStorage.isCityStored() || currentUserCity == null) {
-            goCityActivity();
-        }
-
+        app = (App) getApplicationContext();
 
         mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        mRootRef = database.getReference();
-        refUser = mRootRef.child("user").child(userUid);
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -102,7 +74,6 @@ public class UserFriendFragment extends Fragment {
                 }
             }
         };
-
     }
 
     @Nullable
@@ -112,6 +83,14 @@ public class UserFriendFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_user_friend, container, false);
 
+
+        incomeUserUid = getArguments().getString(Utils.ARG_USER_UID);
+
+        if (incomeUserUid == null) {
+            finishActivity();
+        }
+
+
         buttonFollower = (Button) view.findViewById(R.id.buttonFollower);
         buttonFollowing = (Button) view.findViewById(R.id.buttonFollowing);
 
@@ -119,8 +98,8 @@ public class UserFriendFragment extends Fragment {
 
         fragmentLayoutContainer = (FrameLayout) view.findViewById(R.id.fragmentLayoutContainer);
 
-        profilFriendFollowerFragment = ProfilFriendFollowerFragment.newInstance(userUid);
-        profilFriendFollowingFragment = ProfilFriendFollowingFragment.newInstance(userUid);
+        profilFriendFollowerFragment = ProfilFriendFollowerFragment.newInstance(incomeUserUid);
+        profilFriendFollowingFragment = ProfilFriendFollowingFragment.newInstance(incomeUserUid);
 
         getFragmentManager().beginTransaction().add(R.id.fragmentLayoutContainer, profilFriendFollowerFragment).commit();
 
@@ -201,18 +180,6 @@ public class UserFriendFragment extends Fragment {
         super.onDetach();
     }
 
-
-    private void goContryActivity() {
-        Intent intent = new Intent(context, ContryActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
-    private void goCityActivity() {
-        Intent intent = new Intent(context, CityActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
 
     private void finishActivity() {
         getActivity().finish();

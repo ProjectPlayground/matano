@@ -1,7 +1,6 @@
 package matano.apkode.net.matano.fragment.user;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,39 +14,31 @@ import android.view.ViewGroup;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import matano.apkode.net.matano.CityActivity;
-import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.user.UserTicketHolder;
 import matano.apkode.net.matano.model.Event;
 import matano.apkode.net.matano.model.Ticket;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 public class UserTicketFragment extends Fragment {
+    private App app;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseUser user;
+    private String incomeUserUid;
+    private String currentUserUid;
+
     private Context context;
     private RecyclerView recyclerView;
     private List<Event> events = new ArrayList<>();
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase database;
-    private DatabaseReference mRootRef;
-    private DatabaseReference refUser;
-    private DatabaseReference refTickets;
     private FirebaseRecyclerAdapter<Ticket, UserTicketHolder> adapter;
-    private LinearLayoutManager manager;
-    private String currentUserContry;
-    private String currentUserCity;
-    private LocalStorage localStorage;
-    private FirebaseUser user;
-    private String currentUserUid;
-    private String userUid;
 
     public UserTicketFragment() {
     }
@@ -69,36 +60,14 @@ public class UserTicketFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-        userUid = getArguments().getString(Utils.ARG_USER_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        localStorage = new LocalStorage(context);
-        currentUserContry = localStorage.getContry();
-        currentUserCity = localStorage.getCity();
-
-        if (userUid == null) {
-            finishActivity();
-        }
-
-        if (!localStorage.isContryStored() || currentUserContry == null) {
-            goContryActivity();
-        }
-
-        if (!localStorage.isCityStored() || currentUserCity == null) {
-            goCityActivity();
-        }
-
+        app = (App) getApplicationContext();
 
         mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        mRootRef = database.getReference();
-        refUser = mRootRef.child("user").child(userUid);
-        refTickets = refUser.child("tickets");
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -121,7 +90,13 @@ public class UserTicketFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_user_ticket, container, false);
 
 
-        manager = new LinearLayoutManager(getContext());
+        incomeUserUid = getArguments().getString(Utils.ARG_USER_UID);
+
+        if (incomeUserUid == null) {
+            finishActivity();
+        }
+
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
@@ -177,19 +152,6 @@ public class UserTicketFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-    }
-
-
-    private void goContryActivity() {
-        Intent intent = new Intent(context, ContryActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
-    private void goCityActivity() {
-        Intent intent = new Intent(context, CityActivity.class);
-        startActivity(intent);
-        finishActivity();
     }
 
     private void finishActivity() {

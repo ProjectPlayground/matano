@@ -38,12 +38,6 @@ import matano.apkode.net.matano.model.User;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class EventParticipantFragment extends Fragment {
-    private Context context;
-    private RecyclerView recyclerView;
-    private LinearLayoutManager manager;
-    private FirebaseRecyclerAdapter<String, EventParticipantHolder> adapter;
-    private TextView textViewParticipantNumer;
-    private Button button_participer;
     private App app;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -51,6 +45,12 @@ public class EventParticipantFragment extends Fragment {
     private String incomeEventUid;
     private String currentUserUid;
 
+    private Context context;
+    private RecyclerView recyclerView;
+    private LinearLayoutManager manager;
+    private FirebaseRecyclerAdapter<String, EventParticipantHolder> adapter;
+    private TextView textViewParticipantNumer;
+    private Button button_participer;
 
 
     public EventParticipantFragment() {

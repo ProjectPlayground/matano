@@ -1,7 +1,6 @@
 package matano.apkode.net.matano.fragment.event;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,48 +23,42 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import matano.apkode.net.matano.CityActivity;
-import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.PhotoDialogFragment;
 import matano.apkode.net.matano.holder.event.EventPhotoHolder;
 import matano.apkode.net.matano.model.Event;
 import matano.apkode.net.matano.model.Photo;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 public class EventInfoFragment extends Fragment {
+    private App app;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseUser user;
+    private String incomeEventUid;
+    private String currentUserUid;
+
     private Context context;
     private RecyclerView recyclerViewTopPhoto;
     private RecyclerView recyclerViewTopUser;
     private List<Photo> photos = new ArrayList<>();
-    private String eventUid;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase database;
-    private DatabaseReference mRootRef;
-    private DatabaseReference refEventUser;
-    private DatabaseReference refEvent;
-    private DatabaseReference refPhotos;
-    private DatabaseReference refPhoto;
-    private String currentUserContry;
-    private String currentUserCity;
-    private LocalStorage localStorage;
     private FirebaseRecyclerAdapter<String, EventPhotoHolder> adapter;
     private LinearLayoutManager manager;
-    private ImageView imageViewPhotoProfil;
     private TextView textViewTitle;
     private TextView textViewPlace;
     private TextView textViewAddress;
@@ -73,29 +66,7 @@ public class EventInfoFragment extends Fragment {
     private TextView textViewTarification;
     private TextView textViewPresentation;
     private Button button_participer;
-    private SimpleDateFormat simpleDateFormat;
-    private String title = null;
-    private String category = null;
-    private String subCategory = null;
-    private String contry = null;
-    private String city = null;
-    private String place = null;
-    private String address = null;
-    private Double longitude = null;
-    private Double latitude = null;
-    private Double altitude = null;
-    private String date = null;
-    private String presentation = null;
-    private String photoProfil = null; // idPhoto
-    private String videoProfil = null; //  idVideo
-    private String tarification = null; // gratuit - payant - free
-
-    private List<String> tarifs = null; // Uid
-    private Map<String, String> users = null;  // uId - status
-
-    private FirebaseUser user;
-    private String currentUserUid;
-
+    private ImageView imageViewPhotoProfil;
 
     public EventInfoFragment() {
     }
@@ -115,37 +86,15 @@ public class EventInfoFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-
-        eventUid = getArguments().getString(Utils.ARG_EVENT_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        localStorage = new LocalStorage(context);
-        currentUserContry = localStorage.getContry();
-        currentUserCity = localStorage.getCity();
-
-        if (eventUid == null) {
-            finishActivity();
-        }
-
-        if (!localStorage.isContryStored() || currentUserContry == null) {
-            goContryActivity();
-        }
-
-        if (!localStorage.isCityStored() || currentUserCity == null) {
-            goCityActivity();
-        }
+        app = (App) getApplicationContext();
 
         mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        mRootRef = database.getReference();
-        refEvent = mRootRef.child("event").child(eventUid);
-        refPhotos = refEvent.child("photos");
-        refPhoto = mRootRef.child("photo");
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -158,7 +107,7 @@ public class EventInfoFragment extends Fragment {
             }
         };
 
-        }
+    }
 
     @Nullable
     @Override
@@ -166,6 +115,12 @@ public class EventInfoFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View view = inflater.inflate(R.layout.fragment_event_info, container, false);
+
+        incomeEventUid = getArguments().getString(Utils.ARG_EVENT_UID);
+
+        if (incomeEventUid == null) {
+            finishActivity();
+        }
 
         imageViewPhotoProfil = (ImageView) view.findViewById(R.id.imageViewPhotoProfil);
         textViewTitle = (TextView) view.findViewById(R.id.textViewTitle);
@@ -191,10 +146,8 @@ public class EventInfoFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE);
 
-
-        Query query = refPhotos.limitToFirst(10);
+        Query query = app.getRefEventPhotos(incomeEventUid).limitToFirst(10);
 
         adapter = new FirebaseRecyclerAdapter<String, EventPhotoHolder>(String.class, R.layout.card_event_info_top_photo, EventPhotoHolder.class, query) {
             @Override
@@ -208,140 +161,14 @@ public class EventInfoFragment extends Fragment {
         recyclerViewTopPhoto.setAdapter(adapter);
 
 
-        refEvent.addValueEventListener(new ValueEventListener() {
+        Query query1 = app.getRefEvent(incomeEventUid);
+        query1.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Event event = dataSnapshot.getValue(Event.class);
-
-                if (event == null) {
-                    // TODO someting
-
-                } else {
-                    if (event.getTitle() != null) {
-                        title = event.getTitle();
-                    }
-                    if (event.getCategory() != null) {
-                        category = event.getCategory();
-                    }
-                    if (event.getSubCategory() != null) {
-                        subCategory = event.getSubCategory();
-                    }
-                    if (event.getContry() != null) {
-                        contry = event.getContry();
-                    }
-                    if (event.getCity() != null) {
-                        city = event.getCity();
-                    }
-                    if (event.getPlace() != null) {
-                        place = event.getPlace();
-                    }
-                    if (event.getAddress() != null) {
-                        address = event.getAddress();
-                    }
-                    if (event.getLongitude() != null) {
-                        longitude = event.getLongitude();
-                    }
-                    if (event.getLatitude() != null) {
-                        latitude = event.getLatitude();
-                    }
-                    if (event.getAltitude() != null) {
-                        altitude = event.getAltitude();
-                    }
-                    if (event.getAltitude() != null) {
-                        altitude = event.getAltitude();
-                    }
-                    if (event.getDate() != null) {
-                        date = simpleDateFormat.format(event.getDate());
-                    }
-
-                    if (event.getPresentation() != null) {
-                        presentation = event.getPresentation();
-                    }
-                    if (event.getPhotoProfil() != null) {
-                        photoProfil = event.getPhotoProfil();
-                    }
-                    if (event.getVideoProfil() != null) {
-                        videoProfil = event.getVideoProfil();
-                    }
-                    if (event.getTarification() != null) {
-                        tarification = event.getTarification();
-                    }
-                    if (event.getUsers() != null) {
-                        users = event.getUsers();
-                    }
-
-                    /*if (imageViewPhotoProfil != null) {
-                        if (photoProfil != null) {
-                            Glide
-                                    .with(getContext())
-                                    .load(photoProfil)
-                                    //  .centerCrop()
-                                    .into(imageViewPhotoProfil);
-                        }
-                    }*/
-                    if (textViewTitle != null) {
-                        if (title != null) {
-                            textViewTitle.setText(title);
-                        }
-                    }
-                    if (textViewPlace != null) {
-                        if (place != null) {
-                            textViewPlace.setText(place);
-                        }
-                    }
-                    if (textViewAddress != null) {
-                        if (address != null) {
-                            textViewAddress.setText(address);
-                        }
-                    }
-                    if (textViewDate != null) {
-                        if (date != null) {
-                            textViewDate.setText(date);
-                        }
-                    }
-
-                    if (textViewTarification != null) {
-                        if (tarification != null) {
-                            textViewTarification.setText(tarification);
-                        }
-                    }
-
-                    if (textViewPresentation != null) {
-                        if (presentation != null) {
-                            textViewPresentation.setText(presentation);
-                        }
-                    }
-
-
-                    if (button_participer != null) {
-
-                        isUserParticipe();
-
-                        button_participer.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                switch (button_participer.getTag().toString()) {
-                                    case "9":
-                                        button_participer.setTag("0");
-                                        // button_participer.setText("En attente");
-                                        break;
-                                    case "0":
-                                        button_participer.setTag("9");
-                                        // button_participer.setText("Participer");
-                                        break;
-                                    case "1":
-                                        button_participer.setTag("9");
-                                        //   button_participer.setText("Participer");
-                                        break;
-                                }
-                                setUserToEvent();
-                            }
-                        });
-                    }
-
-
+                if (event != null) {
+                    displayLayoutMain(event);
                 }
-
             }
 
             @Override
@@ -349,6 +176,77 @@ public class EventInfoFragment extends Fragment {
 
             }
         });
+    }
+
+    private void displayLayoutMain(Event event) {
+        String title = event.getTitle();
+        String place = event.getPlace();
+        String address = event.getAddress();
+        Date date = event.getDate();
+        String dateString = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date);
+        String presentation = event.getPresentation();
+        String tarification = event.getTarification();
+
+        if (textViewTitle != null) {
+            if (title != null) {
+                textViewTitle.setText(title);
+            }
+        }
+        if (textViewPlace != null) {
+            if (place != null) {
+                textViewPlace.setText(place);
+            }
+        }
+        if (textViewAddress != null) {
+            if (address != null) {
+                textViewAddress.setText(address);
+            }
+        }
+        if (textViewDate != null) {
+            if (date != null) {
+                textViewDate.setText(dateString);
+            }
+        }
+
+        if (textViewTarification != null) {
+            if (tarification != null) {
+                textViewTarification.setText(tarification);
+            }
+        }
+
+        if (textViewPresentation != null) {
+            if (presentation != null) {
+                textViewPresentation.setText(presentation);
+            }
+        }
+
+
+        if (button_participer != null) {
+
+            isUserParticipe();
+
+            button_participer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    switch (button_participer.getTag().toString()) {
+                        case "9":
+                            button_participer.setTag("0");
+                            // button_participer.setText("En attente");
+                            break;
+                        case "0":
+                            button_participer.setTag("9");
+                            // button_participer.setText("Participer");
+                            break;
+                        case "1":
+                            button_participer.setTag("9");
+                            //   button_participer.setText("Participer");
+                            break;
+                    }
+                    setUserToEvent();
+                }
+            });
+        }
+
     }
 
     @Override
@@ -393,12 +291,9 @@ public class EventInfoFragment extends Fragment {
 
     private void isUserParticipe() {
 
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        Query query = app.getRefUserEvents(currentUserUid).child(incomeEventUid);
 
-        assert currentUser != null;
-        refEventUser = refEvent.child("users").child(currentUser.getUid());
-
-        refEventUser.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
@@ -431,9 +326,6 @@ public class EventInfoFragment extends Fragment {
     }
 
     private void setUserToEvent() {
-
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
         String tag = button_participer.getTag().toString();
 
         switch (tag) {
@@ -445,12 +337,11 @@ public class EventInfoFragment extends Fragment {
                 break;
         }
 
-
         Map hashMap = new HashMap();
-        hashMap.put("event/" + eventUid + "/users/" + currentUser.getUid(), tag);
-        hashMap.put("user/" + currentUser.getUid() + "/events/" + eventUid, tag);
+        hashMap.put("event/" + incomeEventUid + "/users/" + currentUserUid, tag);
+        hashMap.put("user/" + currentUserUid + "/events/" + incomeEventUid, tag);
 
-        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
@@ -461,10 +352,10 @@ public class EventInfoFragment extends Fragment {
     }
 
 
-    private void getPhoto(final EventPhotoHolder eventPhotoHolder, String s, final int position) {
-        Query query = refPhoto.child(s);
+    private void getPhoto(final EventPhotoHolder eventPhotoHolder, String photoUid, final int position) {
+        Query query = app.getRefPhoto(photoUid);
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Photo photo = dataSnapshot.getValue(Photo.class);
@@ -514,18 +405,6 @@ public class EventInfoFragment extends Fragment {
 
         }
 
-    }
-
-    private void goContryActivity() {
-        Intent intent = new Intent(context, ContryActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
-    private void goCityActivity() {
-        Intent intent = new Intent(context, CityActivity.class);
-        startActivity(intent);
-        finishActivity();
     }
 
     private void finishActivity() {

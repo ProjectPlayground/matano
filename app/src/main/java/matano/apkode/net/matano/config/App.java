@@ -118,8 +118,6 @@ public class App extends Application implements Application.ActivityLifecycleCal
             goCityActivity();
         }
 
-        Log.e(Utils.TAG, "currentUser ");
-
 
         // LOGIN
         mAuth = FirebaseAuth.getInstance();
@@ -137,7 +135,6 @@ public class App extends Application implements Application.ActivityLifecycleCal
             }
         };
 
-        // Firebasesss
 
         database = FirebaseDatabase.getInstance();
         refDatabaseRoot = database.getReference();

@@ -1,7 +1,6 @@
 package matano.apkode.net.matano.fragment.user;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,40 +19,35 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import matano.apkode.net.matano.CityActivity;
-import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.model.User;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 public class UserInfoFragment extends Fragment {
-    TextView textViewFollowersNumber;
-    TextView textViewFollowingsNumber;
-    TextView textViewPhotosNumber;
-    TextView textViewUsername;
-    TextView textViewPresentation;
-    ImageView imageViewPhotoProfil;
-    ImageButton imageButtonAddOrSetting;
-    private Context context;
+    private App app;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase database;
-    private DatabaseReference mRootRef;
-    private DatabaseReference refUser;
-    private String userUid;
-    private String currentUserContry;
-    private String currentUserCity;
-    private LocalStorage localStorage;
     private FirebaseUser user;
+    private String incomeUserUid;
     private String currentUserUid;
+
+    private Context context;
+    private TextView textViewFollowersNumber;
+    private TextView textViewFollowingsNumber;
+    private TextView textViewPhotosNumber;
+    private TextView textViewUsername;
+    private TextView textViewPresentation;
+    private ImageView imageViewPhotoProfil;
+    private ImageButton imageButtonAddOrSetting;
 
 
     public UserInfoFragment() {
@@ -74,35 +68,14 @@ public class UserInfoFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-        userUid = getArguments().getString(Utils.ARG_USER_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        localStorage = new LocalStorage(context);
-        currentUserContry = localStorage.getContry();
-        currentUserCity = localStorage.getCity();
-
-        if (userUid == null) {
-            finishActivity();
-        }
-
-        if (!localStorage.isContryStored() || currentUserContry == null) {
-            goContryActivity();
-        }
-
-        if (!localStorage.isCityStored() || currentUserCity == null) {
-            goCityActivity();
-        }
+        app = (App) getApplicationContext();
 
         mAuth = FirebaseAuth.getInstance();
-
-        database = FirebaseDatabase.getInstance();
-        mRootRef = database.getReference();
-        refUser = mRootRef.child("user").child(userUid);
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -124,6 +97,12 @@ public class UserInfoFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_user_info, container, false);
 
+        incomeUserUid = getArguments().getString(Utils.ARG_USER_UID);
+
+        if (incomeUserUid == null) {
+            finishActivity();
+        }
+
         textViewFollowersNumber = (TextView) view.findViewById(R.id.textViewFollowersNumber);
         textViewFollowingsNumber = (TextView) view.findViewById(R.id.textViewFollowingsNumber);
         textViewPhotosNumber = (TextView) view.findViewById(R.id.textViewPhotosNumber);
@@ -139,7 +118,9 @@ public class UserInfoFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = refUser;
+        Query query = app.getRefUser(incomeUserUid);
+
+        Log.e(Utils.TAG, "query " + query.getRef());
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -252,7 +233,7 @@ public class UserInfoFragment extends Fragment {
 
         if (imageButtonAddOrSetting != null) {
 
-            if (currentUserUid.equals(userUid)) {
+            if (currentUserUid.equals(currentUserUid)) {
                 imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_action_settings_padding);
                 imageButtonAddOrSetting.setVisibility(View.VISIBLE);
 
@@ -264,13 +245,13 @@ public class UserInfoFragment extends Fragment {
                 });
 
             } else {
-                isUserMyFriend(imageButtonAddOrSetting, userUid);
+                isUserMyFriend(imageButtonAddOrSetting, currentUserUid);
             }
 
             imageButtonAddOrSetting.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addFollowing(userUid, (String) view.getTag());
+                    addFollowing(currentUserUid, (String) view.getTag());
                 }
             });
 
@@ -279,7 +260,7 @@ public class UserInfoFragment extends Fragment {
     }
 
     private void isUserMyFriend(final ImageButton imageButtonAddOrSetting, final String userUid) {
-        Query query = mRootRef.child("user").child(currentUserUid).child("followings");
+        Query query = app.getRefUserFollowings(currentUserUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -315,7 +296,7 @@ public class UserInfoFragment extends Fragment {
         hashMap.put("user/" + userUid + "/followers/" + currentUserUid, tag);
         hashMap.put("user/" + currentUserUid + "/followings/" + userUid, tag);
 
-        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
@@ -323,19 +304,6 @@ public class UserInfoFragment extends Fragment {
                 }
             }
         });
-    }
-
-
-    private void goContryActivity() {
-        Intent intent = new Intent(context, ContryActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
-    private void goCityActivity() {
-        Intent intent = new Intent(context, CityActivity.class);
-        startActivity(intent);
-        finishActivity();
     }
 
     private void finishActivity() {

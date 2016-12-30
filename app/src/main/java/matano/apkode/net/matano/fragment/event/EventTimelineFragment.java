@@ -27,10 +27,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -45,11 +43,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import matano.apkode.net.matano.CityActivity;
-import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.UserActivity;
-import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.PhotoDialogFragment;
 import matano.apkode.net.matano.holder.event.EventTimelineHolder;
@@ -57,34 +53,23 @@ import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.User;
 
 import static android.app.Activity.RESULT_OK;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class EventTimelineFragment extends Fragment {
     private static final int ARG_PHOTO_PICKER = 2;
+    private App app;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseUser user;
+    private String incomeEventUid;
+    private String currentUserUid;
     private Context context;
     private RecyclerView recyclerView;
     private List<Photo> photos = new ArrayList<>();
-    private String eventUid;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase database;
-    private DatabaseReference mRootRef;
-    private DatabaseReference refEvent;
-    private DatabaseReference refUser;
-    private DatabaseReference refPhotos;
-    private DatabaseReference refPhoto;
-    private FirebaseStorage storage;
-    private StorageReference refStoragePhoto;
-    private StorageReference mRootStorageRef;
-    private LinearLayoutManager manager;
     private FirebaseRecyclerAdapter<String, EventTimelineHolder> adapter;
     private FloatingActionButton floatingButtonPhoto;
     private ProgressBar progressBar;
-    private String currentUserContry;
-    private String currentUserCity;
-    private LocalStorage localStorage;
-    private FirebaseUser user;
-    private String currentUserUid;
 
     public EventTimelineFragment() {
     }
@@ -104,44 +89,15 @@ public class EventTimelineFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-        eventUid = getArguments().getString(Utils.ARG_EVENT_UID);
 
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        localStorage = new LocalStorage(context);
-        currentUserContry = localStorage.getContry();
-        currentUserCity = localStorage.getCity();
-
-        if (eventUid == null) {
-            finishActivity();
-        }
-
-        if (!localStorage.isContryStored() || currentUserContry == null) {
-            goContryActivity();
-        }
-
-        if (!localStorage.isCityStored() || currentUserCity == null) {
-            goCityActivity();
-        }
+        app = (App) getApplicationContext();
 
         mAuth = FirebaseAuth.getInstance();
-
-        database = FirebaseDatabase.getInstance();
-        mRootRef = database.getReference();
-        refEvent = mRootRef.child("event").child(eventUid);
-        refPhotos = refEvent.child("photos");
-        refPhoto = mRootRef.child("photo");
-        refUser = mRootRef.child("user");
-
-        storage = FirebaseStorage.getInstance();
-        mRootStorageRef = storage.getReference();
-
-        refStoragePhoto = mRootStorageRef.child("photos");
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -163,7 +119,13 @@ public class EventTimelineFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_event_timeline, container, false);
 
-        manager = new LinearLayoutManager(getContext());
+        incomeEventUid = getArguments().getString(Utils.ARG_EVENT_UID);
+
+        if (incomeEventUid == null) {
+            finishActivity();
+        }
+
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -179,7 +141,7 @@ public class EventTimelineFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = refPhotos;
+        Query query = app.getRefEventPhotos(incomeEventUid);
 
         adapter = new FirebaseRecyclerAdapter<String, EventTimelineHolder>(String.class, R.layout.card_event_timeline, EventTimelineHolder.class, query) {
             @Override
@@ -247,7 +209,7 @@ public class EventTimelineFragment extends Fragment {
     }
 
     private void getPhoto(final EventTimelineHolder eventTimelineHolder, final String photoUid, final int position) {
-        Query query = refPhoto.child(photoUid);
+        Query query = app.getRefPhoto(photoUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -275,7 +237,7 @@ public class EventTimelineFragment extends Fragment {
     private void getUser(final EventTimelineHolder eventTimelineHolder, final String photoUid, final Photo photo, final int position) {
         String userUid = photo.getUser();
 
-        Query query = refUser.child(userUid);
+        Query query = app.getRefUser(userUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -333,7 +295,7 @@ public class EventTimelineFragment extends Fragment {
 
         final ImageButton imageButtonLikePhoto = eventTimelineHolder.getImageButtonLikePhoto();
 
-        Query query = refUser.child(userUid).child("likes");
+        Query query = app.getRefUserLikes(userUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -378,7 +340,7 @@ public class EventTimelineFragment extends Fragment {
         hashMap.put("photo/" + photoUid + "/likes/" + currentUserUid, tag);
         hashMap.put("user/" + currentUserUid + "/likes/" + photoUid, tag);
 
-        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
@@ -396,7 +358,7 @@ public class EventTimelineFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         Toast.makeText(getContext(), "En cours...", Toast.LENGTH_SHORT).show();
 
-        StorageReference photoRef = refStoragePhoto.child(uuid);
+        StorageReference photoRef = app.getRefStorageRoot().child(uuid);
         photoRef.putFile(selectedImageUri)
                 .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -430,15 +392,15 @@ public class EventTimelineFragment extends Fragment {
 
     private void savePhoto(Uri downloadUri, String uuid) {
 
-        Photo photo = new Photo(eventUid, currentUserUid, downloadUri.toString(), new Date(), "0", null);
+        Photo photo = new Photo(incomeEventUid, currentUserUid, downloadUri.toString(), new Date(), "0", null);
 
         Map hashMap = new HashMap();
 
-        hashMap.put("event/" + eventUid + "/photos/" + uuid, "0");
+        hashMap.put("event/" + incomeEventUid + "/photos/" + uuid, "0");
         hashMap.put("photo/" + uuid, photo);
         hashMap.put("user/" + currentUserUid + "/photos/" + uuid, "0");
 
-        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
@@ -466,17 +428,6 @@ public class EventTimelineFragment extends Fragment {
         startActivity(intent);
     }
 
-    private void goContryActivity() {
-        Intent intent = new Intent(context, ContryActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
-    private void goCityActivity() {
-        Intent intent = new Intent(context, CityActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
 
     private void finishActivity() {
         getActivity().finish();
