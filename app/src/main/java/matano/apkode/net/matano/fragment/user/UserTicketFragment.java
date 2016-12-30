@@ -20,6 +20,7 @@ import java.util.List;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.user.UserTicketHolder;
 import matano.apkode.net.matano.model.Event;
@@ -34,6 +35,7 @@ public class UserTicketFragment extends Fragment {
     private FirebaseUser user;
     private String incomeUserUid;
     private String currentUserUid;
+    private Db db;
 
     private Context context;
     private RecyclerView recyclerView;
@@ -66,6 +68,7 @@ public class UserTicketFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         app = (App) getApplicationContext();
+        db = new Db(context);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {

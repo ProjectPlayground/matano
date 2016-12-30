@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.user.UserEventHolder;
 import matano.apkode.net.matano.model.Event;
@@ -36,6 +37,7 @@ public class UserEventFragment extends Fragment {
     private FirebaseUser user;
     private String incomeUserUid;
     private String currentUserUid;
+    private Db db;
 
     private Context context;
     private RecyclerView recyclerView;
@@ -65,6 +67,7 @@ public class UserEventFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         app = (App) getApplicationContext();
+        db = new Db(context);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {

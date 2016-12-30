@@ -1,6 +1,5 @@
 package matano.apkode.net.matano;
 
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -26,7 +25,8 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.user.UserEventFragment;
 import matano.apkode.net.matano.fragment.user.UserFriendFragment;
@@ -35,15 +35,15 @@ import matano.apkode.net.matano.fragment.user.UserTicketFragment;
 import matano.apkode.net.matano.fragment.user.UserTimelineFragment;
 
 public class UserActivity extends AppCompatActivity {
-    private ViewPager mViewPager;
+    private App app;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private String userUid;
-    private String currentUserContry;
-    private String currentUserCity;
-    private LocalStorage localStorage;
     private FirebaseUser user;
+    private String incomeUserUid;
     private String currentUserUid;
+    private Db db;
+
+    private ViewPager mViewPager;
     private TextView textViewToolbarTitle;
     private int countPage = 4;
 
@@ -51,27 +51,9 @@ public class UserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
-
-        userUid = getIntent().getStringExtra(Utils.ARG_USER_UID);
-
-        localStorage = new LocalStorage(this);
-        currentUserContry = localStorage.getContry();
-        currentUserCity = localStorage.getCity();
-
-        if (userUid == null) {
-            finishActivity();
-        }
-
-        if (!localStorage.isContryStored() || currentUserContry == null) {
-            goContryActivity();
-        }
-
-        if (!localStorage.isCityStored() || currentUserCity == null) {
-            goCityActivity();
-        }
+        app = (App) getApplicationContext();
 
         mAuth = FirebaseAuth.getInstance();
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -84,7 +66,14 @@ public class UserActivity extends AppCompatActivity {
             }
         };
 
-        if (userUid.equals(currentUserUid)) {
+        incomeUserUid = getIntent().getStringExtra(Utils.ARG_USER_UID);
+
+        if (incomeUserUid == null) {
+            finishActivity();
+        }
+
+
+        if (incomeUserUid.equals(currentUserUid)) {
             countPage = 5;
         }
 
@@ -200,18 +189,6 @@ public class UserActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void goContryActivity() {
-        Intent intent = new Intent(this, ContryActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
-    private void goCityActivity() {
-        Intent intent = new Intent(this, CityActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
     private void finishActivity() {
         finish();
     }
@@ -241,15 +218,15 @@ public class UserActivity extends AppCompatActivity {
             switch (position + 1) {
 
                 case 1:
-                    return UserInfoFragment.newInstance(userUid);
+                    return UserInfoFragment.newInstance(incomeUserUid);
                 case 2:
-                    return UserTimelineFragment.newInstance(userUid);
+                    return UserTimelineFragment.newInstance(incomeUserUid);
                 case 3:
-                    return UserEventFragment.newInstance(userUid);
+                    return UserEventFragment.newInstance(incomeUserUid);
                 case 4:
-                    return UserFriendFragment.newInstance(userUid);
+                    return UserFriendFragment.newInstance(incomeUserUid);
                 case 5:
-                    return UserTicketFragment.newInstance(userUid);
+                    return UserTicketFragment.newInstance(incomeUserUid);
                 default:
                     return null;
             }

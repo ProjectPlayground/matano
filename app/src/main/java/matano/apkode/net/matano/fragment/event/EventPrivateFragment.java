@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,37 +16,33 @@ import android.widget.ImageButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import matano.apkode.net.matano.CityActivity;
 import matano.apkode.net.matano.ContryActivity;
-import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.event.privates.EventPrivatePhotoFragment;
 import matano.apkode.net.matano.fragment.event.privates.EventPrivateTchatFragment;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 public class EventPrivateFragment extends Fragment {
-    private static final String CURRENT_FRAGMENT = "Private";
-    private Context context;
+    private App app;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase database;
-    private DatabaseReference mRootRef;
-    private DatabaseReference refEvent;
+    private FirebaseUser user;
+    private String incomeEventUid;
+    private String currentUserUid;
+    private Db db;
+
+    private Context context;
     private ImageButton imageButtonPrivateTchat;
     private ImageButton imageButtonPrivatePhoto;
     private FrameLayout fragmentLayoutContainer;
     private EventPrivateTchatFragment eventPrivateTchatFragment;
     private EventPrivatePhotoFragment eventPrivatePhotoFragment;
-    private String currentUserContry;
-    private String currentUserCity;
-    private LocalStorage localStorage;
-    private FirebaseUser user;
-    private String currentUserUid;
-    private String eventUid;
 
     public EventPrivateFragment() {
     }
@@ -66,36 +61,15 @@ public class EventPrivateFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-
-        eventUid = getArguments().getString(Utils.ARG_EVENT_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        localStorage = new LocalStorage(context);
-        currentUserContry = localStorage.getContry();
-        currentUserCity = localStorage.getCity();
-
-        if (eventUid == null) {
-            finishActivity();
-        }
-
-        if (!localStorage.isContryStored() || currentUserContry == null) {
-            goContryActivity();
-        }
-
-        if (!localStorage.isCityStored() || currentUserCity == null) {
-            goCityActivity();
-        }
-
+        app = (App) getApplicationContext();
+        db = new Db(context);
 
         mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        mRootRef = database.getReference();
-        refEvent = mRootRef.child("event").child(eventUid);
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -115,14 +89,15 @@ public class EventPrivateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
+        View view = inflater.inflate(R.layout.fragment_event_private, container, false);
 
-        ActionBar supportActionBar = ((EventActivity) getActivity()).getSupportActionBar();
 
-        if (supportActionBar != null) {
-            supportActionBar.setTitle(CURRENT_FRAGMENT);
+        incomeEventUid = getArguments().getString(Utils.ARG_EVENT_UID);
+
+        if (incomeEventUid == null) {
+            finishActivity();
         }
 
-        View view = inflater.inflate(R.layout.fragment_event_private, container, false);
 
         imageButtonPrivateTchat = (ImageButton) view.findViewById(R.id.imageButtonPrivateTchat);
         imageButtonPrivatePhoto = (ImageButton) view.findViewById(R.id.imageButtonPrivatePhoto);
@@ -131,8 +106,8 @@ public class EventPrivateFragment extends Fragment {
 
         fragmentLayoutContainer = (FrameLayout) view.findViewById(R.id.fragmentLayoutContainer);
 
-        eventPrivateTchatFragment = EventPrivateTchatFragment.newInstance(eventUid);
-        eventPrivatePhotoFragment = EventPrivatePhotoFragment.newInstance(eventUid);
+        eventPrivateTchatFragment = EventPrivateTchatFragment.newInstance(incomeEventUid);
+        eventPrivatePhotoFragment = EventPrivatePhotoFragment.newInstance(incomeEventUid);
 
 
         getFragmentManager().beginTransaction().add(R.id.fragmentLayoutContainer, eventPrivateTchatFragment).commit();

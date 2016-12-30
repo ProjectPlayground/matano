@@ -15,18 +15,24 @@ import android.widget.FrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.MainEventFragment;
 import matano.apkode.net.matano.fragment.MainTimelineFragment;
 
 
 public class MainActivity extends AppCompatActivity {
-    private MainEventFragment mainEventFragment;
-    private MainTimelineFragment mainTimelineFragment;
+    private App app;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser user;
+    private String incomeEventUid;
     private String currentUserUid;
+    private Db db;
+
+    private MainEventFragment mainEventFragment;
+    private MainTimelineFragment mainTimelineFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +41,10 @@ public class MainActivity extends AppCompatActivity {
 
         // FirebaseAuth.getInstance().signOut();
 
-        mAuth = FirebaseAuth.getInstance();
+        app = (App) getApplicationContext();
+        db = new Db(this);
 
+        mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -48,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

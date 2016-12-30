@@ -1,11 +1,14 @@
 package matano.apkode.net.matano.model;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@IgnoreExtraProperties
 public class Tchat implements Serializable {
-    // Uid ==  idEvent
-    private String user;    // Uid
+    private String event; // idEvent
+    private String user;    // userUid
     private Date date;  // enregistrement
     private String messsage;
     private String photo;   // photouid
@@ -15,12 +18,21 @@ public class Tchat implements Serializable {
     public Tchat() {
     }
 
-    public Tchat(String user, Date date, String messsage, String photo, String video) {
+    public Tchat(String event, String user, Date date, String messsage, String photo, String video) {
+        this.event = event;
         this.user = user;
         this.date = date;
         this.messsage = messsage;
         this.photo = photo;
         this.video = video;
+    }
+
+    public String getEvent() {
+        return event;
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
     }
 
     public String getUser() {

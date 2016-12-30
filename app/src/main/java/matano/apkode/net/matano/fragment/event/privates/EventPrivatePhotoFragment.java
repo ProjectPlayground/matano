@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +31,7 @@ import java.util.Locale;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.UserActivity;
 import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.PhotoDialogFragment;
 import matano.apkode.net.matano.holder.event.privates.EventPrivatePhotoHolder;
@@ -47,6 +47,7 @@ public class EventPrivatePhotoFragment extends Fragment {
     private FirebaseUser user;
     private String incomeEventUid;
     private String currentUserUid;
+    private Db db;
 
     private Context context;
     private RecyclerView recyclerView;
@@ -79,6 +80,7 @@ public class EventPrivatePhotoFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         app = (App) getApplicationContext();
+        db = new Db(context);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -180,8 +182,6 @@ public class EventPrivatePhotoFragment extends Fragment {
     private void getPhoto(final EventPrivatePhotoHolder eventPrivatePhotoHolder, final String photoUid, final int position) {
         Query query = app.getRefPhoto(photoUid);
 
-        Log.e(Utils.TAG, "query " + query.getRef());
-
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -189,14 +189,10 @@ public class EventPrivatePhotoFragment extends Fragment {
 
                 if (photo != null && photo.getUrl() != null && photo.getUser() != null) {
                     getUser(eventPrivatePhotoHolder, photoUid, photo, position);
-
                     if (!photos.contains(photo)) {
                         photos.add(photo);
                     }
-
-
                 }
-
             }
 
             @Override

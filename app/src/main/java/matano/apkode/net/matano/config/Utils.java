@@ -23,6 +23,7 @@ public class Utils {
     public static final String FIREBASE_CHILD_EVENT_TICKETS = "tickets";
     public static final String FIREBASE_CHILD_EVENT_USERS = "users";
     public static final String FIREBASE_CHILD_EVENT_PHOTOS = "photos";
+    public static final String FIREBASE_CHILD_EVENT_TCHATS = "tchats";
 
     public static final String FIREBASE_CHILD_PHOTO_LIKES = "likes";
 
@@ -33,6 +34,7 @@ public class Utils {
     public static final String FIREBASE_CHILD_USER_VIDEOS = "videos";
     public static final String FIREBASE_CHILD_USER_LIKES = "likes";
     public static final String FIREBASE_CHILD_USER_TICKETS = "tickets";
+    public static final String FIREBASE_CHILD_USER_TCHATS = "tchats";
 
 
 

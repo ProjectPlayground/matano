@@ -26,7 +26,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.OnProgressListener;
@@ -37,15 +36,14 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.UUID;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.UserActivity;
 import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.PhotoDialogFragment;
 import matano.apkode.net.matano.holder.event.EventTimelineHolder;
@@ -64,6 +62,8 @@ public class EventTimelineFragment extends Fragment {
     private FirebaseUser user;
     private String incomeEventUid;
     private String currentUserUid;
+
+    private Db db;
     private Context context;
     private RecyclerView recyclerView;
     private List<Photo> photos = new ArrayList<>();
@@ -96,6 +96,7 @@ public class EventTimelineFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         app = (App) getApplicationContext();
+        db = new Db(context);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -328,26 +329,10 @@ public class EventTimelineFragment extends Fragment {
         imageButtonLikePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addPhotoLike(photoUid, (String) view.getTag());
+                db.setPhotoLike(photoUid, (String) view.getTag(), currentUserUid);
             }
         });
 
-
-    }
-
-    private void addPhotoLike(String photoUid, String tag) {
-        Map hashMap = new HashMap();
-        hashMap.put("photo/" + photoUid + "/likes/" + currentUserUid, tag);
-        hashMap.put("user/" + currentUserUid + "/likes/" + photoUid, tag);
-
-        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
-                }
-            }
-        });
 
     }
 
@@ -376,7 +361,7 @@ public class EventTimelineFragment extends Fragment {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUri = taskSnapshot.getDownloadUrl();
-                        savePhoto(downloadUri, uuid);
+                        db.setPhotoTimeline(downloadUri, uuid, incomeEventUid, currentUserUid);
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Uploaded", Toast.LENGTH_SHORT).show();
                     }
@@ -390,26 +375,6 @@ public class EventTimelineFragment extends Fragment {
                 });
     }
 
-    private void savePhoto(Uri downloadUri, String uuid) {
-
-        Photo photo = new Photo(incomeEventUid, currentUserUid, downloadUri.toString(), new Date(), "0", null);
-
-        Map hashMap = new HashMap();
-
-        hashMap.put("event/" + incomeEventUid + "/photos/" + uuid, "0");
-        hashMap.put("photo/" + uuid, photo);
-        hashMap.put("user/" + currentUserUid + "/photos/" + uuid, "0");
-
-        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
-                }
-            }
-        });
-
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

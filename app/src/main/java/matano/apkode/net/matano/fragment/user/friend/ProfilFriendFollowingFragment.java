@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.UserActivity;
 import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.user.UserFriendHolder;
 import matano.apkode.net.matano.model.User;
@@ -37,6 +38,7 @@ public class ProfilFriendFollowingFragment extends Fragment {
     private FirebaseUser user;
     private String incomeUserUid;
     private String currentUserUid;
+    private Db db;
 
     private Context context;
     private FirebaseRecyclerAdapter<String, UserFriendHolder> adapter;
@@ -66,6 +68,7 @@ public class ProfilFriendFollowingFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         app = (App) getApplicationContext();
+        db = new Db(context);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {

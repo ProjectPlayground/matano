@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.user.friend.ProfilFriendFollowerFragment;
 import matano.apkode.net.matano.fragment.user.friend.ProfilFriendFollowingFragment;
@@ -30,6 +31,7 @@ public class UserFriendFragment extends Fragment {
     private FirebaseUser user;
     private String incomeUserUid;
     private String currentUserUid;
+    private Db db;
 
     private Context context;
     private Button buttonFollower;
@@ -61,6 +63,7 @@ public class UserFriendFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         app = (App) getApplicationContext();
+        db = new Db(context);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {

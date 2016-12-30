@@ -1,7 +1,6 @@
 package matano.apkode.net.matano.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,7 +17,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -26,30 +24,30 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import matano.apkode.net.matano.CityActivity;
-import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.MainTimelineHolder;
 import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.User;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 
 public class MainTimelineFragment extends Fragment {
-    private Context context;
-    private String currentUserContry;
-    private String currentUserCity;
-    private LocalStorage localStorage;
-    private RecyclerView recyclerView;
+    private App app;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase database;
-    private DatabaseReference mRootRef;
-    private DatabaseReference refUser;
-    private LinearLayoutManager manager;
-    private FirebaseRecyclerAdapter<String, MainTimelineHolder> adapter;
     private FirebaseUser user;
+    private String incomeUserUid;
     private String currentUserUid;
+    private Db db;
+
+    private Context context;
+    private RecyclerView recyclerView;
+    private FirebaseRecyclerAdapter<String, MainTimelineHolder> adapter;
+
 
     public MainTimelineFragment() {
     }
@@ -63,24 +61,10 @@ public class MainTimelineFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        localStorage = new LocalStorage(context);
-        currentUserContry = localStorage.getContry();
-        currentUserCity = localStorage.getCity();
-
-        if (!localStorage.isContryStored() || currentUserContry == null) {
-            goContryActivity();
-        }
-
-        if (!localStorage.isCityStored() || currentUserCity == null) {
-            goCityActivity();
-        }
+        app = (App) getApplicationContext();
+        db = new Db(context);
 
         mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        mRootRef = database.getReference();
-        refUser = mRootRef.child("user");
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -92,15 +76,22 @@ public class MainTimelineFragment extends Fragment {
                 }
             }
         };
-
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_main_timeline, container, false);
 
-        manager = new LinearLayoutManager(getContext());
+        incomeUserUid = getArguments().getString(Utils.ARG_USER_UID);
+
+        if (incomeUserUid == null) {
+            finishActivity();
+        }
+
+
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -114,7 +105,7 @@ public class MainTimelineFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = refUser.child(currentUserUid).child("followings");
+        Query query = app.getRefUserFollowings(currentUserUid);
 
         adapter = new FirebaseRecyclerAdapter<String, MainTimelineHolder>(String.class, R.layout.card_main_timeline, MainTimelineHolder.class, query) {
             @Override
@@ -178,7 +169,7 @@ public class MainTimelineFragment extends Fragment {
     }
 
     private void getUserPhotos(final MainTimelineHolder mainTimelineHolder, String userUid) {
-        DatabaseReference reference = mRootRef.child("user").child(userUid).child("photos");
+        DatabaseReference reference = app.getRefUserPhotos(userUid);
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -202,7 +193,7 @@ public class MainTimelineFragment extends Fragment {
     }
 
     private void getUserPhoto(final MainTimelineHolder mainTimelineHolder, final String photoUid) {
-        DatabaseReference reference = mRootRef.child("photo").child(photoUid);
+        DatabaseReference reference = app.getRefPhoto(photoUid);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -229,7 +220,7 @@ public class MainTimelineFragment extends Fragment {
         final String photo = p.getUrl();
         final Date date = p.getDate();
 
-        Query query = refUser.child(currentUserUid);
+        Query query = app.getRefUser(currentUserUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -256,17 +247,6 @@ public class MainTimelineFragment extends Fragment {
         });
     }
 
-    private void goContryActivity() {
-        Intent intent = new Intent(context, ContryActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
-    private void goCityActivity() {
-        Intent intent = new Intent(context, CityActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
 
     private void finishActivity() {
         getActivity().finish();

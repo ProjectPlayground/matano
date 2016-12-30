@@ -1,6 +1,5 @@
 package matano.apkode.net.matano;
 
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -27,7 +26,8 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.event.EventInfoFragment;
 import matano.apkode.net.matano.fragment.event.EventParticipantFragment;
@@ -36,42 +36,25 @@ import matano.apkode.net.matano.fragment.event.EventTimelineFragment;
 
 
 public class EventActivity extends AppCompatActivity {
-    private String eventUid;
+    private App app;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser user;
+    private String incomeEventUid;
     private String currentUserUid;
-    private String currentUserContry;
-    private String currentUserCity;
-    private LocalStorage localStorage;
-    private ImageView imageViewCover;
+    private Db db;
+
     private TextView textViewToolbarTitle;
+    private ImageView imageViewCover;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
-
-        eventUid = getIntent().getStringExtra(Utils.ARG_EVENT_UID);
-
-        localStorage = new LocalStorage(this);
-        currentUserContry = localStorage.getContry();
-        currentUserCity = localStorage.getCity();
-
-        if (eventUid == null) {
-            finishActivity();
-        }
-
-        if (!localStorage.isContryStored() || currentUserContry == null) {
-            goContryActivity();
-        }
-
-        if (!localStorage.isCityStored() || currentUserCity == null) {
-            goCityActivity();
-        }
+        app = (App) getApplicationContext();
+        db = new Db(this);
 
         mAuth = FirebaseAuth.getInstance();
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -83,6 +66,12 @@ public class EventActivity extends AppCompatActivity {
                 }
             }
         };
+
+        incomeEventUid = getIntent().getStringExtra(Utils.ARG_EVENT_UID);
+
+        if (incomeEventUid == null) {
+            finishActivity();
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_action_navigation_arrow_back_padding);
@@ -197,23 +186,9 @@ public class EventActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    private void goContryActivity() {
-        Intent intent = new Intent(this, ContryActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
-    private void goCityActivity() {
-        Intent intent = new Intent(this, CityActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
     private void finishActivity() {
         finish();
     }
-
 
 
     /**
@@ -241,13 +216,13 @@ public class EventActivity extends AppCompatActivity {
             switch (position + 1) {
 
                 case 1:
-                    return EventInfoFragment.newInstance(eventUid);
+                    return EventInfoFragment.newInstance(incomeEventUid);
                 case 2:
-                    return EventTimelineFragment.newInstance(eventUid);
+                    return EventTimelineFragment.newInstance(incomeEventUid);
                 case 3:
-                    return EventParticipantFragment.newInstance(eventUid);
+                    return EventParticipantFragment.newInstance(incomeEventUid);
                 case 4:
-                    return EventPrivateFragment.newInstance(eventUid);
+                    return EventPrivateFragment.newInstance(incomeEventUid);
                 default:
                     return null;
             }

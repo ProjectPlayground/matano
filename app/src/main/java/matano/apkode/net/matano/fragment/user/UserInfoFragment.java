@@ -18,15 +18,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.model.User;
 
@@ -39,6 +38,7 @@ public class UserInfoFragment extends Fragment {
     private FirebaseUser user;
     private String incomeUserUid;
     private String currentUserUid;
+    private Db db;
 
     private Context context;
     private TextView textViewFollowersNumber;
@@ -74,6 +74,7 @@ public class UserInfoFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         app = (App) getApplicationContext();
+        db = new Db(context);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -251,7 +252,8 @@ public class UserInfoFragment extends Fragment {
             imageButtonAddOrSetting.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addFollowing(currentUserUid, (String) view.getTag());
+
+                    // addFollowing(currentUserUid, (String) view.getTag());
                 }
             });
 
@@ -291,20 +293,6 @@ public class UserInfoFragment extends Fragment {
         });
     }
 
-    private void addFollowing(String userUid, String tag) {
-        Map hashMap = new HashMap();
-        hashMap.put("user/" + userUid + "/followers/" + currentUserUid, tag);
-        hashMap.put("user/" + currentUserUid + "/followings/" + userUid, tag);
-
-        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
-                }
-            }
-        });
-    }
 
     private void finishActivity() {
         getActivity().finish();

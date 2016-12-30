@@ -15,11 +15,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 
+import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.model.User;
 
@@ -27,38 +29,31 @@ import static com.firebase.ui.auth.ui.ResultCodes.RESULT_NO_NETWORK;
 
 public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 1;
+    private App app;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase database;
-    private DatabaseReference mRootRef;
-    private DatabaseReference refUser;
-    private TextView logo;
+    private FirebaseUser user;
+    private String currentUserUid;
+    private Db db;
     private LocalStorage localStorage;
+    private TextView logo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_login);
 
+        app = (App) getApplicationContext();
+        db = new Db(this);
         localStorage = new LocalStorage(this);
 
         mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-
-        mRootRef = database.getReference();
-        refUser = mRootRef.child("user");
-
-        logo = (TextView) findViewById(R.id.logo);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    refUser = refUser.child(user.getUid());
-                    setIfUserExist();
-                } else {
+                user = firebaseAuth.getCurrentUser();
+                if (user == null) {
                     startActivityForResult(
                             AuthUI.getInstance()
                                     .createSignInIntentBuilder()
@@ -73,9 +68,15 @@ public class LoginActivity extends AppCompatActivity {
                                     )
                                     .build(),
                             RC_SIGN_IN);
+                } else {
+                    currentUserUid = user.getUid();
+                    setIfUserExist();
                 }
             }
         };
+
+        logo = (TextView) findViewById(R.id.logo);
+
     }
 
 
@@ -127,20 +128,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setIfUserExist() {
-
-        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        refUser.addListenerForSingleValueEvent(new ValueEventListener() {
+        Query query = app.getRefUser(currentUserUid);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
 
-                    String username = currentUser.getDisplayName();
-                    String firstName = currentUser.getDisplayName();
-                    String email = currentUser.getEmail();
+                    String username = user.getDisplayName();
+                    String firstName = user.getDisplayName();
+                    String email = user.getEmail();
                     String photoProfil = null;
 
-                    Uri photoUrl = currentUser.getPhotoUrl();
+                    Uri photoUrl = user.getPhotoUrl();
 
                     if (null != photoUrl) {
                         photoProfil = photoUrl.toString();
@@ -168,8 +167,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void saveUser(User userNew) {
-        refUser.setValue(userNew, new DatabaseReference.CompletionListener() {
+    private void saveUser(User user) {
+        DatabaseReference databaseReference = app.getRefUser(currentUserUid);
+        databaseReference.setValue(user, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
@@ -186,7 +186,6 @@ public class LoginActivity extends AppCompatActivity {
         if (localStorage.isContryStored()) {
             setIfUserCityExist();
         } else {
-
             Intent intent = new Intent(this, ContryActivity.class);
             startActivity(intent);
             finish();

@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,16 +18,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.UserActivity;
 import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.user.UserFriendHolder;
 import matano.apkode.net.matano.model.User;
@@ -43,6 +39,7 @@ public class ProfilFriendFollowerFragment extends Fragment {
     private FirebaseUser user;
     private String incomeUserUid;
     private String currentUserUid;
+    private Db db;
 
     private Context context;
     private FirebaseRecyclerAdapter<String, UserFriendHolder> adapter;
@@ -72,6 +69,7 @@ public class ProfilFriendFollowerFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         app = (App) getApplicationContext();
+        db = new Db(context);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -207,7 +205,7 @@ public class ProfilFriendFollowerFragment extends Fragment {
             imageButtonAddFollowing.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addFollowing(userUid, (String) view.getTag());
+                    db.setFollowing(userUid, (String) view.getTag(), currentUserUid);
                 }
             });
 
@@ -260,21 +258,6 @@ public class ProfilFriendFollowerFragment extends Fragment {
         });
     }
 
-
-    private void addFollowing(String uid, String tag) {
-        Map hashMap = new HashMap();
-        hashMap.put("user/" + uid + "/followers/" + currentUserUid, tag);
-        hashMap.put("user/" + currentUserUid + "/followings/" + uid, tag);
-
-        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
-                }
-            }
-        });
-    }
 
     private void finishActivity() {
         getActivity().finish();

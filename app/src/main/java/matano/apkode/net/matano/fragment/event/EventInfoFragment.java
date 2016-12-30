@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -30,13 +28,12 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.PhotoDialogFragment;
 import matano.apkode.net.matano.holder.event.EventPhotoHolder;
@@ -52,6 +49,7 @@ public class EventInfoFragment extends Fragment {
     private FirebaseUser user;
     private String incomeEventUid;
     private String currentUserUid;
+    private Db db;
 
     private Context context;
     private RecyclerView recyclerViewTopPhoto;
@@ -91,8 +89,8 @@ public class EventInfoFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         app = (App) getApplicationContext();
+        db = new Db(context);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -242,7 +240,8 @@ public class EventInfoFragment extends Fragment {
                             //   button_participer.setText("Participer");
                             break;
                     }
-                    setUserToEvent();
+                    String tag = button_participer.getTag().toString();
+                    db.setParticipantion(tag, incomeEventUid, currentUserUid);
                 }
             });
         }
@@ -325,31 +324,6 @@ public class EventInfoFragment extends Fragment {
 
     }
 
-    private void setUserToEvent() {
-        String tag = button_participer.getTag().toString();
-
-        switch (tag) {
-            case "9":
-                tag = null;
-                break;
-            case "0":
-                tag = "0";
-                break;
-        }
-
-        Map hashMap = new HashMap();
-        hashMap.put("event/" + incomeEventUid + "/users/" + currentUserUid, tag);
-        hashMap.put("user/" + currentUserUid + "/events/" + incomeEventUid, tag);
-
-        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
-                }
-            }
-        });
-    }
 
 
     private void getPhoto(final EventPhotoHolder eventPhotoHolder, String photoUid, final int position) {

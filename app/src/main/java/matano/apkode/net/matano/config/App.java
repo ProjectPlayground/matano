@@ -251,6 +251,10 @@ public class App extends Application implements Application.ActivityLifecycleCal
         return getRefEvent(eventUid).child(Utils.FIREBASE_CHILD_EVENT_PHOTOS);
     }
 
+    public DatabaseReference getRefEventTchats(String eventUid) {
+        return getRefEvent(eventUid).child(Utils.FIREBASE_CHILD_EVENT_TCHATS);
+    }
+
     public DatabaseReference getRefPhotoLikes(String photoUid) {
         return getRefPhoto(photoUid).child(Utils.FIREBASE_CHILD_PHOTO_LIKES);
     }
@@ -281,6 +285,10 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
     public DatabaseReference getRefUserTickets(String userUid) {
         return getRefUser(userUid).child(Utils.FIREBASE_CHILD_USER_TICKETS);
+    }
+
+    public DatabaseReference getRefUserTchats(String userUid) {
+        return getRefUser(userUid).child(Utils.FIREBASE_CHILD_USER_TCHATS);
     }
 
     public ArrayList<Event> getEvents() {

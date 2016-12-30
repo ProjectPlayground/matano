@@ -33,6 +33,8 @@ public class User implements Serializable {
 
     private Map<String, String> likes = new HashMap<>();   // idPhotos
 
+    private Map<String, String> tchats = new HashMap<>();   // idPhotos
+
 
     public User() {
     }
@@ -49,7 +51,7 @@ public class User implements Serializable {
         this.photoProfl = photoProfl;
     }
 
-    public User(String uid, String username, String firstName, String lastName, String email, String telephone, String sexe, Date birthday, String presentation, String photoProfl, Map<String, String> events, Map<String, String> followers, Map<String, String> followings, Map<String, String> photos, Map<String, String> videos, Map<String, String> tickets, Map<String, String> likes) {
+    public User(String uid, String username, String firstName, String lastName, String email, String telephone, String sexe, Date birthday, String presentation, String photoProfl, Map<String, String> events, Map<String, String> followers, Map<String, String> followings, Map<String, String> photos, Map<String, String> videos, Map<String, String> tickets, Map<String, String> likes, Map<String, String> tchats) {
         this.uid = uid;
         this.username = username;
         this.firstName = firstName;
@@ -67,6 +69,7 @@ public class User implements Serializable {
         this.videos = videos;
         this.tickets = tickets;
         this.likes = likes;
+        this.tchats = tchats;
     }
 
     public String getUid() {
@@ -203,5 +206,13 @@ public class User implements Serializable {
 
     public void setLikes(Map<String, String> likes) {
         this.likes = likes;
+    }
+
+    public Map<String, String> getTchats() {
+        return tchats;
+    }
+
+    public void setTchats(Map<String, String> tchats) {
+        this.tchats = tchats;
     }
 }

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -28,26 +27,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
-import matano.apkode.net.matano.CityActivity;
-import matano.apkode.net.matano.ContryActivity;
-import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.UserActivity;
-import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.event.privates.EventPrivateTchatHolder;
 import matano.apkode.net.matano.model.Photo;
@@ -55,34 +46,25 @@ import matano.apkode.net.matano.model.Tchat;
 import matano.apkode.net.matano.model.User;
 
 import static android.app.Activity.RESULT_OK;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class EventPrivateTchatFragment extends Fragment {
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 1000;
-    private static final String CURRENT_FRAGMENT = "Tchat";
     private static final int ARG_PHOTO_PICKER = 2;
-    private Context context;
+    private App app;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase database;
-    private DatabaseReference mRootRef;
-    private DatabaseReference refTchat;
-    private DatabaseReference refUser;
-    private DatabaseReference refPhoto;
-    private FirebaseStorage storage;
-    private StorageReference refStoragePhoto;
-    private StorageReference mRootStorageRef;
+    private FirebaseUser user;
+    private String incomeEventUid;
+    private String currentUserUid;
+    private Db db;
+    private Context context;
     private LinearLayoutManager manager;
     private RecyclerView recyclerView;
-    private FirebaseRecyclerAdapter<Tchat, EventPrivateTchatHolder> adapter;
+    private FirebaseRecyclerAdapter<String, EventPrivateTchatHolder> adapter;
     private ImageButton imageButtonPhotoPicker;
     private EditText editTextMessage;
     private ImageButton buttonButtonSendMessage;
-    private String currentUserContry;
-    private String currentUserCity;
-    private LocalStorage localStorage;
-    private FirebaseUser user;
-    private String currentUserUid;
-    private String eventUid;
 
     public EventPrivateTchatFragment() {
     }
@@ -103,42 +85,15 @@ public class EventPrivateTchatFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-
-        eventUid = getArguments().getString(Utils.ARG_EVENT_UID);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        localStorage = new LocalStorage(context);
-        currentUserContry = localStorage.getContry();
-        currentUserCity = localStorage.getCity();
-
-        if (eventUid == null) {
-            finishActivity();
-        }
-
-        if (!localStorage.isContryStored() || currentUserContry == null) {
-            goContryActivity();
-        }
-
-        if (!localStorage.isCityStored() || currentUserCity == null) {
-            goCityActivity();
-        }
-
+        app = (App) getApplicationContext();
+        db = new Db(context);
 
         mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        mRootRef = database.getReference();
-        refTchat = mRootRef.child("tchat");
-        refUser = mRootRef.child("user");
-        refPhoto = mRootRef.child("photo");
-
-        storage = FirebaseStorage.getInstance();
-        mRootStorageRef = storage.getReference();
-        refStoragePhoto = mRootStorageRef.child("photos");
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -157,13 +112,22 @@ public class EventPrivateTchatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
         View view = inflater.inflate(R.layout.fragment_event_private_tchat, container, false);
 
-        ActionBar supportActionBar = ((EventActivity) getActivity()).getSupportActionBar();
+        incomeEventUid = getArguments().getString(Utils.ARG_EVENT_UID);
 
-        if (supportActionBar != null) {
-            supportActionBar.setTitle(CURRENT_FRAGMENT);
+        if (incomeEventUid == null) {
+            finishActivity();
         }
+
+        manager = new LinearLayoutManager(getContext());
+        manager.setReverseLayout(false);
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(manager);
+
 
         imageButtonPhotoPicker = (ImageButton) view.findViewById(R.id.imageButtonPhotoPicker);
         buttonButtonSendMessage = (ImageButton) view.findViewById(R.id.buttonButtonSendMessage);
@@ -176,20 +140,13 @@ public class EventPrivateTchatFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        manager = new LinearLayoutManager(getContext());
-        manager.setReverseLayout(false);
+        Query query = app.getRefEventTchats(incomeEventUid);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(manager);
-
-        Query query = refTchat.child(eventUid);
-
-        adapter = new FirebaseRecyclerAdapter<Tchat, EventPrivateTchatHolder>(Tchat.class, R.layout.card_event_private_tchat, EventPrivateTchatHolder.class, query) {
+        adapter = new FirebaseRecyclerAdapter<String, EventPrivateTchatHolder>(String.class, R.layout.card_event_private_tchat, EventPrivateTchatHolder.class, query) {
             @Override
-            protected void populateViewHolder(EventPrivateTchatHolder eventPrivateTchatHolder, Tchat tchat, int position) {
-                if (tchat != null && tchat.getUser() != null) {
-                    getUser(eventPrivateTchatHolder, tchat);
+            protected void populateViewHolder(EventPrivateTchatHolder eventPrivateTchatHolder, String s, int position) {
+                if (s != null) {
+                    getTchat(eventPrivateTchatHolder, getRef(position).getKey());
                 }
             }
         };
@@ -270,13 +227,13 @@ public class EventPrivateTchatFragment extends Fragment {
 
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-
-                addTchatMessage(editTextMessage.getText().toString());
+                db.setTchatMessage(editTextMessage.getText().toString(), UUID.randomUUID().toString(), incomeEventUid, currentUserUid);
                 editTextMessage.setText("");
             }
         });
 
     }
+
 
     @Override
     public void onStart() {
@@ -321,8 +278,28 @@ public class EventPrivateTchatFragment extends Fragment {
     }
 
 
+    private void getTchat(final EventPrivateTchatHolder eventPrivateTchatHolder, final String tchatUid) {
+        Query query = app.getRefTchat(tchatUid);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Tchat tchat = dataSnapshot.getValue(Tchat.class);
+                if (tchat != null) {
+                    getUser(eventPrivateTchatHolder, tchat);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
     private void getUser(final EventPrivateTchatHolder eventPrivateTchatHolder, final Tchat tchat) {
-        Query query = refUser.child(tchat.getUser());
+        Query query = app.getRefUser(tchat.getUser());
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -353,7 +330,7 @@ public class EventPrivateTchatFragment extends Fragment {
     }
 
     private void getPhoto(final EventPrivateTchatHolder eventPrivateTchatHolder, final Tchat tchat, final User user, String photoUid) {
-        Query query = refPhoto.child(photoUid);
+        Query query = app.getRefPhoto(photoUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -418,18 +395,6 @@ public class EventPrivateTchatFragment extends Fragment {
     }
 
 
-    private void addTchatMessage(String message) {
-        Tchat tchat = new Tchat(currentUserUid, new Date(), message, null, null);
-
-        refTchat.child(eventUid).push().setValue(tchat, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-
-            }
-        });
-
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -444,13 +409,13 @@ public class EventPrivateTchatFragment extends Fragment {
 
         final String uuid = UUID.randomUUID().toString();
 
-        StorageReference photoRef = refStoragePhoto.child(uuid);
+        StorageReference photoRef = app.getRefStorageRoot().child(uuid);
         photoRef.putFile(selectedImageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUri = taskSnapshot.getDownloadUrl();
-                        addTchatPhoto(downloadUri, uuid);
+                        db.setTchatPhoto(downloadUri, uuid, incomeEventUid, currentUserUid);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -467,44 +432,10 @@ public class EventPrivateTchatFragment extends Fragment {
                 });
     }
 
-    private void addTchatPhoto(Uri downloadUri, String uuid) {
-
-        Photo photo = new Photo(eventUid, currentUserUid, downloadUri.toString(), new Date(), "1", null);
-        Tchat tchat = new Tchat(currentUserUid, new Date(), null, uuid, null);
-
-        Map hashMap = new HashMap();
-
-        hashMap.put("event/" + eventUid + "/photos/" + uuid, "1");
-        hashMap.put("photo/" + uuid, photo);
-        hashMap.put("user/" + currentUserUid + "/photos/" + uuid, "1");
-        hashMap.put("tchat/" + eventUid + "/" + uuid, tchat);
-
-        mRootRef.updateChildren(hashMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
-                }
-            }
-        });
-    }
-
     private void goProfilActivity(String userUid) {
         Intent intent = new Intent(context, UserActivity.class);
         intent.putExtra(Utils.ARG_USER_UID, userUid);
         startActivity(intent);
-    }
-
-    private void goContryActivity() {
-        Intent intent = new Intent(context, ContryActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
-    private void goCityActivity() {
-        Intent intent = new Intent(context, CityActivity.class);
-        startActivity(intent);
-        finishActivity();
     }
 
     private void finishActivity() {

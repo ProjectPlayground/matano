@@ -15,39 +15,35 @@ import android.view.ViewGroup;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import matano.apkode.net.matano.CityActivity;
-import matano.apkode.net.matano.ContryActivity;
 import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.LocalStorage;
+import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.MainEventHolder;
 import matano.apkode.net.matano.model.Event;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 public class MainEventFragment extends Fragment {
-    private RecyclerView recyclerView;
+    private static final String CATEGORIE = "Culture";
+    private App app;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase database;
-    private DatabaseReference mRootRef;
-    private DatabaseReference refEvent;
-    private FirebaseRecyclerAdapter<Event, MainEventHolder> adapter;
-    private LinearLayoutManager manager;
-    private Context context;
-    private String currentUserContry;
-    private String currentUserCity;
-    private LocalStorage localStorage;
     private FirebaseUser user;
+    private String incomeEventUid;
     private String currentUserUid;
-    private String CATEGORIE = "Culture";
+    private Db db;
+    private Context context;
+    private RecyclerView recyclerView;
+    private FirebaseRecyclerAdapter<Event, MainEventHolder> adapter;
+
 
     public MainEventFragment() {
     }
@@ -61,24 +57,10 @@ public class MainEventFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        localStorage = new LocalStorage(context);
-        currentUserContry = localStorage.getContry();
-        currentUserCity = localStorage.getCity();
-
-        if (!localStorage.isContryStored() || currentUserContry == null) {
-            goContryActivity();
-        }
-
-        if (!localStorage.isCityStored() || currentUserCity == null) {
-            goCityActivity();
-        }
+        app = (App) getApplicationContext();
+        db = new Db(context);
 
         mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        mRootRef = database.getReference();
-        refEvent = mRootRef.child("event");
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -99,7 +81,7 @@ public class MainEventFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_main_event, container, false);
 
-        manager = new LinearLayoutManager(getContext());
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -113,7 +95,7 @@ public class MainEventFragment extends Fragment {
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = refEvent.orderByChild("category").equalTo(CATEGORIE);
+        Query query = app.getRefEvents().orderByChild("category").equalTo(CATEGORIE);
 
         adapter = new FirebaseRecyclerAdapter<Event, MainEventHolder>(Event.class, R.layout.card_main_event, MainEventHolder.class, query) {
             @Override
@@ -216,17 +198,6 @@ public class MainEventFragment extends Fragment {
 
     }
 
-    private void goContryActivity() {
-        Intent intent = new Intent(context, ContryActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
-
-    private void goCityActivity() {
-        Intent intent = new Intent(context, CityActivity.class);
-        startActivity(intent);
-        finishActivity();
-    }
 
     private void finishActivity() {
         getActivity().finish();

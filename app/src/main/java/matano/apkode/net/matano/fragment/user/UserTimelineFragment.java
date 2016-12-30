@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -28,14 +26,13 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.PhotoDialogFragment;
 import matano.apkode.net.matano.holder.user.UserTimelineHolder;
@@ -52,6 +49,7 @@ public class UserTimelineFragment extends Fragment {
     private FirebaseUser user;
     private String incomeUserUid;
     private String currentUserUid;
+    private Db db;
 
     private Context context;
     private RecyclerView recyclerView;
@@ -82,6 +80,7 @@ public class UserTimelineFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         app = (App) getApplicationContext();
+        db = new Db(context);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -325,26 +324,10 @@ public class UserTimelineFragment extends Fragment {
         imageButtonLikePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addPhotoLike(photoUid, (String) view.getTag());
+                db.setPhotoLike(photoUid, (String) view.getTag(), currentUserUid);
             }
         });
 
-
-    }
-
-    private void addPhotoLike(String photoUid, String tag) {
-        Map hashMap = new HashMap();
-        hashMap.put("photo/" + photoUid + "/likes/" + currentUserUid, tag);
-        hashMap.put("user/" + currentUserUid + "/likes/" + photoUid, tag);
-
-        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    Log.e(Utils.TAG, "error " + databaseError.getMessage());
-                }
-            }
-        });
 
     }
 
