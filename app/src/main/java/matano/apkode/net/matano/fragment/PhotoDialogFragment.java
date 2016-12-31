@@ -15,12 +15,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.config.App;
+import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.model.Photo;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class PhotoDialogFragment extends DialogFragment {
@@ -31,6 +39,10 @@ public class PhotoDialogFragment extends DialogFragment {
     private ArrayList<Photo> photos;
     private ImageButton closePhotoDialog;
     private String userUid;
+    private String photoUid;
+    private Context context;
+    private App app;
+    private Db db;
 
 
     public static PhotoDialogFragment newInstance() {
@@ -39,8 +51,16 @@ public class PhotoDialogFragment extends DialogFragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        app = (App) getApplicationContext();
+        db = new Db(context);
         setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
     }
 
@@ -66,8 +86,9 @@ public class PhotoDialogFragment extends DialogFragment {
         photos = (ArrayList<Photo>) getArguments().getSerializable(Utils.ARG_PHOTO_DIALOG);
         selectedPosition = getArguments().getInt(Utils.ARG_PHOTO_DIALOG_POSITION);
         userUid = getArguments().getString(Utils.ARG_USER_UID);
+        photoUid = getArguments().getString(Utils.ARG_PHOTO_UID);
 
-        if (photos == null || userUid == null) {
+        if (photos == null || userUid == null || photoUid == null) {
             finishActivity();
         }
 
@@ -140,6 +161,8 @@ public class PhotoDialogFragment extends DialogFragment {
             Photo photo = photos.get(position);
 
             ImageView imageViewPhoto = (ImageView) view.findViewById(R.id.imageViewPhoto);
+            ImageButton imageButtonAddFollowing = (ImageButton) view.findViewById(R.id.imageButtonAddFollowing);
+
 
             final String url = photo.getUrl();
 
@@ -147,7 +170,7 @@ public class PhotoDialogFragment extends DialogFragment {
                 Glide
                         .with(context)
                         .load(url)
-                        //  .centerCrop()
+                        // .centerCrop()
                         .into(imageViewPhoto);
 
                 imageViewPhoto.setOnClickListener(new View.OnClickListener() {
@@ -156,6 +179,17 @@ public class PhotoDialogFragment extends DialogFragment {
 
                     }
                 });
+            }
+
+            if (imageButtonAddFollowing != null) {
+               /* getPhotoLike(imageButtonAddFollowing);
+
+                imageButtonAddFollowing.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                      db.setPhotoLike(photoUid, (String) view.getTag(), app.getCurrentUserUid());
+                    }
+                });*/
             }
 
             container.addView(view);
@@ -179,6 +213,31 @@ public class PhotoDialogFragment extends DialogFragment {
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
+        }
+
+        private void getPhotoLike(final ImageButton imageButtonLikePhoto) {
+            Query query = app.getRefPhotoLikes(photoUid).child(app.getCurrentUserUid());
+
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String tag = dataSnapshot.getValue(String.class);
+                    if (tag == null) {
+                        imageButtonLikePhoto.setTag("0");
+                        imageButtonLikePhoto.setVisibility(View.VISIBLE);
+                        imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
+                    } else {
+                        imageButtonLikePhoto.setTag(null);
+                        imageButtonLikePhoto.setVisibility(View.VISIBLE);
+                        imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_padding);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 

@@ -10,11 +10,13 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.LocalStorage;
 
 public class CityActivity extends ListActivity {
     private ArrayList<String> cities;
     private LocalStorage localStorage;
+    private App app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +24,12 @@ public class CityActivity extends ListActivity {
         setContentView(R.layout.activity_city);
 
         localStorage = new LocalStorage(this);
+        app = (App) getApplicationContext();
+
         cities = new ArrayList<>();
 
         if (!localStorage.isContryStored()) {
-            goContryActivity();
+            goLoginActivity();
         }
 
         String contry = localStorage.getContry();
@@ -36,9 +40,6 @@ public class CityActivity extends ListActivity {
                 break;
             case "Sénégal":
                 cities.addAll(Arrays.asList(getResources().getStringArray(R.array.city_senegal)));
-                break;
-            default:
-                goContryActivity();
                 break;
         }
 
@@ -53,20 +54,16 @@ public class CityActivity extends ListActivity {
         super.onListItemClick(l, v, position, id);
 
         localStorage.storeCity(cities.get(position));
-        goMainActivity();
+        app.setCurrentUserCity(cities.get(position));
+        goLoginActivity();
     }
 
-    private void goMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+    private void goLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
     }
 
-    private void goContryActivity() {
-        Intent intent = new Intent(this, ContryActivity.class);
-        startActivity(intent);
-        finish();
-    }
 
 
 }

@@ -11,6 +11,7 @@ public class Utils {
 
     public static final String ARG_USER_UID = "userUid";
     public static final String ARG_EVENT_UID = "eventUid";
+    public static final String ARG_PHOTO_UID = "photoUid";
 
 
     // Firebase

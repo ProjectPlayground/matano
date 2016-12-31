@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
         app = (App) getApplicationContext();
         db = new Db(this);
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

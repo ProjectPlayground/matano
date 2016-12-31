@@ -45,21 +45,19 @@ public class LoginActivity extends AppCompatActivity {
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
                             .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-                            .setLogo(R.mipmap.ic_action_action_account_balance_wallet)
+                            .setLogo(R.mipmap.ic_launcher)
                             .setTheme(R.style.AppTheme_NoActionBar)
                             .setProviders(Arrays.asList(
                                     // new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                                     new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                                    new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
-                                    new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build())
+                                    new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build())
+                                    // new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build())
                             )
                             .build(),
                     RC_SIGN_IN);
         } else {
             setIfUserExist();
         }
-
-
 
         logo = (TextView) findViewById(R.id.logo);
 
@@ -110,7 +108,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setIfUserExist() {
-        Query query = app.getRefUser(app.getCurrentUserUid());
+        app.setCurrentUserUid(app.getCurrentUser().getUid());
+
+        Query query = app.getRefUser(app.getCurrentUser().getUid());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -150,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void saveUser(User user) {
-        DatabaseReference databaseReference = app.getRefUser(app.getCurrentUserUid());
+        DatabaseReference databaseReference = app.getRefUser(app.getCurrentUser().getUid());
         databaseReference.setValue(user, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {

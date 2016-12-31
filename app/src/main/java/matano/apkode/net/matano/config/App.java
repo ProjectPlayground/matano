@@ -699,12 +699,24 @@ public class App extends Application implements Application.ActivityLifecycleCal
         return currentUserContry;
     }
 
+    public void setCurrentUserContry(String currentUserContry) {
+        this.currentUserContry = currentUserContry;
+    }
+
     public String getCurrentUserCity() {
         return currentUserCity;
     }
 
+    public void setCurrentUserCity(String currentUserCity) {
+        this.currentUserCity = currentUserCity;
+    }
+
     public String getCurrentUserUid() {
         return currentUserUid;
+    }
+
+    public void setCurrentUserUid(String currentUserUid) {
+        this.currentUserUid = currentUserUid;
     }
 
     public FirebaseUser getCurrentUser() {

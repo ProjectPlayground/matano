@@ -249,6 +249,7 @@ public class EventTimelineFragment extends Fragment {
                 bundle.putSerializable(Utils.ARG_PHOTO_DIALOG, (Serializable) photos);
                 bundle.putInt(Utils.ARG_PHOTO_DIALOG_POSITION, position);
                 bundle.putString(Utils.ARG_USER_UID, userUid);
+                bundle.putString(Utils.ARG_PHOTO_UID, photoUid);
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
@@ -270,37 +271,10 @@ public class EventTimelineFragment extends Fragment {
             }
         });
 
-        final ImageButton imageButtonLikePhoto = eventTimelineHolder.getImageButtonLikePhoto();
 
-        Query query = app.getRefUserLikes(userUid);
+        ImageButton imageButtonLikePhoto = eventTimelineHolder.getImageButtonLikePhoto();
 
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getChildrenCount() == 0) {
-                    imageButtonLikePhoto.setTag("0");
-                    imageButtonLikePhoto.setVisibility(View.VISIBLE);
-                    imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
-                } else {
-                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                        if (photoUid.equals(snap.getKey())) {
-                            imageButtonLikePhoto.setTag(null);
-                            imageButtonLikePhoto.setVisibility(View.VISIBLE);
-                            imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_padding);
-                        } else {
-                            imageButtonLikePhoto.setTag("0");
-                            imageButtonLikePhoto.setVisibility(View.VISIBLE);
-                            imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        getPhotoLike(imageButtonLikePhoto, photoUid);
 
         imageButtonLikePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -309,8 +283,33 @@ public class EventTimelineFragment extends Fragment {
             }
         });
 
-
     }
+
+    private void getPhotoLike(final ImageButton imageButtonLikePhoto, final String photoUid) {
+        Query query = app.getRefPhotoLikes(photoUid).child(app.getCurrentUserUid());
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String tag = dataSnapshot.getValue(String.class);
+                if (tag == null) {
+                    imageButtonLikePhoto.setTag("0");
+                    imageButtonLikePhoto.setVisibility(View.VISIBLE);
+                    imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
+                } else {
+                    imageButtonLikePhoto.setTag(null);
+                    imageButtonLikePhoto.setVisibility(View.VISIBLE);
+                    imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_padding);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     private void uploadPhoto(Uri selectedImageUri) {
 

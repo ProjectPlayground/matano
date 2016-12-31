@@ -10,11 +10,13 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.LocalStorage;
 
 public class ContryActivity extends ListActivity {
     private ArrayList<String> contries;
     private LocalStorage localStorage;
+    private App app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +24,7 @@ public class ContryActivity extends ListActivity {
         setContentView(R.layout.activity_contry);
 
         localStorage = new LocalStorage(this);
+        app = (App) getApplicationContext();
 
         contries = new ArrayList<>();
         contries.addAll(Arrays.asList(getResources().getStringArray(R.array.contry)));
@@ -35,12 +38,13 @@ public class ContryActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         localStorage.storeContry(contries.get(position));
-        goMainActivity();
+        app.setCurrentUserContry(contries.get(position));
+        goLoginActivity();
     }
 
 
-    private void goMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+    private void goLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
     }
