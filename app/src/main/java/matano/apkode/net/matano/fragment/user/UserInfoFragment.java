@@ -1,5 +1,6 @@
 package matano.apkode.net.matano.fragment.user;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -154,6 +155,15 @@ public class UserInfoFragment extends Fragment {
         super.onDetach();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+    }
 
     private void displayUserInformation(User user) {
         String username = user.getUsername();
@@ -173,7 +183,12 @@ public class UserInfoFragment extends Fragment {
         }
 
 
-        if (imageViewPhotoProfil != null && photoProfl != null) {
+        if (imageViewPhotoProfil != null && photoProfl != null && context != null) {
+
+            Activity activity = (Activity) context;
+            if (activity.isFinishing())
+                return;
+
                 Glide
                         .with(context)
                         .load(photoProfl)
@@ -214,7 +229,7 @@ public class UserInfoFragment extends Fragment {
                 imageButtonAddOrSetting.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // Intent intent = new Intent(getContext(), )
+                        // Intent intent = new Intent(context, )
                     }
                 });
 

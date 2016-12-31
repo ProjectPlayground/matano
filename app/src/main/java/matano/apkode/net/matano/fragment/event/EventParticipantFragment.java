@@ -125,6 +125,55 @@ public class EventParticipantFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (adapter != null) {
+            adapter.cleanup();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+
     private void getUser(final EventParticipantHolder eventParticipantHolder, final String userUid) {
         Query query = app.getRefUser(userUid);
 
@@ -176,6 +225,15 @@ public class EventParticipantFragment extends Fragment {
                     startActivity(intent);
                 }
             });
+
+            eventParticipantHolder.getTextViewUsername().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, UserActivity.class);
+                    intent.putExtra(Utils.ARG_USER_UID, userUid);
+                    startActivity(intent);
+                }
+            });
         }
 
     }
@@ -211,45 +269,6 @@ public class EventParticipantFragment extends Fragment {
                 // TODO handle error
             }
         });
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (adapter != null) {
-            adapter.cleanup();
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
 

@@ -186,6 +186,16 @@ public class ProfilFriendFollowingFragment extends Fragment {
                 }
             });
 
+            userFriendHolder.getTextViewUsername().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, UserActivity.class);
+                    intent.putExtra(Utils.ARG_USER_UID, userUid);
+                    startActivity(intent);
+                }
+            });
+
+
             userFriendHolder.getRelativeLayoutFriend().setVisibility(View.VISIBLE);
         }
 

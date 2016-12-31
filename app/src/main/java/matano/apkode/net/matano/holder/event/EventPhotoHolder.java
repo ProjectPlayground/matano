@@ -1,5 +1,6 @@
 package matano.apkode.net.matano.holder.event;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -20,7 +21,10 @@ public class EventPhotoHolder extends RecyclerView.ViewHolder {
 
     public void setImageViewPhoto(Context context, String s) {
         if (null != s) {
-            if (null != imageViewPhoto) {
+            if (null != imageViewPhoto && context != null) {
+                Activity activity = (Activity) context;
+                if (activity.isFinishing())
+                    return;
                 Glide
                         .with(context)
                         .load(s)

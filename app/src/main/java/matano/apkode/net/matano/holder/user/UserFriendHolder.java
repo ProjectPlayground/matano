@@ -1,5 +1,6 @@
 package matano.apkode.net.matano.holder.user;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -39,15 +40,16 @@ public class UserFriendHolder extends RecyclerView.ViewHolder {
 
     public void setImageViewPhoto(Context context, String s) {
         if (s != null) {
-            if (imageViewPhoto != null) {
+            if (imageViewPhoto != null && context != null) {
+                Activity activity = (Activity) context;
+                if (activity.isFinishing())
+                    return;
                 Glide
                         .with(context)
                         .load(s)
                         .placeholder(R.mipmap.img4)
                         //  .centerCrop()
                         .into(imageViewPhoto);
-
-
             }
         }
     }

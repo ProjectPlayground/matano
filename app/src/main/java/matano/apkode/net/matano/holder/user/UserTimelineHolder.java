@@ -1,5 +1,6 @@
 package matano.apkode.net.matano.holder.user;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,7 +19,7 @@ public class UserTimelineHolder extends RecyclerView.ViewHolder {
     private TextView textViewTitle;
     private ImageButton imageButtonLikePhoto;
     private ImageButton imageButtonSharePhoto;
-    private LinearLayout linearLayoutUser;
+    private LinearLayout linearLayoutTitle;
 
     public UserTimelineHolder(View itemView) {
         super(itemView);
@@ -27,7 +28,7 @@ public class UserTimelineHolder extends RecyclerView.ViewHolder {
         textViewTitle = (TextView) itemView.findViewById(R.id.textViewTitle);
         imageButtonLikePhoto = (ImageButton) itemView.findViewById(R.id.imageButtonLikePhoto);
         imageButtonSharePhoto = (ImageButton) itemView.findViewById(R.id.imageButtonSharePhoto);
-        linearLayoutUser = (LinearLayout) itemView.findViewById(R.id.linearLayoutUser);
+        linearLayoutTitle = (LinearLayout) itemView.findViewById(R.id.linearLayoutTitle);
     }
 
     public void setTextViewDate(String s) {
@@ -41,7 +42,10 @@ public class UserTimelineHolder extends RecyclerView.ViewHolder {
 
     public void setImageViewPhoto(Context context, String s) {
         if (s != null) {
-            if (imageViewPhoto != null) {
+            if (imageViewPhoto != null && context != null) {
+                Activity activity = (Activity) context;
+                if (activity.isFinishing())
+                    return;
                 Glide
                         .with(context)
                         .load(s)
@@ -72,8 +76,8 @@ public class UserTimelineHolder extends RecyclerView.ViewHolder {
         return imageViewPhoto;
     }
 
-    public LinearLayout getLinearLayoutUser() {
-        return linearLayoutUser;
-    }
 
+    public LinearLayout getLinearLayoutTitle() {
+        return linearLayoutTitle;
+    }
 }

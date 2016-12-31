@@ -108,7 +108,7 @@ public class EventInfoFragment extends Fragment {
         button_participer = (Button) view.findViewById(R.id.button_participer);
 
 
-        LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager manager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
 
         recyclerViewTopPhoto = (RecyclerView) view.findViewById(R.id.recyclerViewTopPhoto);
         recyclerViewTopPhoto.setHasFixedSize(true);
@@ -327,7 +327,7 @@ public class EventInfoFragment extends Fragment {
         final String userUid = photo.getUser();
 
         if (url != null) {
-            eventPhotoHolder.setImageViewPhoto(getContext(), photo.getUrl());
+            eventPhotoHolder.setImageViewPhoto(context, photo.getUrl());
 
             eventPhotoHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

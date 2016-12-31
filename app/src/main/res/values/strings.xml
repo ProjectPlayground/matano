@@ -121,6 +121,7 @@
     <string name="page_profil_event">Event</string>
     <string name="page_profil_ticket">TIcket</string>
     <string name="page_profil_tchat">Friends</string>
+    <string name="action_logout">Logout</string>
     <string-array name="contry">
         <item>Niger</item>
         <item>Sénégal</item>

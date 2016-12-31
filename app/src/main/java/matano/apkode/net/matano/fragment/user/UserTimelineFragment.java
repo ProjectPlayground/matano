@@ -258,7 +258,7 @@ public class UserTimelineFragment extends Fragment {
         });
 
 
-        userTimelineHolder.getLinearLayoutUser().setOnClickListener(new View.OnClickListener() {
+        userTimelineHolder.getLinearLayoutTitle().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 goEventActivity(eventUid);
@@ -310,7 +310,7 @@ public class UserTimelineFragment extends Fragment {
 
     private void goEventActivity(String eventUid) {
         Intent intent = new Intent(context, EventActivity.class);
-        intent.putExtra(Utils.ARG_USER_UID, eventUid);
+        intent.putExtra(Utils.ARG_EVENT_UID, eventUid);
         startActivity(intent);
     }
 

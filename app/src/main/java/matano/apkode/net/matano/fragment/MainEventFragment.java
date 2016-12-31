@@ -75,16 +75,17 @@ public class MainEventFragment extends Fragment {
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = app.getRefEvents().orderByChild("category").equalTo(CATEGORIE);
+        // Query query = app.getRefEvents().orderByChild("category").equalTo(CATEGORIE);
+        Query query = app.getRefEvents();
 
         adapter = new FirebaseRecyclerAdapter<Event, MainEventHolder>(Event.class, R.layout.card_main_event, MainEventHolder.class, query) {
             @Override
             protected void populateViewHolder(MainEventHolder mainEventHolder, Event event, int position) {
                 if (event != null) {
                     if (event.getCategory() != null) {
-                        if (event.getCategory().equals(CATEGORIE)) {
+                        // if (event.getCategory().equals(CATEGORIE)) {
                             displayLayout(mainEventHolder, event, getRef(position).getKey());
-                        }
+                        // }
                     }
                 }
             }

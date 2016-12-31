@@ -333,7 +333,7 @@ public class EventPrivateTchatFragment extends Fragment {
         String userUid = tchat.getUser();
 
         eventPrivateTchatHolder.setTextViewUsername(username);
-        eventPrivateTchatHolder.setImageViewPhotoProfil(getContext(), photoProfil);
+        eventPrivateTchatHolder.setImageViewPhotoProfil(context, photoProfil);
         eventPrivateTchatHolder.setTextViewMessage(messsage);
 
         if (userUid.equals(app.getCurrentUserUid())) {
@@ -351,7 +351,7 @@ public class EventPrivateTchatFragment extends Fragment {
         final String userUid = tchat.getUser();
 
         eventPrivateTchatHolder.setTextViewUsername(username);
-        eventPrivateTchatHolder.setImageViewPhotoProfil(getContext(), photoProfil);
+        eventPrivateTchatHolder.setImageViewPhotoProfil(context, photoProfil);
         eventPrivateTchatHolder.setImageViewPhoto(getContext(), photo);
 
         if (userUid.equals(app.getCurrentUserUid())) {
@@ -363,8 +363,28 @@ public class EventPrivateTchatFragment extends Fragment {
         eventPrivateTchatHolder.getImageViewPhotoProfil().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e(Utils.TAG, "click");
                 goProfilActivity(userUid);
+            }
+        });
+
+        eventPrivateTchatHolder.getImageViewPhoto().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        eventPrivateTchatHolder.getTextViewMessage().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        eventPrivateTchatHolder.getTextViewUsername().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
 

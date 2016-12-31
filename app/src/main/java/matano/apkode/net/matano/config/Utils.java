@@ -36,6 +36,4 @@ public class Utils {
     public static final String FIREBASE_CHILD_USER_TICKETS = "tickets";
     public static final String FIREBASE_CHILD_USER_TCHATS = "tchats";
 
-
-
 }

@@ -143,6 +143,17 @@ public class ProfilFriendFollowerFragment extends Fragment {
         super.onDetach();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+
     private void getUser(final UserFriendHolder userFriendHolder, final String userUid) {
         Query query = app.getRefUser(userUid);
 
@@ -188,6 +199,15 @@ public class ProfilFriendFollowerFragment extends Fragment {
             userFriendHolder.setCardViewParticipant();
 
             userFriendHolder.getImageViewPhoto().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, UserActivity.class);
+                    intent.putExtra(Utils.ARG_USER_UID, userUid);
+                    startActivity(intent);
+                }
+            });
+
+            userFriendHolder.getTextViewUsername().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, UserActivity.class);

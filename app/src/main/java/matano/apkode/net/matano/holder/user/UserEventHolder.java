@@ -1,5 +1,6 @@
 package matano.apkode.net.matano.holder.user;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -31,7 +32,10 @@ public class UserEventHolder extends RecyclerView.ViewHolder {
 
     public void setImageViewPhotoProfil(Context context, String s) {
         if (null != s) {
-            if (null != imageViewPhotoProfil) {
+            if (null != imageViewPhotoProfil && context != null) {
+                Activity activity = (Activity) context;
+                if (activity.isFinishing())
+                    return;
                 Glide
                         .with(context)
                         .load(s)

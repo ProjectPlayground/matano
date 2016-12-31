@@ -1,5 +1,6 @@
 package matano.apkode.net.matano.holder.event.privates;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -51,7 +52,10 @@ public class EventPrivatePhotoHolder extends RecyclerView.ViewHolder {
 
     public void setImageViewPhoto(Context context, String s) {
         if (s != null) {
-            if (imageViewPhoto != null) {
+            if (imageViewPhoto != null && context != null) {
+                Activity activity = (Activity) context;
+                if (activity.isFinishing())
+                    return;
                 Glide
                         .with(context)
                         .load(s)
@@ -66,7 +70,10 @@ public class EventPrivatePhotoHolder extends RecyclerView.ViewHolder {
 
     public void setImageViewPhotoProfil(Context context, String s) {
         if (s != null) {
-            if (imageViewPhotoProfil != null) {
+            if (imageViewPhotoProfil != null && context != null) {
+                Activity activity = (Activity) context;
+                if (activity.isFinishing())
+                    return;
                 Glide
                         .with(context)
                         .load(s)

@@ -22,6 +22,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
@@ -30,6 +34,7 @@ import matano.apkode.net.matano.fragment.event.EventInfoFragment;
 import matano.apkode.net.matano.fragment.event.EventParticipantFragment;
 import matano.apkode.net.matano.fragment.event.EventPrivateFragment;
 import matano.apkode.net.matano.fragment.event.EventTimelineFragment;
+import matano.apkode.net.matano.model.Event;
 
 
 public class EventActivity extends AppCompatActivity {
@@ -69,8 +74,10 @@ public class EventActivity extends AppCompatActivity {
         textViewToolbarTitle = (TextView) findViewById(R.id.textViewToolbarTitle);
         textViewToolbarTitle.setText(getResources().getString(R.string.page_event_info));
 
-        Glide.with(this).load("http://2.bp.blogspot.com/-WPu45Bfj0gc/Tyq68PDD6wI/AAAAAAACDfU/bwIKOTt_PAA/s1600/Grand+finale+Mustafa+Hassanali+collection+at+FIMA+in+Niamey+in+Niger+on+26+November+2011+(2).JPG").into(imageViewCover);
+        if (imageViewCover != null) {
 
+            setTitleImage();
+        }
 
         EventPagerAdapter eventPagerAdapter = new EventPagerAdapter(getSupportFragmentManager());
 
@@ -160,6 +167,30 @@ public class EventActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setTitleImage() {
+        Query query = app.getRefEvent(incomeEventUid);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Event event = dataSnapshot.getValue(Event.class);
+                if (event != null) {
+                    if (event.getPhotoProfil() != null) {
+                        Glide
+                                .with(getApplicationContext())
+                                .load(event.getPhotoProfil())
+                                .into(imageViewCover);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void finishActivity() {
