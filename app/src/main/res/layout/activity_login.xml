@@ -1,98 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_authentification"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_horizontal_margin"
     tools:context="matano.apkode.net.matano.LoginActivity">
 
-    <FrameLayout
-        android:id="@+id/frameLayoutContry"
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+        android:layout_height="wrap_content" />
 
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/radioGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                android:orientation="vertical">
-
-                <RadioButton
-                    android:id="@+id/radio_niger"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonClicked"
-                    android:text="Niger" />
-
-                <RadioButton
-                    android:id="@+id/radio_senegal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonClicked"
-                    android:text="Senegal" />
-            </RadioGroup>
-
-
-        </RelativeLayout>
-
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/frameLayoutCity"
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/login_button"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+        android:layout_height="wrap_content" />
 
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/radioGroupPays"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                android:orientation="vertical">
-
-                <RadioButton
-                    android:id="@+id/radio_niamey"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonCityClicked"
-                    android:text="Niamey" />
-
-                <RadioButton
-                    android:id="@+id/radio_dosso"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonCityClicked"
-                    android:text="Dosso" />
-            </RadioGroup>
-
-
-        </RelativeLayout>
-
-    </FrameLayout>
-
-    <TextView
-        android:id="@+id/logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="matano ?"
-        android:textColor="@color/colorPrimary"
-        android:textSize="24dp"
-        android:textStyle="bold" />
-
-
-</RelativeLayout>
+</LinearLayout>

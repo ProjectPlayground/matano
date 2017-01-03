@@ -31,7 +31,6 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class MainEventFragment extends Fragment {
     private static final String CATEGORIE = "Culture";
     private App app;
-    private String incomeEventUid;
     private Db db;
     private Context context;
     private RecyclerView recyclerView;

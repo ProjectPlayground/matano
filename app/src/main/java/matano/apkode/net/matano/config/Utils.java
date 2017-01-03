@@ -14,7 +14,7 @@ public class Utils {
     public static final String ARG_PHOTO_UID = "photoUid";
 
 
-    // Firebase
+    // DATABASE
     public static final String FIREBASE_CHILD_EVENTS = "event";
     public static final String FIREBASE_CHILD_TCHATS = "tchat";
     public static final String FIREBASE_CHILD_PHOTOS = "photo";
@@ -36,5 +36,10 @@ public class Utils {
     public static final String FIREBASE_CHILD_USER_LIKES = "likes";
     public static final String FIREBASE_CHILD_USER_TICKETS = "tickets";
     public static final String FIREBASE_CHILD_USER_TCHATS = "tchats";
+
+    // STORAGE
+    public static final String FIREBASE_STORAGE_PHOTOS = "photos";
+    public static final String FIREBASE_STORAGE_PHOTOS_USERS = "users";
+    public static final String FIREBASE_STORAGE_PHOTOS_USERS_PROFILS = "profils";
 
 }

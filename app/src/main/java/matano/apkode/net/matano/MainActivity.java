@@ -12,6 +12,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.Utils;
@@ -24,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private String incomeEventUid;
     private Db db;
 
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
     private MainEventFragment mainEventFragment;
     private MainTimelineFragment mainTimelineFragment;
 
@@ -34,6 +40,18 @@ public class MainActivity extends AppCompatActivity {
 
         app = (App) getApplicationContext();
         db = new Db(this);
+
+        // Listener
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    goLogin();
+                }
+            }
+        };
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -57,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -101,6 +120,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -134,8 +156,11 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void finishActivity() {
-        finish();
+    private void goLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
+
 
 }

@@ -51,6 +51,13 @@ public class User implements Serializable {
         this.photoProfl = photoProfl;
     }
 
+    public User(String username, String firstName, String email, String photoProfl) {
+        this.username = username;
+        this.firstName = firstName;
+        this.email = email;
+        this.photoProfl = photoProfl;
+    }
+
     public User(String uid, String username, String firstName, String lastName, String email, String telephone, String sexe, Date birthday, String presentation, String photoProfl, Map<String, String> events, Map<String, String> followers, Map<String, String> followings, Map<String, String> photos, Map<String, String> videos, Map<String, String> tickets, Map<String, String> likes, Map<String, String> tchats) {
         this.uid = uid;
         this.username = username;

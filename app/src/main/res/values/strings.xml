@@ -99,7 +99,7 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="useename">\?bassirou.rabo</string>
     <string name="action_share">Share</string>
-    <string name="facebook_application_id" translatable="false">2044937602399034</string>
+    <string name="facebook_app_id">2044937602399034</string>
     <string name="fb_login_protocol_scheme">fb2044937602399034</string>
     <string name="twitter_consumer_key" translatable="false">OcQZwTfTzkQ6BmMZ0ixzOFWXK</string>
     <string name="twitter_consumer_secret" translatable="false">u50dpUqZOYx6wIKy84ZBctwpilHylCKgW0sQS1EXv4tms2BRaS</string>
@@ -122,6 +122,8 @@
     <string name="page_profil_ticket">TIcket</string>
     <string name="page_profil_tchat">Friends</string>
     <string name="action_logout">Logout</string>
+    <string name="sign_up_failed">Sign up failed</string>
+    <string name="login_with_facebook">Sign in</string>
     <string-array name="contry">
         <item>Niger</item>
         <item>Sénégal</item>

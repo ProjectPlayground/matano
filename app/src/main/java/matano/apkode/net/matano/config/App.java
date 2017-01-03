@@ -18,12 +18,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.twitter.sdk.android.Twitter;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
 
 import java.util.ArrayList;
 
-import io.fabric.sdk.android.Fabric;
 import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.model.Event;
@@ -64,6 +61,11 @@ public class App extends Application implements Application.ActivityLifecycleCal
     private DatabaseReference refTickets;
     private DatabaseReference refVideos;
 
+    private StorageReference refStoragePhotos;
+    private StorageReference refStoragePhotosUsers;
+    private StorageReference refStoragePhotosUsersProfils;
+
+
     private Event event;
     private Photo photo;
     private Tchat tchat;
@@ -93,11 +95,12 @@ public class App extends Application implements Application.ActivityLifecycleCal
     @Override
     public void onCreate() {
         super.onCreate();
+        // Facebook
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
-        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
-        Fabric.with(this, new Twitter(authConfig));
+        // TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        // Fabric.with(this, new Twitter(authConfig));
 
         // GLIDE
         ViewTarget.setTagId(R.id.glide_tag);
@@ -134,6 +137,10 @@ public class App extends Application implements Application.ActivityLifecycleCal
         refUsers = refDatabaseRoot.child(Utils.FIREBASE_CHILD_USERS);
         refTickets = refDatabaseRoot.child(Utils.FIREBASE_CHILD_TICKETS);
         refVideos = refDatabaseRoot.child(Utils.FIREBASE_CHILD_TICKETS);
+
+        refStoragePhotos = refStorageRoot.child(Utils.FIREBASE_STORAGE_PHOTOS);
+        refStoragePhotosUsers = refStoragePhotos.child(Utils.FIREBASE_STORAGE_PHOTOS_USERS);
+        refStoragePhotosUsersProfils = refStoragePhotosUsers.child(Utils.FIREBASE_STORAGE_PHOTOS_USERS_PROFILS);
 
     }
 
@@ -680,6 +687,18 @@ public class App extends Application implements Application.ActivityLifecycleCal
     }
 
 
+    public StorageReference getRefStoragePhotosUsersProfils() {
+        return refStoragePhotosUsersProfils;
+    }
+
+    public StorageReference getRefStoragePhotosUsers() {
+        return refStoragePhotosUsers;
+    }
+
+    public StorageReference getRefStoragePhotos() {
+        return refStoragePhotos;
+    }
+
     private void goLoginActivity() {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -722,4 +741,6 @@ public class App extends Application implements Application.ActivityLifecycleCal
     public FirebaseUser getCurrentUser() {
         return currentUser;
     }
+
+
 }
