@@ -3,6 +3,7 @@ package matano.apkode.net.matano.fragment.event;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,25 +16,32 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.UserActivity;
-import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
+import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.event.EventParticipantHolder;
 import matano.apkode.net.matano.model.User;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 public class EventParticipantFragment extends Fragment {
-    private App app;
+    private FbDatabase fbDatabase;
     private String incomeEventUid;
     private Db db;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private FirebaseUser currentUser = null;
+    private String currentUserUid;
 
     private Context context;
     private RecyclerView recyclerView;
@@ -65,8 +73,11 @@ public class EventParticipantFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app = (App) getApplicationContext();
+
+        createAuthStateListener();
+
         db = new Db(context);
+        fbDatabase = new FbDatabase();
     }
 
     @Nullable
@@ -104,7 +115,7 @@ public class EventParticipantFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = app.getRefEventUsers(incomeEventUid);
+        Query query = fbDatabase.getRefEventUsers(incomeEventUid);
 
         adapter = new FirebaseRecyclerAdapter<String, EventParticipantHolder>(String.class, R.layout.card_event_participant, EventParticipantHolder.class, query) {
             @Override
@@ -128,6 +139,7 @@ public class EventParticipantFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -143,6 +155,9 @@ public class EventParticipantFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -163,19 +178,25 @@ public class EventParticipantFragment extends Fragment {
         super.onDetach();
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
 
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
+    private void createAuthStateListener() {
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                currentUser = firebaseAuth.getCurrentUser();
+                if (currentUser == null) {
+                    goLogin();
+                } else {
+                    currentUserUid = currentUser.getUid();
+                }
+            }
+        };
     }
 
 
     private void getUser(final EventParticipantHolder eventParticipantHolder, final String userUid) {
-        Query query = app.getRefUser(userUid);
+        Query query = fbDatabase.getRefUser(userUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -204,14 +225,14 @@ public class EventParticipantFragment extends Fragment {
 
             ImageButton imageButtonAddFollowing = eventParticipantHolder.getImageButtonAddFollowing();
 
-            if (!userUid.equals(app.getCurrentUserUid())) {
+            if (!userUid.equals(currentUserUid)) {
                 isUserMyFriend(imageButtonAddFollowing, userUid);
             }
 
             imageButtonAddFollowing.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    db.setFollowing(userUid, (String) view.getTag(), app.getCurrentUserUid());
+                    db.setFollowing(userUid, (String) view.getTag(), currentUserUid);
                 }
             });
 
@@ -238,28 +259,19 @@ public class EventParticipantFragment extends Fragment {
 
     }
 
-
     private void isUserMyFriend(final ImageButton imageButtonAddOrSetting, final String userUid) {
-        Query query = app.getRefUserFollowings(app.getCurrentUserUid());
+        Query query = fbDatabase.getRefUserFollowing(currentUserUid, userUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() == null) {
+                if (dataSnapshot.getValue(String.class) == null) {
                     imageButtonAddOrSetting.setTag("1");
                     imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_social_group_add_padding);
                 } else {
-                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                        if (snap.getKey().equals(userUid)) {
-                            // We are friends
-                            imageButtonAddOrSetting.setTag(null);
-                            imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_social_people_padding);
-                        } else {
-                            // we are not friends
-                            imageButtonAddOrSetting.setTag("1");
-                            imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_social_group_add_padding);
-                        }
-                    }
+                    // We are friends
+                    imageButtonAddOrSetting.setTag(null);
+                    imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_social_people_padding);
                 }
                 imageButtonAddOrSetting.setVisibility(View.VISIBLE);
             }
@@ -271,6 +283,11 @@ public class EventParticipantFragment extends Fragment {
         });
     }
 
+    private void goLogin() {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
 
     private void finishActivity() {
         getActivity().finish();

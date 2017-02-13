@@ -1,7 +1,9 @@
 package matano.apkode.net.matano.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -20,19 +24,24 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
+import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.holder.MainTimelineHolder;
 import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.User;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 
 public class MainTimelineFragment extends Fragment {
-    private App app;
+    private FbDatabase fbDatabase;
     private Db db;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private FirebaseUser currentUser;
+    private String currentUserUid;
 
     private Context context;
     private RecyclerView recyclerView;
@@ -51,8 +60,11 @@ public class MainTimelineFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app = (App) getApplicationContext();
+
+        createAuthStateListener();
+
         db = new Db(context);
+        fbDatabase = new FbDatabase();
     }
 
     @Nullable
@@ -67,26 +79,12 @@ public class MainTimelineFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
 
-
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Query query = app.getRefUserFollowings(app.getCurrentUserUid());
-
-        adapter = new FirebaseRecyclerAdapter<String, MainTimelineHolder>(String.class, R.layout.card_main_timeline, MainTimelineHolder.class, query) {
-            @Override
-            protected void populateViewHolder(MainTimelineHolder mainTimelineHolder, String s, int position) {
-                if (s != null) {
-                    getUser(mainTimelineHolder, getRef(position).getKey());
-                }
-            }
-        };
-
-        recyclerView.setAdapter(adapter);
 
     }
 
@@ -98,6 +96,7 @@ public class MainTimelineFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -113,6 +112,9 @@ public class MainTimelineFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -133,8 +135,41 @@ public class MainTimelineFragment extends Fragment {
         super.onDetach();
     }
 
+
+    private void createAuthStateListener() {
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                currentUser = firebaseAuth.getCurrentUser();
+                if (currentUser == null) {
+                    goLogin();
+                } else {
+                    currentUserUid = currentUser.getUid();
+                    setViewAdaper();
+                }
+            }
+        };
+    }
+
+    private void setViewAdaper() {
+        Query query = fbDatabase.getRefUserFollowings(currentUserUid);
+
+        adapter = new FirebaseRecyclerAdapter<String, MainTimelineHolder>(String.class, R.layout.card_main_timeline, MainTimelineHolder.class, query) {
+            @Override
+            protected void populateViewHolder(MainTimelineHolder mainTimelineHolder, String s, int position) {
+                if (s != null) {
+                    getUser(mainTimelineHolder, getRef(position).getKey());
+                }
+            }
+        };
+
+        recyclerView.setAdapter(adapter);
+    }
+
+
     private void getUser(final MainTimelineHolder mainTimelineHolder, final String userUid) {
-        Query query = app.getRefUser(userUid);
+        Query query = fbDatabase.getRefUser(userUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -153,9 +188,8 @@ public class MainTimelineFragment extends Fragment {
         });
     }
 
-
     private void getPhotos(final MainTimelineHolder mainTimelineHolder, final User user, String userUid) {
-        Query query = app.getRefUserPhotos(userUid);
+        Query query = fbDatabase.getRefUserPhotos(userUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -176,7 +210,7 @@ public class MainTimelineFragment extends Fragment {
     }
 
     private void getPhoto(final MainTimelineHolder mainTimelineHolder, final User user, String photoUid) {
-        Query query = app.getRefPhoto(photoUid);
+        Query query = fbDatabase.getRefPhoto(photoUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -210,6 +244,12 @@ public class MainTimelineFragment extends Fragment {
 
             mainTimelineHolder.setTextViewDate(dateString);
         }
+    }
+
+    private void goLogin() {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
 }

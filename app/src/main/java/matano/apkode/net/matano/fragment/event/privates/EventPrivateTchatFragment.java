@@ -23,6 +23,8 @@ import android.widget.ImageButton;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -33,10 +35,12 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.UUID;
 
+import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.UserActivity;
-import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
+import matano.apkode.net.matano.config.FbDatabase;
+import matano.apkode.net.matano.config.FbStorage;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.event.privates.EventPrivateTchatHolder;
 import matano.apkode.net.matano.model.Photo;
@@ -44,14 +48,21 @@ import matano.apkode.net.matano.model.Tchat;
 import matano.apkode.net.matano.model.User;
 
 import static android.app.Activity.RESULT_OK;
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class EventPrivateTchatFragment extends Fragment {
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 1000;
     private static final int ARG_PHOTO_PICKER = 2;
-    private App app;
+    private FbDatabase fbDatabase;
+    private FbStorage fbStorage;
     private String incomeEventUid;
     private Db db;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private FirebaseUser currentUser = null;
+    private String currentUserUid;
+
     private Context context;
     private LinearLayoutManager manager;
     private RecyclerView recyclerView;
@@ -84,8 +95,13 @@ public class EventPrivateTchatFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app = (App) getApplicationContext();
+
+        createAuthStateListener();
+
         db = new Db(context);
+        fbDatabase = new FbDatabase();
+        fbStorage = new FbStorage();
+
     }
 
     @Nullable
@@ -120,7 +136,7 @@ public class EventPrivateTchatFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = app.getRefEventTchats(incomeEventUid);
+        Query query = fbDatabase.getRefEventTchats(incomeEventUid);
 
         adapter = new FirebaseRecyclerAdapter<String, EventPrivateTchatHolder>(String.class, R.layout.card_event_private_tchat, EventPrivateTchatHolder.class, query) {
             @Override
@@ -207,7 +223,7 @@ public class EventPrivateTchatFragment extends Fragment {
 
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                db.setTchatMessage(editTextMessage.getText().toString(), UUID.randomUUID().toString(), incomeEventUid, app.getCurrentUserUid());
+                db.setTchatMessage(editTextMessage.getText().toString(), UUID.randomUUID().toString(), incomeEventUid, currentUserUid);
                 editTextMessage.setText("");
             }
         });
@@ -218,6 +234,7 @@ public class EventPrivateTchatFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -233,6 +250,9 @@ public class EventPrivateTchatFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -253,9 +273,24 @@ public class EventPrivateTchatFragment extends Fragment {
         super.onDetach();
     }
 
+    private void createAuthStateListener() {
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                currentUser = firebaseAuth.getCurrentUser();
+                if (currentUser == null) {
+                    goLogin();
+                } else {
+                    currentUserUid = currentUser.getUid();
+                }
+            }
+        };
+    }
+
 
     private void getTchat(final EventPrivateTchatHolder eventPrivateTchatHolder, final String tchatUid) {
-        Query query = app.getRefTchat(tchatUid);
+        Query query = fbDatabase.getRefTchat(tchatUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -273,9 +308,8 @@ public class EventPrivateTchatFragment extends Fragment {
         });
     }
 
-
     private void getUser(final EventPrivateTchatHolder eventPrivateTchatHolder, final Tchat tchat) {
-        Query query = app.getRefUser(tchat.getUser());
+        Query query = fbDatabase.getRefUser(tchat.getUser());
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -306,7 +340,7 @@ public class EventPrivateTchatFragment extends Fragment {
     }
 
     private void getPhoto(final EventPrivateTchatHolder eventPrivateTchatHolder, final Tchat tchat, final User user, String photoUid) {
-        Query query = app.getRefPhoto(photoUid);
+        Query query = fbDatabase.getRefPhoto(photoUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -336,7 +370,7 @@ public class EventPrivateTchatFragment extends Fragment {
         eventPrivateTchatHolder.setImageViewPhotoProfil(context, photoProfil);
         eventPrivateTchatHolder.setTextViewMessage(messsage);
 
-        if (userUid.equals(app.getCurrentUserUid())) {
+        if (userUid.equals(currentUserUid)) {
             eventPrivateTchatHolder.setIsSender(getContext(), true);
         } else {
             eventPrivateTchatHolder.setIsSender(getContext(), false);
@@ -354,7 +388,7 @@ public class EventPrivateTchatFragment extends Fragment {
         eventPrivateTchatHolder.setImageViewPhotoProfil(context, photoProfil);
         eventPrivateTchatHolder.setImageViewPhoto(getContext(), photo);
 
-        if (userUid.equals(app.getCurrentUserUid())) {
+        if (userUid.equals(currentUserUid)) {
             eventPrivateTchatHolder.setIsSender(getContext(), true);
         } else {
             eventPrivateTchatHolder.setIsSender(getContext(), false);
@@ -390,7 +424,6 @@ public class EventPrivateTchatFragment extends Fragment {
 
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -405,13 +438,13 @@ public class EventPrivateTchatFragment extends Fragment {
 
         final String uuid = UUID.randomUUID().toString();
 
-        StorageReference photoRef = app.getRefStorageRoot().child(uuid);
+        StorageReference photoRef = fbStorage.getRefRoot().child(uuid);
         photoRef.putFile(selectedImageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUri = taskSnapshot.getDownloadUrl();
-                        db.setTchatPhoto(downloadUri, uuid, incomeEventUid, app.getCurrentUserUid());
+                        db.setTchatPhoto(downloadUri, uuid, incomeEventUid, currentUserUid);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -431,6 +464,12 @@ public class EventPrivateTchatFragment extends Fragment {
     private void goProfilActivity(String userUid) {
         Intent intent = new Intent(context, UserActivity.class);
         intent.putExtra(Utils.ARG_USER_UID, userUid);
+        startActivity(intent);
+    }
+
+    private void goLogin() {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 

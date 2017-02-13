@@ -1,7 +1,9 @@
 package matano.apkode.net.matano.fragment.event;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -16,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -28,21 +32,26 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
+import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.PhotoDialogFragment;
 import matano.apkode.net.matano.holder.event.EventPhotoHolder;
 import matano.apkode.net.matano.model.Event;
 import matano.apkode.net.matano.model.Photo;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 public class EventInfoFragment extends Fragment {
-    private App app;
+    private FbDatabase fbDatabase;
     private String incomeEventUid;
     private Db db;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private FirebaseUser currentUser = null;
+    private String currentUserUid;
 
     private Context context;
 
@@ -81,8 +90,11 @@ public class EventInfoFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app = (App) getApplicationContext();
+
+        createAuthStateListener();
+
         db = new Db(context);
+        fbDatabase = new FbDatabase();
     }
 
     @Nullable
@@ -123,7 +135,7 @@ public class EventInfoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-        Query query = app.getRefEventPhotos(incomeEventUid).limitToFirst(10);
+        Query query = fbDatabase.getRefEventPhotos(incomeEventUid).limitToFirst(10);
 
         FirebaseRecyclerAdapter<String, EventPhotoHolder> adapter = new FirebaseRecyclerAdapter<String, EventPhotoHolder>(String.class, R.layout.card_event_info_top_photo, EventPhotoHolder.class, query) {
             @Override
@@ -137,7 +149,7 @@ public class EventInfoFragment extends Fragment {
         recyclerViewTopPhoto.setAdapter(adapter);
 
 
-        Query query1 = app.getRefEvent(incomeEventUid);
+        Query query1 = fbDatabase.getRefEvent(incomeEventUid);
         query1.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -152,6 +164,61 @@ public class EventInfoFragment extends Fragment {
 
             }
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    private void createAuthStateListener() {
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                currentUser = firebaseAuth.getCurrentUser();
+                if (currentUser == null) {
+                    goLogin();
+                } else {
+                    currentUserUid = currentUser.getUid();
+                }
+            }
+        };
     }
 
     private void displayLayoutMain(Event event) {
@@ -217,7 +284,7 @@ public class EventInfoFragment extends Fragment {
                     }
                     String tag = button_participer.getTag().toString();
                     if (tag != null) {
-                        db.setParticipantion(tag, incomeEventUid, app.getCurrentUserUid());
+                        db.setParticipantion(tag, incomeEventUid, currentUserUid);
                     }
                 }
             });
@@ -225,45 +292,9 @@ public class EventInfoFragment extends Fragment {
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
     private void isUserParticipe() {
 
-        Query query = app.getRefUserEvents(app.getCurrentUserUid()).child(incomeEventUid);
+        Query query = fbDatabase.getRefUserEvents(currentUserUid).child(incomeEventUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -295,9 +326,8 @@ public class EventInfoFragment extends Fragment {
 
     }
 
-
-    private void getPhoto(final EventPhotoHolder eventPhotoHolder, String photoUid, final int position) {
-        Query query = app.getRefPhoto(photoUid);
+    private void getPhoto(final EventPhotoHolder eventPhotoHolder, final String photoUid, final int position) {
+        Query query = fbDatabase.getRefPhoto(photoUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -305,7 +335,7 @@ public class EventInfoFragment extends Fragment {
                 Photo photo = dataSnapshot.getValue(Photo.class);
 
                 if (photo != null) {
-                    displayLayout(eventPhotoHolder, photo, position);
+                    displayLayout(eventPhotoHolder, photo, photoUid, position);
 
                     if (!photos.contains(photo)) {
                         photos.add(photo);
@@ -322,7 +352,7 @@ public class EventInfoFragment extends Fragment {
         });
     }
 
-    private void displayLayout(EventPhotoHolder eventPhotoHolder, Photo photo, final int position) {
+    private void displayLayout(EventPhotoHolder eventPhotoHolder, Photo photo, final String photoUid, final int position) {
         String url = photo.getUrl();
         final String userUid = photo.getUser();
 
@@ -336,6 +366,7 @@ public class EventInfoFragment extends Fragment {
                     bundle.putSerializable(Utils.ARG_PHOTO_DIALOG, (Serializable) photos);
                     bundle.putInt(Utils.ARG_PHOTO_DIALOG_POSITION, position);
                     bundle.putString(Utils.ARG_USER_UID, userUid);
+                    bundle.putString(Utils.ARG_PHOTO_UID, photoUid);
 
                     FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
@@ -349,6 +380,12 @@ public class EventInfoFragment extends Fragment {
 
         }
 
+    }
+
+    private void goLogin() {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private void finishActivity() {

@@ -16,19 +16,17 @@ import java.util.Map;
 import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.Tchat;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 public class Db {
     private Context context;
-    private App app;
+    private FbDatabase fbDatabase;
     private FirebaseDatabase database;
     private DatabaseReference refDatabaseRoot;
 
     public Db(Context context) {
-        this.app = (App) getApplicationContext();
         this.context = context;
         this.database = FirebaseDatabase.getInstance();
         this.refDatabaseRoot = database.getReference();
+        fbDatabase = new FbDatabase();
     }
 
     public void setParticipantion(String tag, String incomeEventUid, String currentUserUid) {
@@ -46,7 +44,7 @@ public class Db {
         hashMap.put("event/" + incomeEventUid + "/users/" + currentUserUid, tag);
         hashMap.put("user/" + currentUserUid + "/events/" + incomeEventUid, tag);
 
-        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+        fbDatabase.getRefRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
@@ -61,7 +59,7 @@ public class Db {
         hashMap.put("user/" + userUid + "/followers/" + currentUserUid, tag);
         hashMap.put("user/" + currentUserUid + "/followings/" + userUid, tag);
 
-        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+        fbDatabase.getRefRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
@@ -81,7 +79,7 @@ public class Db {
         hashMap.put("photo/" + uuid, photo);
         hashMap.put("user/" + currentUserUid + "/photos/" + uuid, "0");
 
-        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+        fbDatabase.getRefRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
@@ -96,7 +94,7 @@ public class Db {
         hashMap.put("photo/" + photoUid + "/likes/" + currentUserUid, tag);
         hashMap.put("user/" + currentUserUid + "/likes/" + photoUid, tag);
 
-        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+        fbDatabase.getRefRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
@@ -117,7 +115,7 @@ public class Db {
         hashMap.put("photo/" + uuid, photo);
         hashMap.put("tchat/" + uuid, tchat);
 
-        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+        fbDatabase.getRefRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
@@ -136,7 +134,7 @@ public class Db {
         hashMap.put("user/" + currentUserUid + "/tchats/" + uuid, "1");
         hashMap.put("tchat/" + uuid, tchat);
 
-        app.getRefDatabaseRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+        fbDatabase.getRefRoot().updateChildren(hashMap, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {

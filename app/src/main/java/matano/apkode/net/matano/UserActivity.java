@@ -1,8 +1,10 @@
 package matano.apkode.net.matano;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,9 +25,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
+import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.user.UserEventFragment;
 import matano.apkode.net.matano.fragment.user.UserFriendFragment;
@@ -34,9 +37,15 @@ import matano.apkode.net.matano.fragment.user.UserTicketFragment;
 import matano.apkode.net.matano.fragment.user.UserTimelineFragment;
 
 public class UserActivity extends AppCompatActivity {
-    private App app;
+    private FbDatabase fbDatabase;
     private String incomeUserUid;
     private Db db;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private FirebaseUser currentUser = null;
+    private String currentUserUid;
 
     private ViewPager mViewPager;
     private TextView textViewToolbarTitle;
@@ -45,8 +54,13 @@ public class UserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        createAuthStateListener();
+
+        db = new Db(this);
+        fbDatabase = new FbDatabase();
+
         setContentView(R.layout.activity_user);
-        app = (App) getApplicationContext();
 
         incomeUserUid = getIntent().getStringExtra(Utils.ARG_USER_UID);
 
@@ -55,7 +69,7 @@ public class UserActivity extends AppCompatActivity {
         }
 
 
-        if (incomeUserUid.equals(app.getCurrentUserUid())) {
+        if (incomeUserUid.equals(currentUserUid)) {
             countPage = 5;
         }
 
@@ -127,6 +141,7 @@ public class UserActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -142,6 +157,9 @@ public class UserActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
 
@@ -168,6 +186,27 @@ public class UserActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    private void createAuthStateListener() {
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                currentUser = firebaseAuth.getCurrentUser();
+                if (currentUser == null) {
+                    goLogin();
+                } else {
+                    currentUserUid = currentUser.getUid();
+                }
+            }
+        };
+    }
+
+    private void goLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private void finishActivity() {

@@ -1,13 +1,13 @@
 package matano.apkode.net.matano;
 
-import android.graphics.PorterDuff;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,13 +22,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
+import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.event.EventInfoFragment;
 import matano.apkode.net.matano.fragment.event.EventParticipantFragment;
@@ -38,9 +40,15 @@ import matano.apkode.net.matano.model.Event;
 
 
 public class EventActivity extends AppCompatActivity {
-    private App app;
     private String incomeEventUid;
     private Db db;
+    private FbDatabase fbDatabase;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private FirebaseUser currentUser = null;
+    private String currentUserUid;
 
     private TextView textViewToolbarTitle;
     private ImageView imageViewCover;
@@ -48,9 +56,14 @@ public class EventActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event);
-        app = (App) getApplicationContext();
+
+        createAuthStateListener();
+
         db = new Db(this);
+        fbDatabase = new FbDatabase();
+
+        setContentView(R.layout.activity_event
+        );
 
         incomeEventUid = getIntent().getStringExtra(Utils.ARG_EVENT_UID);
 
@@ -59,16 +72,13 @@ public class EventActivity extends AppCompatActivity {
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.mipmap.ic_action_navigation_arrow_back_padding);
+        // toolbar.setNavigationIcon(R.mipmap.ic_action_navigation_arrow_back_padding);
 
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Drawable upArrow = ContextCompat.getDrawable(this, R.mipmap.ic_action_navigation_arrow_back_padding);
-        upArrow.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
-        getSupportActionBar().setHomeAsUpIndicator(upArrow);
 
         imageViewCover = (ImageView) findViewById(R.id.imageViewCover);
         textViewToolbarTitle = (TextView) findViewById(R.id.textViewToolbarTitle);
@@ -130,6 +140,7 @@ public class EventActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -145,6 +156,9 @@ public class EventActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -169,8 +183,23 @@ public class EventActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void createAuthStateListener() {
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                currentUser = firebaseAuth.getCurrentUser();
+                if (currentUser == null) {
+                    goLogin();
+                } else {
+                    currentUserUid = currentUser.getUid();
+                }
+            }
+        };
+    }
+
     private void setTitleImage() {
-        Query query = app.getRefEvent(incomeEventUid);
+        Query query = fbDatabase.getRefEvent(incomeEventUid);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -191,6 +220,12 @@ public class EventActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void goLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private void finishActivity() {

@@ -2,7 +2,9 @@ package matano.apkode.net.matano.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.PagerAdapter;
@@ -15,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -22,13 +26,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
+import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.model.Photo;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class PhotoDialogFragment extends DialogFragment {
@@ -41,8 +44,14 @@ public class PhotoDialogFragment extends DialogFragment {
     private String userUid;
     private String photoUid;
     private Context context;
-    private App app;
+    private FbDatabase fbDatabase;
     private Db db;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private FirebaseUser currentUser = null;
+    private String currentUserUid;
 
 
     public static PhotoDialogFragment newInstance() {
@@ -59,8 +68,12 @@ public class PhotoDialogFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app = (App) getApplicationContext();
+
+        createAuthStateListener();
+
         db = new Db(context);
+        fbDatabase = new FbDatabase();
+
         setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
     }
 
@@ -122,6 +135,36 @@ public class PhotoDialogFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    private void createAuthStateListener() {
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                currentUser = firebaseAuth.getCurrentUser();
+                if (currentUser == null) {
+                    goLogin();
+                } else {
+                    currentUserUid = currentUser.getUid();
+                }
+            }
+        };
+    }
+
+
     private void setCurrentItem(int position) {
         viewPager.setCurrentItem(position, false);
         displayMetaInfo(selectedPosition);
@@ -132,10 +175,16 @@ public class PhotoDialogFragment extends DialogFragment {
         //  ImageGalerie imageGalerie = imageGaleries.get(position);
     }
 
+
+    private void goLogin() {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
     private void finishActivity() {
         getActivity().finish();
     }
-
 
     /**
      * PagerAdapter
@@ -187,7 +236,7 @@ public class PhotoDialogFragment extends DialogFragment {
                 imageButtonAddFollowing.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                      db.setPhotoLike(photoUid, (String) view.getTag(), app.getCurrentUserUid());
+                      db.setPhotoLike(photoUid, (String) view.getTag(), currentUserUid);
                     }
                 });*/
             }
@@ -216,7 +265,7 @@ public class PhotoDialogFragment extends DialogFragment {
         }
 
         private void getPhotoLike(final ImageButton imageButtonLikePhoto) {
-            Query query = app.getRefPhotoLikes(photoUid).child(app.getCurrentUserUid());
+            Query query = fbDatabase.getRefPhotoLikes(photoUid).child(currentUserUid);
 
             query.addValueEventListener(new ValueEventListener() {
                 @Override

@@ -22,6 +22,8 @@ import android.widget.Toast;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -38,10 +40,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.UserActivity;
-import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
+import matano.apkode.net.matano.config.FbDatabase;
+import matano.apkode.net.matano.config.FbStorage;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.PhotoDialogFragment;
 import matano.apkode.net.matano.holder.event.EventTimelineHolder;
@@ -49,13 +53,19 @@ import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.User;
 
 import static android.app.Activity.RESULT_OK;
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class EventTimelineFragment extends Fragment {
     private static final int ARG_PHOTO_PICKER = 2;
-    private App app;
+    private FbDatabase fbDatabase;
+    private FbStorage fbStorage;
     private String incomeEventUid;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private FirebaseUser currentUser = null;
+    private String currentUserUid;
 
     private Db db;
     private Context context;
@@ -89,8 +99,12 @@ public class EventTimelineFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app = (App) getApplicationContext();
+
+        createAuthStateListener();
+
         db = new Db(context);
+        fbDatabase = new FbDatabase();
+        fbStorage = new FbStorage();
     }
 
     @Nullable
@@ -122,7 +136,7 @@ public class EventTimelineFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = app.getRefEventPhotos(incomeEventUid);
+        Query query = fbDatabase.getRefEventPhotos(incomeEventUid);
 
         adapter = new FirebaseRecyclerAdapter<String, EventTimelineHolder>(String.class, R.layout.card_event_timeline, EventTimelineHolder.class, query) {
             @Override
@@ -150,6 +164,7 @@ public class EventTimelineFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -165,6 +180,9 @@ public class EventTimelineFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -185,8 +203,23 @@ public class EventTimelineFragment extends Fragment {
         super.onDetach();
     }
 
+    private void createAuthStateListener() {
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                currentUser = firebaseAuth.getCurrentUser();
+                if (currentUser == null) {
+                    goLogin();
+                } else {
+                    currentUserUid = currentUser.getUid();
+                }
+            }
+        };
+    }
+
     private void getPhoto(final EventTimelineHolder eventTimelineHolder, final String photoUid, final int position) {
-        Query query = app.getRefPhoto(photoUid);
+        Query query = fbDatabase.getRefPhoto(photoUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -214,7 +247,7 @@ public class EventTimelineFragment extends Fragment {
     private void getUser(final EventTimelineHolder eventTimelineHolder, final String photoUid, final Photo photo, final int position) {
         String userUid = photo.getUser();
 
-        Query query = app.getRefUser(userUid);
+        Query query = fbDatabase.getRefUser(userUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -279,14 +312,14 @@ public class EventTimelineFragment extends Fragment {
         imageButtonLikePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db.setPhotoLike(photoUid, (String) view.getTag(), app.getCurrentUserUid());
+                db.setPhotoLike(photoUid, (String) view.getTag(), currentUserUid);
             }
         });
 
     }
 
     private void getPhotoLike(final ImageButton imageButtonLikePhoto, final String photoUid) {
-        Query query = app.getRefPhotoLikes(photoUid).child(app.getCurrentUserUid());
+        Query query = fbDatabase.getRefPhotoLikes(photoUid).child(currentUserUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -310,7 +343,6 @@ public class EventTimelineFragment extends Fragment {
         });
     }
 
-
     private void uploadPhoto(Uri selectedImageUri) {
 
         final String uuid = UUID.randomUUID().toString();
@@ -318,7 +350,7 @@ public class EventTimelineFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         Toast.makeText(getContext(), "En cours...", Toast.LENGTH_SHORT).show();
 
-        StorageReference photoRef = app.getRefStorageRoot().child(uuid);
+        StorageReference photoRef = fbStorage.getRefRoot().child(uuid);
         photoRef.putFile(selectedImageUri)
                 .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -336,7 +368,7 @@ public class EventTimelineFragment extends Fragment {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUri = taskSnapshot.getDownloadUrl();
-                        db.setPhotoTimeline(downloadUri, uuid, incomeEventUid, app.getCurrentUserUid());
+                        db.setPhotoTimeline(downloadUri, uuid, incomeEventUid, currentUserUid);
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Uploaded", Toast.LENGTH_SHORT).show();
                     }
@@ -350,7 +382,6 @@ public class EventTimelineFragment extends Fragment {
                 });
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -361,13 +392,17 @@ public class EventTimelineFragment extends Fragment {
         }
     }
 
-
     private void goProfilActivity(String userUid) {
         Intent intent = new Intent(context, UserActivity.class);
         intent.putExtra(Utils.ARG_USER_UID, userUid);
         startActivity(intent);
     }
 
+    private void goLogin() {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
 
     private void finishActivity() {
         getActivity().finish();

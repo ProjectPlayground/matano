@@ -2,7 +2,9 @@ package matano.apkode.net.matano.fragment.user;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -20,18 +24,23 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Map;
 
+import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
+import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.model.User;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 public class UserInfoFragment extends Fragment {
-    private App app;
+    private FbDatabase fbDatabase;
     private String incomeUserUid;
     private Db db;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private FirebaseUser currentUser = null;
+    private String currentUserUid;
 
     private Context context;
 
@@ -67,8 +76,11 @@ public class UserInfoFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app = (App) getApplicationContext();
+
+        createAuthStateListener();
+
         db = new Db(context);
+        fbDatabase = new FbDatabase();
     }
 
     @Nullable
@@ -99,7 +111,7 @@ public class UserInfoFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = app.getRefUser(incomeUserUid);
+        Query query = fbDatabase.getRefUser(incomeUserUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -117,12 +129,12 @@ public class UserInfoFragment extends Fragment {
         });
 
 
-
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -138,6 +150,9 @@ public class UserInfoFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -155,14 +170,20 @@ public class UserInfoFragment extends Fragment {
         super.onDetach();
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
 
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
+    private void createAuthStateListener() {
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                currentUser = firebaseAuth.getCurrentUser();
+                if (currentUser == null) {
+                    goLogin();
+                } else {
+                    currentUserUid = currentUser.getUid();
+                }
+            }
+        };
     }
 
     private void displayUserInformation(User user) {
@@ -189,11 +210,11 @@ public class UserInfoFragment extends Fragment {
             if (activity.isFinishing())
                 return;
 
-                Glide
-                        .with(context)
-                        .load(photoProfl)
-                        //  .centerCrop()
-                        .into(imageViewPhotoProfil);
+            Glide
+                    .with(context)
+                    .load(photoProfl)
+                    //  .centerCrop()
+                    .into(imageViewPhotoProfil);
         }
 
         if (textViewFollowersNumber != null) {
@@ -222,7 +243,7 @@ public class UserInfoFragment extends Fragment {
 
         if (imageButtonAddOrSetting != null) {
 
-            if (app.getCurrentUserUid().equals(incomeUserUid)) {
+            if (currentUserUid.equals(incomeUserUid)) {
                 imageButtonAddOrSetting.setImageResource(R.mipmap.ic_action_action_settings_padding);
                 imageButtonAddOrSetting.setVisibility(View.VISIBLE);
 
@@ -240,7 +261,7 @@ public class UserInfoFragment extends Fragment {
             imageButtonAddOrSetting.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    db.setFollowing(incomeUserUid, (String) view.getTag(), app.getCurrentUserUid());
+                    db.setFollowing(incomeUserUid, (String) view.getTag(), currentUserUid);
                 }
             });
 
@@ -249,7 +270,7 @@ public class UserInfoFragment extends Fragment {
     }
 
     private void isUserMyFriend(final ImageButton imageButtonAddOrSetting) {
-        Query query = app.getRefUserFollowings(app.getCurrentUserUid());
+        Query query = fbDatabase.getRefUserFollowings(currentUserUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -280,6 +301,11 @@ public class UserInfoFragment extends Fragment {
         });
     }
 
+    private void goLogin() {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
 
     private void finishActivity() {
         getActivity().finish();

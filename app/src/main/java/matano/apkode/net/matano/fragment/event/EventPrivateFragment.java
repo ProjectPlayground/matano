@@ -1,8 +1,10 @@
 package matano.apkode.net.matano.fragment.event;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -12,19 +14,27 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
+import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.event.privates.EventPrivatePhotoFragment;
 import matano.apkode.net.matano.fragment.event.privates.EventPrivateTchatFragment;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 public class EventPrivateFragment extends Fragment {
-    private App app;
+    private FbDatabase fbDatabase;
     private String incomeEventUid;
     private Db db;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private FirebaseUser currentUser = null;
+    private String currentUserUid;
 
     private Context context;
     private ImageButton imageButtonPrivateTchat;
@@ -55,8 +65,12 @@ public class EventPrivateFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app = (App) getApplicationContext();
+
+        createAuthStateListener();
+
         db = new Db(context);
+        fbDatabase = new FbDatabase();
+
     }
 
     @Nullable
@@ -96,36 +110,37 @@ public class EventPrivateFragment extends Fragment {
 
 
         imageButtonPrivateTchat.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    imageButtonPrivateTchat.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
-                    imageButtonPrivatePhoto.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            @Override
+            public void onClick(View view) {
+                imageButtonPrivateTchat.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+                imageButtonPrivatePhoto.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                    transaction.replace(R.id.fragmentLayoutContainer, eventPrivateTchatFragment);
-                    transaction.commit();
-                }
-            });
+                transaction.replace(R.id.fragmentLayoutContainer, eventPrivateTchatFragment);
+                transaction.commit();
+            }
+        });
 
 
         imageButtonPrivatePhoto.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    imageButtonPrivatePhoto.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
-                    imageButtonPrivateTchat.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+            @Override
+            public void onClick(View view) {
+                imageButtonPrivatePhoto.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+                imageButtonPrivateTchat.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
 
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                    transaction.replace(R.id.fragmentLayoutContainer, eventPrivatePhotoFragment);
-                    transaction.commit();
-                }
-            });
+                transaction.replace(R.id.fragmentLayoutContainer, eventPrivatePhotoFragment);
+                transaction.commit();
+            }
+        });
 
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -141,6 +156,9 @@ public class EventPrivateFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -156,6 +174,27 @@ public class EventPrivateFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    private void createAuthStateListener() {
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                currentUser = firebaseAuth.getCurrentUser();
+                if (currentUser == null) {
+                    goLogin();
+                } else {
+                    currentUserUid = currentUser.getUid();
+                }
+            }
+        };
+    }
+
+    private void goLogin() {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private void finishActivity() {

@@ -3,6 +3,7 @@ package matano.apkode.net.matano.fragment.event.privates;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -25,10 +28,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.UserActivity;
-import matano.apkode.net.matano.config.App;
 import matano.apkode.net.matano.config.Db;
+import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.PhotoDialogFragment;
 import matano.apkode.net.matano.holder.event.privates.EventPrivatePhotoHolder;
@@ -36,12 +40,16 @@ import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.Tchat;
 import matano.apkode.net.matano.model.User;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 public class EventPrivatePhotoFragment extends Fragment {
-    private App app;
+    private FbDatabase fbDatabase;
     private String incomeEventUid;
     private Db db;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private FirebaseUser currentUser = null;
+    private String currentUserUid;
 
     private Context context;
     private RecyclerView recyclerView;
@@ -73,8 +81,11 @@ public class EventPrivatePhotoFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app = (App) getApplicationContext();
+
+        createAuthStateListener();
+
         db = new Db(context);
+        fbDatabase = new FbDatabase();
     }
 
 
@@ -104,7 +115,7 @@ public class EventPrivatePhotoFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = app.getRefEventTchats(incomeEventUid);
+        Query query = fbDatabase.getRefEventTchats(incomeEventUid);
 
         adapter = new FirebaseRecyclerAdapter<String, EventPrivatePhotoHolder>(String.class, R.layout.card_event_private_photo, EventPrivatePhotoHolder.class, query) {
             @Override
@@ -122,6 +133,7 @@ public class EventPrivatePhotoFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -137,6 +149,9 @@ public class EventPrivatePhotoFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -157,8 +172,23 @@ public class EventPrivatePhotoFragment extends Fragment {
         super.onDetach();
     }
 
+    private void createAuthStateListener() {
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                currentUser = firebaseAuth.getCurrentUser();
+                if (currentUser == null) {
+                    goLogin();
+                } else {
+                    currentUserUid = currentUser.getUid();
+                }
+            }
+        };
+    }
+
     private void getTchat(final EventPrivatePhotoHolder eventPrivatePhotoHolder, String tchatUid, final int position) {
-        Query query = app.getRefTchat(tchatUid);
+        Query query = fbDatabase.getRefTchat(tchatUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -177,7 +207,7 @@ public class EventPrivatePhotoFragment extends Fragment {
     }
 
     private void getPhoto(final EventPrivatePhotoHolder eventPrivatePhotoHolder, final String photoUid, final int position) {
-        Query query = app.getRefPhoto(photoUid);
+        Query query = fbDatabase.getRefPhoto(photoUid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -199,12 +229,10 @@ public class EventPrivatePhotoFragment extends Fragment {
         });
     }
 
-
     private void getUser(final EventPrivatePhotoHolder eventPrivatePhotoHolder, final String photoUid, final Photo photo, final int position) {
         String userUid = photo.getUser();
 
-        Query query = app.getRefUser(userUid);
-
+        Query query = fbDatabase.getRefUser(userUid);
 
 
         query.addValueEventListener(new ValueEventListener() {
@@ -273,6 +301,11 @@ public class EventPrivatePhotoFragment extends Fragment {
         startActivity(intent);
     }
 
+    private void goLogin() {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
 
     private void finishActivity() {
         getActivity().finish();
