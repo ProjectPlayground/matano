@@ -124,7 +124,7 @@
     <string name="action_logout">Logout</string>
     <string name="sign_up_failed">Sign up failed</string>
     <string name="login_with_facebook">Sign in</string>
-    <string-array name="contry">
+    <string-array name="country">
         <item>Niger</item>
         <item>Sénégal</item>
     </string-array>
@@ -156,8 +156,9 @@
     </string-array>
     <string name="title_activity_spashscreen">Spashscreen</string>
     <string name="login">Login</string>
-    <string name="action_contry">Contry</string>
+    <string name="action_country">Contry</string>
     <string name="action_city">City</string>
+    <string name="programme">Programme</string>
     <string-array name="planets_array">
         <item>Mercury</item>
         <item>Venus</item>
@@ -168,4 +169,6 @@
         <item>Uranus</item>
         <item>Neptune</item>
     </string-array>
+    <string name="title_activity_modules">Programmes</string>
+    <string name="title_activity_module">Programme</string>
 </resources>

@@ -17,8 +17,8 @@ import java.util.Arrays;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.LocalStorage;
 
-public class ContryActivity extends ListActivity {
-    private ArrayList<String> contries;
+public class CountryActivity extends ListActivity {
+    private ArrayList<String> countries;
     private LocalStorage localStorage;
     private Db db;
 
@@ -36,14 +36,14 @@ public class ContryActivity extends ListActivity {
 
         db = new Db(this);
 
-        setContentView(R.layout.activity_contry);
+        setContentView(R.layout.activity_country);
 
         localStorage = new LocalStorage(this);
 
-        contries = new ArrayList<>();
-        contries.addAll(Arrays.asList(getResources().getStringArray(R.array.contry)));
+        countries = new ArrayList<>();
+        countries.addAll(Arrays.asList(getResources().getStringArray(R.array.country)));
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.card_contry, R.id.listText, contries);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.card_country, R.id.listText, countries);
 
         setListAdapter(adapter);
     }
@@ -51,8 +51,8 @@ public class ContryActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        localStorage.storeContry(contries.get(position));
-        goLogin();
+        localStorage.storeCountry(countries.get(position));
+        finish();
     }
 
     @Override

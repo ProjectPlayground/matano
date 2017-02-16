@@ -29,12 +29,14 @@ public class Event implements Serializable {
     private Map<String, String> users = new HashMap<>();  // uId - status (0, 1, 2)
     private Map<String, String> photos = new HashMap<>(); // Uid
     private Map<String, String> tchats = new HashMap<>(); // tchatUid
+    private Map<String, Programme> programmes = new HashMap<>(); // programmeUid
+
 
 
     public Event() {
     }
 
-    public Event(String title, String category, String subCategory, String contry, String city, String place, String address, Double longitude, Double latitude, Double altitude, Date date, String presentation, String photoProfil, String videoProfil, String tarification, Map<String, String> tickets, Map<String, String> users, Map<String, String> photos, Map<String, String> tchats) {
+    public Event(String title, String category, String subCategory, String contry, String city, String place, String address, Double longitude, Double latitude, Double altitude, Date date, String presentation, String photoProfil, String videoProfil, String tarification, Map<String, String> tickets, Map<String, String> users, Map<String, String> photos, Map<String, String> tchats, Map<String, Programme> programmes) {
         this.title = title;
         this.category = category;
         this.subCategory = subCategory;
@@ -54,6 +56,7 @@ public class Event implements Serializable {
         this.users = users;
         this.photos = photos;
         this.tchats = tchats;
+        this.programmes = programmes;
     }
 
     public String getTitle() {
@@ -206,5 +209,13 @@ public class Event implements Serializable {
 
     public void setTchats(Map<String, String> tchats) {
         this.tchats = tchats;
+    }
+
+    public Map<String, Programme> getProgrammes() {
+        return programmes;
+    }
+
+    public void setProgrammes(Map<String, Programme> programmes) {
+        this.programmes = programmes;
     }
 }

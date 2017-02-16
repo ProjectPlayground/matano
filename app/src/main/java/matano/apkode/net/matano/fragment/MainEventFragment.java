@@ -221,7 +221,8 @@ public class MainEventFragment extends Fragment {
     private void displayLayout(MainEventHolder mainEventHolder, Event event, final String refEvent) {
         String title = event.getTitle();
         String place = event.getPlace();
-        String tarification = event.getTarification();
+        String category = event.getCategory();
+        String subCategory = event.getSubCategory();
         String photoProfil = event.getPhotoProfil();
         Date date = event.getDate();
         int users = 0;
@@ -230,10 +231,10 @@ public class MainEventFragment extends Fragment {
             users = event.getUsers().size();
         }
 
-        if (title != null && place != null && photoProfil != null && date != null && tarification != null) {
+        if (title != null && place != null && photoProfil != null && date != null && category != null && subCategory != null) {
             mainEventHolder.setTextViewTitle(title);
             mainEventHolder.setTextViewPlace(place);
-            mainEventHolder.setTextViewTarification(tarification);
+            mainEventHolder.setTextViewCategory(category);
             mainEventHolder.setImageViewPhotoProfil(getActivity(), photoProfil);
             mainEventHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
             mainEventHolder.setTxtParticipantNumber(users);

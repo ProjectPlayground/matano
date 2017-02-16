@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 
 public class LocalStorage {
     private static final String MyPREFERENCES = "net.apkode.matano.CONTRY_CITY";
-    private static final String CONTRY = "contry";
+    private static final String CONTRY = "country";
     private static final String CITY = "city";
     private Context context;
     private SharedPreferences sharedPreferences;
@@ -18,8 +18,8 @@ public class LocalStorage {
         editor = sharedPreferences.edit();
     }
 
-    public void storeContry(String contry) {
-        editor.putString(CONTRY, contry);
+    public void storeCountry(String country) {
+        editor.putString(CONTRY, country);
         editor.commit();
     }
 
@@ -28,7 +28,7 @@ public class LocalStorage {
         editor.commit();
     }
 
-    public String getContry() {
+    public String getCountry() {
         return sharedPreferences.getString(CONTRY, "Niger");
     }
 
@@ -36,7 +36,7 @@ public class LocalStorage {
         return sharedPreferences.getString(CITY, "Niamey");
     }
 
-    public boolean isContryStored() {
+    public boolean isCountryStored() {
         return sharedPreferences.contains(CONTRY);
     }
 
@@ -44,7 +44,7 @@ public class LocalStorage {
         return sharedPreferences.contains(CITY);
     }
 
-    public void clearContry() {
+    public void clearCountry() {
         editor.remove(CONTRY);
         editor.commit();
     }

@@ -40,10 +40,9 @@
                 android:alpha="0.54" />
 
             <TextView
-                android:id="@+id/textViewTarification"
+                android:id="@+id/textViewCategory"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:alpha="0.87" />
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
@@ -54,31 +53,33 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_horizontal_margin">
+            android:layout_gravity="center_vertical"
+            android:padding="@dimen/appbar_padding_top">
 
             <TextView
                 android:id="@+id/textViewDate"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:textSize="13sp" />
+                android:layout_centerVertical="true" />
 
             <TextView
                 android:id="@+id/txtParticipantNumber"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:textAlignment="textEnd"
-                android:textSize="13sp" />
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/participants" />
 
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/participants"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:src="@mipmap/ic_action_social_people_padding" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 

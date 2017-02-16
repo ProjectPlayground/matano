@@ -4,19 +4,19 @@
     <item
         android:id="@+id/ic_bottom_event"
         android:enabled="true"
-        android:icon="@mipmap/ic_action_action_event"
+        android:icon="@mipmap/ic_date_range_black_48dp"
         android:title="Events"
         app:showAsAction="always" />
     <item
         android:id="@+id/ic_bottom_new"
         android:enabled="true"
-        android:icon="@mipmap/ic_action_action_subject"
+        android:icon="@mipmap/ic_chrome_reader_mode_black_48dp"
         android:title="Timeline"
         app:showAsAction="always" />
     <item
         android:id="@+id/ic_bottom_profil"
         android:enabled="true"
-        android:icon="@mipmap/ic_action_action_perm_identity"
+        android:icon="@mipmap/ic_person_black_48dp"
         android:title="Profil"
         app:showAsAction="always" />
 

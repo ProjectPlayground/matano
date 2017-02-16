@@ -43,11 +43,11 @@ public class CityActivity extends ListActivity {
 
         cities = new ArrayList<>();
 
-        if (!localStorage.isContryStored()) {
+        if (!localStorage.isCountryStored()) {
             goLogin();
         }
 
-        String contry = localStorage.getContry();
+        String contry = localStorage.getCountry();
 
         switch (contry) {
             case "Niger":

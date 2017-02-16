@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 
 import matano.apkode.net.matano.LoginActivity;
+import matano.apkode.net.matano.ModuleActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
@@ -66,6 +68,12 @@ public class EventInfoFragment extends Fragment {
     private TextView textViewPresentation;
     private Button button_participer;
     private ImageView imageViewPhotoProfil;
+    private ListView listViewProgramme;
+    private Button buttonProgramme;
+    private Button buttonInvite;
+    private Button buttonIntervenant;
+    private Button buttonActivite;
+
 
     public EventInfoFragment() {
     }
@@ -90,8 +98,6 @@ public class EventInfoFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        createAuthStateListener();
 
         db = new Db(context);
         fbDatabase = new FbDatabase();
@@ -119,6 +125,11 @@ public class EventInfoFragment extends Fragment {
         textViewPresentation = (TextView) view.findViewById(R.id.textViewPresentation);
         button_participer = (Button) view.findViewById(R.id.button_participer);
 
+        buttonProgramme = (Button) view.findViewById(R.id.buttonProgramme);
+        buttonInvite = (Button) view.findViewById(R.id.buttonInvite);
+        buttonIntervenant = (Button) view.findViewById(R.id.buttonIntervenant);
+        buttonActivite = (Button) view.findViewById(R.id.buttonActivite);
+
 
         LinearLayoutManager manager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
 
@@ -127,6 +138,7 @@ public class EventInfoFragment extends Fragment {
         recyclerViewTopPhoto.setLayoutManager(manager);
         recyclerViewTopPhoto.setItemAnimator(new DefaultItemAnimator());
 
+
         return view;
     }
 
@@ -134,36 +146,8 @@ public class EventInfoFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        createAuthStateListener();
 
-        Query query = fbDatabase.getRefEventPhotos(incomeEventUid).limitToFirst(10);
-
-        FirebaseRecyclerAdapter<String, EventPhotoHolder> adapter = new FirebaseRecyclerAdapter<String, EventPhotoHolder>(String.class, R.layout.card_event_info_top_photo, EventPhotoHolder.class, query) {
-            @Override
-            protected void populateViewHolder(EventPhotoHolder eventPhotoHolder, String s, int position) {
-                if (s != null) {
-                    getPhoto(eventPhotoHolder, getRef(position).getKey(), position);
-                }
-            }
-        };
-
-        recyclerViewTopPhoto.setAdapter(adapter);
-
-
-        Query query1 = fbDatabase.getRefEvent(incomeEventUid);
-        query1.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Event event = dataSnapshot.getValue(Event.class);
-                if (event != null) {
-                    displayLayoutMain(event);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     @Override
@@ -216,10 +200,116 @@ public class EventInfoFragment extends Fragment {
                     goLogin();
                 } else {
                     currentUserUid = currentUser.getUid();
+                    createView();
                 }
             }
         };
     }
+
+    private void createView() {
+        Query query = fbDatabase.getRefEventPhotos(incomeEventUid).limitToFirst(10);
+
+        FirebaseRecyclerAdapter<String, EventPhotoHolder> adapter = new FirebaseRecyclerAdapter<String, EventPhotoHolder>(String.class, R.layout.card_event_info_top_photo, EventPhotoHolder.class, query) {
+            @Override
+            protected void populateViewHolder(EventPhotoHolder eventPhotoHolder, String s, int position) {
+                if (s != null) {
+                    getPhoto(eventPhotoHolder, getRef(position).getKey(), position);
+                }
+            }
+        };
+
+        recyclerViewTopPhoto.setAdapter(adapter);
+
+        Query query1 = fbDatabase.getRefEvent(incomeEventUid);
+        query1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Event event = dataSnapshot.getValue(Event.class);
+                if (event != null) {
+                    displayLayoutMain(event);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        buttonProgramme.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ModuleActivity.class);
+                intent.putExtra(Utils.ARG_EVENT_UID, incomeEventUid);
+                intent.putExtra(Utils.ARG_MODULE, Utils.FIREBASE_DATABASE_EVENT_PROGRAMMES);
+
+                startActivity(intent);
+            }
+        });
+
+        buttonIntervenant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ModuleActivity.class);
+                intent.putExtra(Utils.ARG_EVENT_UID, incomeEventUid);
+                intent.putExtra(Utils.ARG_MODULE, Utils.FIREBASE_DATABASE_EVENT_INTERVENANTS);
+
+                startActivity(intent);
+            }
+        });
+
+        buttonInvite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ModuleActivity.class);
+                intent.putExtra(Utils.ARG_EVENT_UID, incomeEventUid);
+                intent.putExtra(Utils.ARG_MODULE, Utils.FIREBASE_DATABASE_EVENT_INVITES);
+
+                startActivity(intent);
+            }
+        });
+
+        buttonActivite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ModuleActivity.class);
+                intent.putExtra(Utils.ARG_EVENT_UID, incomeEventUid);
+                intent.putExtra(Utils.ARG_MODULE, Utils.FIREBASE_DATABASE_EVENT_ACTIVITES);
+
+                startActivity(intent);
+            }
+        });
+
+
+       /* fbDatabase.getRefEventProgrammes(incomeEventUid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Programme programme = snapshot.getValue(Programme.class);
+                    Log.e(Utils.TAG, "snapshot : "+programme.getTitle());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        FirebaseListAdapter<Programme> adapterProgramme = new FirebaseListAdapter<Programme>(getActivity(), Programme.class, android.R.layout.simple_list_item_1, databaseReferenceProgramme) {
+
+            @Override
+            protected void populateView(View view, Programme programme, int position) {
+                ((TextView)view.findViewById(android.R.id.text1)).setText(programme.getTitle());
+                Log.e(Utils.TAG, ""+programme.getTitle());
+            }
+        };
+
+        listViewProgramme.setAdapter(adapterProgramme);*/
+
+
+    }
+
 
     private void displayLayoutMain(Event event) {
         String title = event.getTitle();

@@ -19,7 +19,7 @@ public class MainEventHolder extends RecyclerView.ViewHolder {
     private TextView textViewDate;
     private TextView txtParticipantNumber;
     private ImageView imageViewPhotoProfil;
-    private TextView textViewTarification;
+    private TextView textViewCategory;
 
 
     public MainEventHolder(View itemView) {
@@ -29,7 +29,7 @@ public class MainEventHolder extends RecyclerView.ViewHolder {
         textViewDate = (TextView) itemView.findViewById(R.id.textViewDate);
         txtParticipantNumber = (TextView) itemView.findViewById(R.id.txtParticipantNumber);
         imageViewPhotoProfil = (ImageView) itemView.findViewById(R.id.imageViewPhotoProfil);
-        textViewTarification = (TextView) itemView.findViewById(R.id.textViewTarification);
+        textViewCategory = (TextView) itemView.findViewById(R.id.textViewCategory);
     }
 
 
@@ -49,13 +49,14 @@ public class MainEventHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public void setTextViewTarification(String s) {
+    public void setTextViewCategory(String s) {
         if (null != s) {
-            if (textViewTarification != null) {
-                textViewTarification.setText(s);
+            if (textViewCategory != null) {
+                textViewCategory.setText(s);
             }
         }
     }
+
 
     public void setTextViewDate(String s) {
         if (null != s) {
@@ -67,7 +68,7 @@ public class MainEventHolder extends RecyclerView.ViewHolder {
 
     public void setTxtParticipantNumber(int s) {
         if (null != txtParticipantNumber) {
-            txtParticipantNumber.setText(s + " Participants");
+            txtParticipantNumber.setText(s + "");
         }
     }
 

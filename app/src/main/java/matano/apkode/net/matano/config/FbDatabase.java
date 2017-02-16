@@ -63,7 +63,6 @@ public class FbDatabase {
         return refRoot.child(Utils.FIREBASE_DATABASE_TARIFS);
     }
 
-
     // Event
     public DatabaseReference getRefEvent(String eventUid) {
         return getRefEvents().child(eventUid);
@@ -74,7 +73,7 @@ public class FbDatabase {
     }
 
     public DatabaseReference getRefEventTicket(String eventUid, String ticketUid) {
-        return getRefEvent(eventUid).child(Utils.FIREBASE_DATABASE_EVENT_TICKETS).child(ticketUid);
+        return getRefEventTickets(eventUid).child(ticketUid);
     }
 
     public DatabaseReference getRefEventUsers(String eventUid) {
@@ -82,7 +81,7 @@ public class FbDatabase {
     }
 
     public DatabaseReference getRefEventUser(String eventUid, String userUid) {
-        return getRefEvent(eventUid).child(Utils.FIREBASE_DATABASE_EVENT_USERS).child(userUid);
+        return getRefEventUsers(eventUid).child(userUid);
     }
 
     public DatabaseReference getRefEventPhotos(String eventUid) {
@@ -90,7 +89,7 @@ public class FbDatabase {
     }
 
     public DatabaseReference getRefEventPhoto(String eventUid, String photoUid) {
-        return getRefEvent(eventUid).child(Utils.FIREBASE_DATABASE_EVENT_PHOTOS).child(photoUid);
+        return getRefEventPhotos(eventUid).child(photoUid);
     }
 
     public DatabaseReference getRefEventTchats(String eventUid) {
@@ -98,9 +97,16 @@ public class FbDatabase {
     }
 
     public DatabaseReference getRefEventTchat(String eventUid, String tchatUid) {
-        return getRefEvent(eventUid).child(Utils.FIREBASE_DATABASE_EVENT_TCHATS).child(tchatUid);
+        return getRefEventTchats(eventUid).child(tchatUid);
     }
 
+    public DatabaseReference getRefEventProgrammes(String eventUid) {
+        return getRefEvent(eventUid).child(Utils.FIREBASE_DATABASE_EVENT_PROGRAMMES);
+    }
+
+    public DatabaseReference getRefEventProgramme(String eventUid, String programmeUid) {
+        return getRefEventProgrammes(eventUid).child(programmeUid);
+    }
 
     // Photo
     public DatabaseReference getRefPhoto(String photoUid) {
@@ -112,7 +118,7 @@ public class FbDatabase {
     }
 
     public DatabaseReference getRefPhotoLike(String photoUid, String likeUid) {
-        return getRefPhoto(photoUid).child(Utils.FIREBASE_DATABASE_PHOTO_LIKES).child(likeUid);
+        return getRefPhotoLikes(photoUid).child(likeUid);
     }
 
     // Tchat
@@ -130,7 +136,7 @@ public class FbDatabase {
     }
 
     public DatabaseReference getRefUserEvent(String userUid, String eventUid) {
-        return getRefUser(userUid).child(Utils.FIREBASE_DATABASE_USER_EVENTS).child(eventUid);
+        return getRefUserEvents(userUid).child(eventUid);
     }
 
     public DatabaseReference getRefUserFollowers(String userUid) {
@@ -138,7 +144,7 @@ public class FbDatabase {
     }
 
     public DatabaseReference getRefUserFollower(String userUid, String followerUid) {
-        return getRefUser(userUid).child(Utils.FIREBASE_DATABASE_USER_FOLLOWERS).child(followerUid);
+        return getRefUserFollowers(userUid).child(followerUid);
     }
 
     public DatabaseReference getRefUserFollowings(String userUid) {
@@ -146,7 +152,7 @@ public class FbDatabase {
     }
 
     public DatabaseReference getRefUserFollowing(String userUid, String followingUid) {
-        return getRefUser(userUid).child(Utils.FIREBASE_DATABASE_USER_FOLLOWINGS).child(followingUid);
+        return getRefUserFollowings(userUid).child(followingUid);
     }
 
     public DatabaseReference getRefUserPhotos(String userUid) {
@@ -154,7 +160,7 @@ public class FbDatabase {
     }
 
     public DatabaseReference getRefUserPhoto(String userUid, String photoUid) {
-        return getRefUser(userUid).child(Utils.FIREBASE_DATABASE_USER_PHOTOS).child(photoUid);
+        return getRefUserPhotos(userUid).child(photoUid);
     }
 
     public DatabaseReference getRefUserVideos(String userUid) {
@@ -162,7 +168,7 @@ public class FbDatabase {
     }
 
     public DatabaseReference getRefUserVideo(String userUid, String videoUid) {
-        return getRefUser(userUid).child(Utils.FIREBASE_DATABASE_USER_VIDEOS).child(videoUid);
+        return getRefUserVideos(userUid).child(videoUid);
     }
 
     public DatabaseReference getRefUserTickets(String userUid) {
@@ -170,7 +176,7 @@ public class FbDatabase {
     }
 
     public DatabaseReference getRefUserTicket(String userUid, String ticketUid) {
-        return getRefUser(userUid).child(Utils.FIREBASE_DATABASE_USER_TICKETS).child(ticketUid);
+        return getRefUserTickets(userUid).child(ticketUid);
     }
 
     public DatabaseReference getRefUserLikes(String userUid) {
@@ -178,7 +184,7 @@ public class FbDatabase {
     }
 
     public DatabaseReference getRefUserLike(String userUid, String likeUid) {
-        return getRefUser(userUid).child(Utils.FIREBASE_DATABASE_USER_LIKES).child(likeUid);
+        return getRefUserLikes(userUid).child(likeUid);
     }
 
     public DatabaseReference getRefUserTchats(String userUid) {
@@ -186,7 +192,7 @@ public class FbDatabase {
     }
 
     public DatabaseReference getRefUserTchat(String userUid, String tchatUid) {
-        return getRefUser(userUid).child(Utils.FIREBASE_DATABASE_USER_TCHATS).child(tchatUid);
+        return getRefUserTchats(userUid).child(tchatUid);
     }
 
     // Ticket

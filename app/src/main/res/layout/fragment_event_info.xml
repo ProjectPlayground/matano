@@ -1,233 +1,172 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <android.support.v4.widget.NestedScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/button_participer"
-        android:background="@color/gray"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:layout_above="@+id/button_participer"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <ImageView
-                android:id="@+id/imageViewPhotoProfil"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                app:cardCornerRadius="0dp"
-                app:cardElevation="1dp">
+                <ImageView
+                    android:id="@+id/imageViewPhotoProfil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:background="@color/white"
+                    android:orientation="vertical"
                     android:padding="@dimen/activity_horizontal_margin">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@mipmap/ic_action_notification_event_note_padding"
-                        android:tint="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/textViewTitle"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin" />
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                app:cardCornerRadius="0dp"
-                app:cardElevation="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/activity_horizontal_margin">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@mipmap/ic_action_action_event_padding"
-                        android:tint="@color/colorPrimary" />
+                        android:text="hello"
+                        android:textAlignment="center"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textViewDate"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin" />
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                app:cardCornerRadius="0dp"
-                app:cardElevation="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/activity_horizontal_margin">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@mipmap/ic_action_maps_map_padding"
-                        android:tint="@color/colorPrimary" />
+                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                        android:text="20-01-2016"
+                        android:textAlignment="center"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/textViewPlace"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin" />
+                        android:layout_height="wrap_content" />
 
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                app:cardCornerRadius="0dp"
-                app:cardElevation="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/activity_horizontal_margin">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@mipmap/ic_action_maps_map_padding"
-                        android:tint="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/textViewAddress"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin" />
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                app:cardCornerRadius="0dp"
-                app:cardElevation="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/activity_horizontal_margin">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@mipmap/ic_action_maps_local_atm_padding"
-                        android:tint="@color/colorPrimary" />
+                        android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/textViewTarification"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin" />
+                        android:layout_height="wrap_content" />
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:text="Top photos" />
-
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerViewTopPhoto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none" />
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                app:cardCornerRadius="0dp"
-                app:cardElevation="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/activity_horizontal_margin">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@mipmap/ic_action_action_info_outline_padding"
-                        android:tint="@color/colorPrimary" />
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    android:layout_marginLeft="@dimen/appbar_padding_top"
+                    android:layout_marginRight="@dimen/appbar_padding_top"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textViewPresentation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin" />
+                        android:text="TOP PHOTOS"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold" />
+
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerViewTopPhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none" />
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/textViewPresentation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    android:background="@color/white"
+                    android:padding="@dimen/activity_horizontal_margin" />
+
+                <Button
+                    android:id="@+id/buttonProgramme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    android:background="@color/colorPrimary"
+                    android:src="@mipmap/ic_action_action_favorite_outline_padding"
+                    android:text="Programme"
+                    android:textColor="@android:color/background_light"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/buttonIntervenant"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    android:background="@color/colorPrimary"
+                    android:src="@mipmap/ic_action_action_favorite_outline_padding"
+                    android:text="Intervenants"
+                    android:textColor="@android:color/background_light"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/buttonInvite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    android:background="@color/colorPrimary"
+                    android:src="@mipmap/ic_action_action_favorite_outline_padding"
+                    android:text="Invités d'honneur"
+                    android:textColor="@android:color/background_light"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/buttonActivite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    android:background="@color/colorPrimary"
+                    android:src="@mipmap/ic_action_action_favorite_outline_padding"
+                    android:text="Activités"
+                    android:textColor="@android:color/background_light"
+                    android:textSize="13sp" />
 
 
-    </android.support.v4.widget.NestedScrollView>
+            </LinearLayout>
 
-    <Button
-        android:id="@+id/button_participer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary"
-        android:hint=""
-        android:src="@mipmap/ic_action_action_favorite_outline_padding"
-        android:textColor="@android:color/background_light"
-        android:textSize="13sp"
-        android:visibility="gone" />
 
-</RelativeLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+        <Button
+            android:id="@+id/button_participer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorPrimary"
+            android:hint=""
+            android:src="@mipmap/ic_action_action_favorite_outline_padding"
+            android:textColor="@android:color/background_light"
+            android:textSize="13sp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>
 
 
 

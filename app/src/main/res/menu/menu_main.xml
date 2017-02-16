@@ -12,8 +12,8 @@
 
 
     <item
-        android:id="@+id/action_contry"
-        android:title="@string/action_contry"
+        android:id="@+id/action_country"
+        android:title="@string/action_country"
         app:showAsAction="never" />
 
     <item

@@ -12,6 +12,8 @@ public class Utils {
     public static final String ARG_USER_UID = "userUid";
     public static final String ARG_EVENT_UID = "eventUid";
     public static final String ARG_PHOTO_UID = "photoUid";
+    public static final String ARG_MODULE = "module";
+
 
 
     // DATABASE
@@ -21,11 +23,16 @@ public class Utils {
     public static final String FIREBASE_DATABASE_USERS = "user";
     public static final String FIREBASE_DATABASE_TICKETS = "ticket";
     public static final String FIREBASE_DATABASE_TARIFS = "tarifs";
+    public static final String FIREBASE_DATABASE_MODULES = "modules";
 
     public static final String FIREBASE_DATABASE_EVENT_TICKETS = "tickets";
     public static final String FIREBASE_DATABASE_EVENT_USERS = "users";
     public static final String FIREBASE_DATABASE_EVENT_PHOTOS = "photos";
     public static final String FIREBASE_DATABASE_EVENT_TCHATS = "tchats";
+    public static final String FIREBASE_DATABASE_EVENT_PROGRAMMES = "programmes";
+    public static final String FIREBASE_DATABASE_EVENT_INTERVENANTS = "intervenants";
+    public static final String FIREBASE_DATABASE_EVENT_INVITES = "invites";
+    public static final String FIREBASE_DATABASE_EVENT_ACTIVITES = "activites";
 
 
     public static final String FIREBASE_DATABASE_PHOTO_LIKES = "likes";

@@ -22,7 +22,6 @@ import matano.apkode.net.matano.fragment.MainEventFragment;
 import matano.apkode.net.matano.fragment.MainTimelineFragment;
 
 
-
 public class MainActivity extends AppCompatActivity {
     private FbDatabase fbDatabase;
     private String incomeEventUid;
@@ -46,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
         db = new Db(this);
         fbDatabase = new FbDatabase();
+
+        //fbDatabase.getRefEvent("-KctmsdelXhPGyJBhYFb").child(Utils.FIREBASE_DATABASE_EVENT_INVITES).push().setValue(new Programme("Jacques ATTALI", "Président - Positive Planet", "http://www.sahelinnov.org/wp-content/uploads/2016/01/Attali.jpg", "Jacques Attali est né le 1er novembre 1943. Polytechnicien, énarque et ancien conseiller spécial du président de la République François Mitterrand pendant dix ans, il est le fondateur de quatre institutions internationales : Action contre la faim, Eureka, BERD et Positive Planet. Cette dernière est la plus importante institution mondiale de soutien à la microfinance et a apporté son appui à plus de 10 millions de micro-entrepreneurs."));
+
 
         setContentView(R.layout.activity_main);
 
@@ -130,6 +132,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
+
+            case R.id.action_country:
+                startActivity(new Intent(this, CountryActivity.class));
+                return true;
+
+            case R.id.action_city:
+                startActivity(new Intent(this, CityActivity.class));
+                return true;
 
             case R.id.action_logout:
                 FirebaseAuth.getInstance().signOut();

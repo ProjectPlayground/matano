@@ -8,13 +8,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.firebase.ui.database.FirebaseIndexRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -28,6 +31,7 @@ import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.MainTimelineHolder;
 import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.User;
@@ -45,7 +49,7 @@ public class MainTimelineFragment extends Fragment {
 
     private Context context;
     private RecyclerView recyclerView;
-    private FirebaseRecyclerAdapter<String, MainTimelineHolder> adapter;
+    private FirebaseRecyclerAdapter<Photo, MainTimelineHolder> adapter;
 
 
     public MainTimelineFragment() {
@@ -155,20 +159,55 @@ public class MainTimelineFragment extends Fragment {
     private void setViewAdaper() {
         Query query = fbDatabase.getRefUserFollowings(currentUserUid);
 
-        adapter = new FirebaseRecyclerAdapter<String, MainTimelineHolder>(String.class, R.layout.card_main_timeline, MainTimelineHolder.class, query) {
-            @Override
-            protected void populateViewHolder(MainTimelineHolder mainTimelineHolder, String s, int position) {
-                if (s != null) {
-                    getUser(mainTimelineHolder, getRef(position).getKey());
-                }
-            }
-        };
 
-        recyclerView.setAdapter(adapter);
+        query.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                dataSnapshot.getValue(String.class);
+                getUser(dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+       /* query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String userUid = dataSnapshot.getValue(String.class);
+
+                if(userUid != null) {
+                    getUser(userUid);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
+
     }
 
-
-    private void getUser(final MainTimelineHolder mainTimelineHolder, final String userUid) {
+    private void getUser(final String userUid) {
         Query query = fbDatabase.getRefUser(userUid);
 
         query.addValueEventListener(new ValueEventListener() {
@@ -177,8 +216,9 @@ public class MainTimelineFragment extends Fragment {
                 User user = dataSnapshot.getValue(User.class);
 
                 if (user != null) {
-                    getPhotos(mainTimelineHolder, user, userUid);
+                    getAdaterPhotos(userUid, user);
                 }
+
             }
 
             @Override
@@ -186,55 +226,43 @@ public class MainTimelineFragment extends Fragment {
 
             }
         });
+
     }
 
-    private void getPhotos(final MainTimelineHolder mainTimelineHolder, final User user, String userUid) {
-        Query query = fbDatabase.getRefUserPhotos(userUid);
+    private void getAdaterPhotos(String userUid, final User user) {
+        Query keyRef = fbDatabase.getRefUserPhotos(userUid);
+        Query dataRef = fbDatabase.getRefPhotos();
 
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    String photoUid = snap.getKey();
-                    if (photoUid != null) {
-                        getPhoto(mainTimelineHolder, user, photoUid);
-                    }
-                }
-            }
+        Log.e(Utils.TAG, "dataRef " + dataRef.getRef() + " keyRef " + keyRef.getRef());
+
+        adapter = new FirebaseIndexRecyclerAdapter<Photo, MainTimelineHolder>(Photo.class, R.layout.card_main_timeline, MainTimelineHolder.class, keyRef, dataRef) {
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void getPhoto(final MainTimelineHolder mainTimelineHolder, final User user, String photoUid) {
-        Query query = fbDatabase.getRefPhoto(photoUid);
-
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Photo photo = dataSnapshot.getValue(Photo.class);
-
+            protected void populateViewHolder(MainTimelineHolder mainTimelineHolder, Photo photo, int position) {
+                Log.e(Utils.TAG, "populateViewHolder");
                 if (photo != null) {
+                    Log.e(Utils.TAG, "photo != null ");
                     displayLayout(mainTimelineHolder, user, photo);
+                    // getPhotos(mainTimelineHolder, user,  getRef(position).getKey());
+                } else {
+                    Log.e(Utils.TAG, "photo == null ");
                 }
-
             }
+        };
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        recyclerView.setAdapter(adapter);
     }
+
+
 
     private void displayLayout(final MainTimelineHolder mainTimelineHolder, User user, Photo photo) {
         String username = user.getUsername();
         String photoProfl = user.getPhotoProfl();
         String url = photo.getUrl();
         Date date = photo.getDate();
+
+        Log.e(Utils.TAG, "photoProfl " + photoProfl);
+
         String dateString = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date);
 
         if (username != null && photoProfl != null && url != null && dateString != null) {
