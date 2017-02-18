@@ -141,6 +141,7 @@ public class MainTimelineFragment extends Fragment {
 
 
     private void createAuthStateListener() {
+        Log.e(Utils.TAG, "TImeline");
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override

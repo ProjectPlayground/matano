@@ -3,7 +3,6 @@ package matano.apkode.net.matano.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,19 +14,20 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.Query;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import matano.apkode.net.matano.CityActivity;
+import matano.apkode.net.matano.CountryActivity;
 import matano.apkode.net.matano.EventActivity;
 import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
+import matano.apkode.net.matano.config.LocalStorage;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.MainEventHolder;
 import matano.apkode.net.matano.model.Event;
@@ -36,18 +36,16 @@ public class MainEventFragment extends Fragment {
     private static final String CATEGORIE = "Culture";
     private FbDatabase fbDatabase;
     private Db db;
-
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-
-    private FirebaseUser currentUser;
-    private String currentUserUid;
+    private LocalStorage localStorage;
 
     private Context context;
     private RecyclerView recyclerView;
     private FirebaseRecyclerAdapter<Event, MainEventHolder> adapter;
 
     private ProgressBar progressBar;
+
+    private String country;
+    private String city;
 
     public MainEventFragment() {
     }
@@ -62,10 +60,9 @@ public class MainEventFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        createAuthStateListener();
-
         db = new Db(context);
         fbDatabase = new FbDatabase();
+        localStorage = new LocalStorage(context);
 
     }
 
@@ -91,6 +88,35 @@ public class MainEventFragment extends Fragment {
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        country = localStorage.getCountry();
+        city = localStorage.getCity();
+
+        if (null == country) {
+            goCountry();
+        } else {
+            if (null == city) {
+                goCity();
+            }
+        }
+
+        getLayout();
+
+    }
+
+    private void goCountry() {
+        Intent intent = new Intent(context, CountryActivity.class);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+    private void goCity() {
+        Intent intent = new Intent(context, CityActivity.class);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+    private void getLayout() {
+        Log.e(Utils.TAG, "Country " + country + ", city " + city);
         // Query query = app.getRefEvents().orderByChild("category").equalTo(CATEGORIE);
         Query query = fbDatabase.getRefEvents();
 
@@ -150,7 +176,6 @@ public class MainEventFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
-
     }
 
 
@@ -162,7 +187,6 @@ public class MainEventFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -178,9 +202,6 @@ public class MainEventFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     @Override
@@ -201,21 +222,6 @@ public class MainEventFragment extends Fragment {
         super.onDetach();
     }
 
-
-    private void createAuthStateListener() {
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                currentUser = firebaseAuth.getCurrentUser();
-                if (currentUser == null) {
-                    goLogin();
-                } else {
-                    currentUserUid = currentUser.getUid();
-                }
-            }
-        };
-    }
 
 
     private void displayLayout(MainEventHolder mainEventHolder, Event event, final String refEvent) {

@@ -29,11 +29,11 @@ public class LocalStorage {
     }
 
     public String getCountry() {
-        return sharedPreferences.getString(CONTRY, "Niger");
+        return sharedPreferences.getString(CONTRY, null);
     }
 
     public String getCity() {
-        return sharedPreferences.getString(CITY, "Niamey");
+        return sharedPreferences.getString(CITY, null);
     }
 
     public boolean isCountryStored() {
