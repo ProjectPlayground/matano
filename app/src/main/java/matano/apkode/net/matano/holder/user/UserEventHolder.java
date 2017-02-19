@@ -39,6 +39,7 @@ public class UserEventHolder extends RecyclerView.ViewHolder {
                 Glide
                         .with(context)
                         .load(s)
+                        .placeholder(R.color.background_image)
                         //  .centerCrop()
                         .into(imageViewPhotoProfil);
             }

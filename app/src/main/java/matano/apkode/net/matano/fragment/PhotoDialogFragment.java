@@ -19,10 +19,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -210,8 +206,6 @@ public class PhotoDialogFragment extends DialogFragment {
             Photo photo = photos.get(position);
 
             ImageView imageViewPhoto = (ImageView) view.findViewById(R.id.imageViewPhoto);
-            ImageButton imageButtonAddFollowing = (ImageButton) view.findViewById(R.id.imageButtonAddFollowing);
-
 
             final String url = photo.getUrl();
 
@@ -219,6 +213,7 @@ public class PhotoDialogFragment extends DialogFragment {
                 Glide
                         .with(context)
                         .load(url)
+                        .placeholder(R.color.background_image)
                         // .centerCrop()
                         .into(imageViewPhoto);
 
@@ -228,17 +223,6 @@ public class PhotoDialogFragment extends DialogFragment {
 
                     }
                 });
-            }
-
-            if (imageButtonAddFollowing != null) {
-               /* getPhotoLike(imageButtonAddFollowing);
-
-                imageButtonAddFollowing.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                      db.setPhotoLike(photoUid, (String) view.getTag(), currentUserUid);
-                    }
-                });*/
             }
 
             container.addView(view);
@@ -264,30 +248,6 @@ public class PhotoDialogFragment extends DialogFragment {
             container.removeView((View) object);
         }
 
-        private void getPhotoLike(final ImageButton imageButtonLikePhoto) {
-            Query query = fbDatabase.getRefPhotoLikes(photoUid).child(currentUserUid);
-
-            query.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    String tag = dataSnapshot.getValue(String.class);
-                    if (tag == null) {
-                        imageButtonLikePhoto.setTag("0");
-                        imageButtonLikePhoto.setVisibility(View.VISIBLE);
-                        imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
-                    } else {
-                        imageButtonLikePhoto.setTag(null);
-                        imageButtonLikePhoto.setVisibility(View.VISIBLE);
-                        imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_padding);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
     }
 
 }

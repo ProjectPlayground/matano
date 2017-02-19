@@ -32,5 +32,12 @@ if (view == mLoginTextView) {
 # jpa.default=defaultPersistenceUnit
 
 
+private void goLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+
      */
 }

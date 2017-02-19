@@ -19,7 +19,8 @@
             android:id="@+id/textViewTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/activity_horizontal_margin" />
+            android:padding="@dimen/activity_horizontal_margin"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/imageViewPhotoProfil"
@@ -63,21 +64,24 @@
                 android:id="@+id/textViewDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtParticipantNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/participants" />
+                android:layout_toLeftOf="@+id/participants"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/participants"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_action_social_people_padding" />
+                android:src="@mipmap/ic_action_social_people_outline"
+                android:tint="@color/colorPrimary" />
 
         </RelativeLayout>
 

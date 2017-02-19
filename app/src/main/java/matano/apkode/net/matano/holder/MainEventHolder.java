@@ -81,7 +81,7 @@ public class MainEventHolder extends RecyclerView.ViewHolder {
                 Glide
                         .with(context)
                         .load(s)
-                        //.placeholder(R.mipmap.img5)
+                        .placeholder(R.color.gray)
                         //  .centerCrop()
                         .into(imageViewPhotoProfil);
             }

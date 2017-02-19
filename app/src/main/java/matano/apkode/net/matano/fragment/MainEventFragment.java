@@ -3,6 +3,7 @@ package matano.apkode.net.matano.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.Query;
 
 import java.text.SimpleDateFormat;
@@ -37,6 +40,13 @@ public class MainEventFragment extends Fragment {
     private FbDatabase fbDatabase;
     private Db db;
     private LocalStorage localStorage;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private FirebaseUser currentUser = null;
+    private String currentUserUid;
+
 
     private Context context;
     private RecyclerView recyclerView;
@@ -99,7 +109,7 @@ public class MainEventFragment extends Fragment {
             }
         }
 
-        getLayout();
+        createAuthStateListener();
 
     }
 
@@ -115,7 +125,70 @@ public class MainEventFragment extends Fragment {
         getActivity().finish();
     }
 
-    private void getLayout() {
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (adapter != null) {
+            adapter.cleanup();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    private void createAuthStateListener() {
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                currentUser = firebaseAuth.getCurrentUser();
+                if (currentUser == null) {
+                    goLogin();
+                } else {
+                    currentUserUid = currentUser.getUid();
+                    createView();
+                }
+            }
+        };
+    }
+
+    private void createView() {
         Log.e(Utils.TAG, "Country " + country + ", city " + city);
         // Query query = app.getRefEvents().orderByChild("category").equalTo(CATEGORIE);
         Query query = fbDatabase.getRefEvents();
@@ -175,54 +248,7 @@ public class MainEventFragment extends Fragment {
         });
 
         recyclerView.setAdapter(adapter);
-
     }
-
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (adapter != null) {
-            adapter.cleanup();
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-
 
     private void displayLayout(MainEventHolder mainEventHolder, Event event, final String refEvent) {
         String title = event.getTitle();

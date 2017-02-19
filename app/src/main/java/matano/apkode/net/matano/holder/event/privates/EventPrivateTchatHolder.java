@@ -25,6 +25,7 @@ public class EventPrivateTchatHolder extends RecyclerView.ViewHolder {
     private CardView cardViewPhotoProfil;
     private CardView cardViewContent;
 
+
     public EventPrivateTchatHolder(View itemView) {
         super(itemView);
         textViewUsername = (TextView) itemView.findViewById(R.id.textViewUsername);
@@ -46,6 +47,7 @@ public class EventPrivateTchatHolder extends RecyclerView.ViewHolder {
                 Glide
                         .with(context)
                         .load(s)
+                        .placeholder(R.color.background_image)
                         //  .centerCrop()
                         .into(imageViewPhotoProfil);
             }
@@ -62,6 +64,7 @@ public class EventPrivateTchatHolder extends RecyclerView.ViewHolder {
                 Glide
                         .with(context)
                         .load(s)
+                        .placeholder(R.color.background_image)
                         //  .centerCrop()
                         .into(imageViewPhoto);
             }
@@ -83,6 +86,18 @@ public class EventPrivateTchatHolder extends RecyclerView.ViewHolder {
 
                 //cardViewPhotoProfil.setLayoutParams(layoutParams);
             }
+        }
+    }
+
+    public void showContainer() {
+        if (relativeLayoutContainer != null) {
+            relativeLayoutContainer.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void showCardViewPhotoProfil() {
+        if (cardViewPhotoProfil != null) {
+            cardViewPhotoProfil.setVisibility(View.VISIBLE);
         }
     }
 
@@ -113,7 +128,7 @@ public class EventPrivateTchatHolder extends RecyclerView.ViewHolder {
     public void setTextViewUsername(String s) {
         if (s != null) {
             if (textViewUsername != null) {
-                textViewUsername.setText("?" + s);
+                textViewUsername.setText(s);
             }
         }
     }

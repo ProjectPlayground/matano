@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="1dp"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/textViewParticipantNumer"
@@ -9,7 +11,8 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:textAlignment="center"
-        android:textColor="@color/cardview_dark_background" />
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"

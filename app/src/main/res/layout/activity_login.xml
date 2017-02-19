@@ -10,20 +10,33 @@
     tools:context="matano.apkode.net.matano.LoginActivity">
 
     <TextView
+        android:id="@+id/textViewTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/activity_horizontal_margin"
-        android:gravity="center_horizontal"
-        android:text="@string/login"
+        android:text="LOGIN"
+        android:textAlignment="center"
         android:textColor="@color/colorPrimary"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="MATANO ?"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/sign_in_button"
+        android:layout_marginBottom="@dimen/appbar_padding_top"
         android:paddingBottom="16dp"
         android:paddingTop="16sp" />
 

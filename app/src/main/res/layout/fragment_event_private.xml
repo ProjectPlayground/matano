@@ -5,31 +5,6 @@
     android:background="@color/gray"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/linearLayoutButtons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/imageButtonPrivateTchat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:padding="8dp"
-            android:src="@mipmap/ic_action_communication_chat_padding" />
-
-        <ImageButton
-            android:id="@+id/imageButtonPrivatePhoto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
-            android:background="@color/white"
-            android:padding="8dp"
-            android:src="@mipmap/ic_action_navigation_apps_padding" />
-
-    </LinearLayout>
-
     <FrameLayout
         android:id="@+id/fragmentLayoutContainer"
         android:layout_width="match_parent"

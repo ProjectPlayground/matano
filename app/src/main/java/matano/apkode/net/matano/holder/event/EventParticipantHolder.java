@@ -40,7 +40,7 @@ public class EventParticipantHolder extends RecyclerView.ViewHolder {
                 Glide
                         .with(context)
                         .load(s)
-                        .placeholder(R.mipmap.img4)
+                        .placeholder(R.color.background_image)
                         //  .centerCrop()
                         .into(imageViewPhoto);
             }
@@ -68,7 +68,7 @@ public class EventParticipantHolder extends RecyclerView.ViewHolder {
     public void setTextViewUsername(String s) {
         if (s != null) {
             if (textViewUsername != null) {
-                textViewUsername.setText("?" + s);
+                textViewUsername.setText(s);
             }
         }
     }

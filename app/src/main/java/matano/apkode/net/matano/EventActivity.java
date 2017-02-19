@@ -1,9 +1,7 @@
 package matano.apkode.net.matano;
 
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,14 +20,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.event.EventInfoFragment;
@@ -41,14 +36,7 @@ import matano.apkode.net.matano.model.Event;
 
 public class EventActivity extends AppCompatActivity {
     private String incomeEventUid;
-    private Db db;
     private FbDatabase fbDatabase;
-
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-
-    private FirebaseUser currentUser = null;
-    private String currentUserUid;
 
     private TextView textViewToolbarTitle;
     private ImageView imageViewCover;
@@ -57,18 +45,14 @@ public class EventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        createAuthStateListener();
-
-        db = new Db(this);
         fbDatabase = new FbDatabase();
 
-        setContentView(R.layout.activity_event
-        );
+        setContentView(R.layout.activity_event);
 
         incomeEventUid = getIntent().getStringExtra(Utils.ARG_EVENT_UID);
 
         if (incomeEventUid == null) {
-            finishActivity();
+            finish();
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -79,13 +63,11 @@ public class EventActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-
         imageViewCover = (ImageView) findViewById(R.id.imageViewCover);
         textViewToolbarTitle = (TextView) findViewById(R.id.textViewToolbarTitle);
         textViewToolbarTitle.setText(getResources().getString(R.string.page_event_info));
 
         if (imageViewCover != null) {
-
             setTitleImage();
         }
 
@@ -140,7 +122,6 @@ public class EventActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -156,9 +137,6 @@ public class EventActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     @Override
@@ -181,21 +159,6 @@ public class EventActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void createAuthStateListener() {
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                currentUser = firebaseAuth.getCurrentUser();
-                if (currentUser == null) {
-                    goLogin();
-                } else {
-                    currentUserUid = currentUser.getUid();
-                }
-            }
-        };
     }
 
     private void setTitleImage() {
@@ -222,15 +185,6 @@ public class EventActivity extends AppCompatActivity {
         });
     }
 
-    private void goLogin() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
-
-    private void finishActivity() {
-        finish();
-    }
 
 
     /**

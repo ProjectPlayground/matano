@@ -100,8 +100,6 @@ public class EventTimelineFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        createAuthStateListener();
-
         db = new Db(context);
         fbDatabase = new FbDatabase();
         fbStorage = new FbStorage();
@@ -136,28 +134,7 @@ public class EventTimelineFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = fbDatabase.getRefEventPhotos(incomeEventUid);
-
-        adapter = new FirebaseRecyclerAdapter<String, EventTimelineHolder>(String.class, R.layout.card_event_timeline, EventTimelineHolder.class, query) {
-            @Override
-            protected void populateViewHolder(EventTimelineHolder eventTimelineHolder, String s, int position) {
-                if (s != null) {
-                    getPhoto(eventTimelineHolder, getRef(position).getKey(), position);
-                }
-            }
-        };
-
-        recyclerView.setAdapter(adapter);
-
-        floatingButtonPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/jpeg");
-                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                startActivityForResult(Intent.createChooser(intent, "Complete action using"), ARG_PHOTO_PICKER);
-            }
-        });
+        createAuthStateListener();
 
     }
 
@@ -213,9 +190,35 @@ public class EventTimelineFragment extends Fragment {
                     goLogin();
                 } else {
                     currentUserUid = currentUser.getUid();
+                    createView();
                 }
             }
         };
+    }
+
+    private void createView() {
+        Query query = fbDatabase.getRefEventPhotos(incomeEventUid);
+
+        adapter = new FirebaseRecyclerAdapter<String, EventTimelineHolder>(String.class, R.layout.card_event_timeline, EventTimelineHolder.class, query) {
+            @Override
+            protected void populateViewHolder(EventTimelineHolder eventTimelineHolder, String s, int position) {
+                if (s != null) {
+                    getPhoto(eventTimelineHolder, getRef(position).getKey(), position);
+                }
+            }
+        };
+
+        recyclerView.setAdapter(adapter);
+
+        floatingButtonPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/jpeg");
+                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                startActivityForResult(Intent.createChooser(intent, "Complete action using"), ARG_PHOTO_PICKER);
+            }
+        });
     }
 
     private void getPhoto(final EventTimelineHolder eventTimelineHolder, final String photoUid, final int position) {

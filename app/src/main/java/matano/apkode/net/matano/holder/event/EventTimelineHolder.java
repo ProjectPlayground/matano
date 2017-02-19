@@ -22,6 +22,7 @@ public class EventTimelineHolder extends RecyclerView.ViewHolder {
     private ImageButton imageButtonLikePhoto;
     private ImageButton imageButtonSharePhoto;
     private LinearLayout linearLayoutUser;
+    private TextView textViewCountLike;
 
     public EventTimelineHolder(View itemView) {
         super(itemView);
@@ -32,13 +33,14 @@ public class EventTimelineHolder extends RecyclerView.ViewHolder {
         imageButtonLikePhoto = (ImageButton) itemView.findViewById(R.id.imageButtonLikePhoto);
         imageButtonSharePhoto = (ImageButton) itemView.findViewById(R.id.imageButtonSharePhoto);
         linearLayoutUser = (LinearLayout) itemView.findViewById(R.id.linearLayoutUser);
+        textViewCountLike = (TextView) itemView.findViewById(R.id.textViewCountLike);
     }
 
 
     public void setTextViewUsername(String s) {
         if (s != null) {
             if (textViewUsername != null) {
-                textViewUsername.setText("?" + s);
+                textViewUsername.setText(s);
             }
         }
     }
@@ -60,7 +62,7 @@ public class EventTimelineHolder extends RecyclerView.ViewHolder {
                 Glide
                         .with(context)
                         .load(s)
-                        // .placeholder(R.mipmap.img4)
+                        .placeholder(R.color.background_image)
                         //  .centerCrop()
                         .into(imageViewPhoto);
 
@@ -78,7 +80,7 @@ public class EventTimelineHolder extends RecyclerView.ViewHolder {
                 Glide
                         .with(context)
                         .load(s)
-                        //.placeholder(R.mipmap.img4)
+                        .placeholder(R.color.background_image)
                         //  .centerCrop()
                         .into(imageViewPhotoProfil);
 
@@ -105,5 +107,17 @@ public class EventTimelineHolder extends RecyclerView.ViewHolder {
 
     public LinearLayout getLinearLayoutUser() {
         return linearLayoutUser;
+    }
+
+    public TextView getTextViewCountLike() {
+        return textViewCountLike;
+    }
+
+    public void setTextViewCountLike(String s) {
+        if (s != null) {
+            if (textViewCountLike != null) {
+                textViewCountLike.setText(s);
+            }
+        }
     }
 }

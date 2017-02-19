@@ -59,7 +59,7 @@ public class EventPrivatePhotoHolder extends RecyclerView.ViewHolder {
                 Glide
                         .with(context)
                         .load(s)
-                        // .placeholder(R.mipmap.img4)
+                        .placeholder(R.color.background_image)
                         //  .centerCrop()
                         .into(imageViewPhoto);
 
@@ -77,7 +77,7 @@ public class EventPrivatePhotoHolder extends RecyclerView.ViewHolder {
                 Glide
                         .with(context)
                         .load(s)
-                        //.placeholder(R.mipmap.img4)
+                        .placeholder(R.color.background_image)
                         //  .centerCrop()
                         .into(imageViewPhotoProfil);
 

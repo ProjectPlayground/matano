@@ -74,8 +74,6 @@ public class EventParticipantFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        createAuthStateListener();
-
         db = new Db(context);
         fbDatabase = new FbDatabase();
     }
@@ -115,25 +113,7 @@ public class EventParticipantFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = fbDatabase.getRefEventUsers(incomeEventUid);
-
-        adapter = new FirebaseRecyclerAdapter<String, EventParticipantHolder>(String.class, R.layout.card_event_participant, EventParticipantHolder.class, query) {
-            @Override
-            protected void populateViewHolder(final EventParticipantHolder eventParticipantHolder, final String s, int position) {
-                if (s != null) {
-                    getUser(eventParticipantHolder, getRef(position).getKey());
-                    if (textViewParticipantNumer != null) {
-                        textViewParticipantNumer.setText(getItemCount() + " " + getResources().getString(R.string.participants));
-                    }
-
-                } else {
-                    textViewParticipantNumer.setText("0" + " " + getResources().getString(R.string.participants));
-                }
-
-            }
-        };
-
-        recyclerView.setAdapter(adapter);
+        createAuthStateListener();
     }
 
     @Override
@@ -189,9 +169,32 @@ public class EventParticipantFragment extends Fragment {
                     goLogin();
                 } else {
                     currentUserUid = currentUser.getUid();
+                    createView();
                 }
             }
         };
+    }
+
+    private void createView() {
+        Query query = fbDatabase.getRefEventUsers(incomeEventUid);
+
+        adapter = new FirebaseRecyclerAdapter<String, EventParticipantHolder>(String.class, R.layout.card_event_participant, EventParticipantHolder.class, query) {
+            @Override
+            protected void populateViewHolder(final EventParticipantHolder eventParticipantHolder, final String s, int position) {
+                if (s != null) {
+                    getUser(eventParticipantHolder, getRef(position).getKey());
+                    if (textViewParticipantNumer != null) {
+                        textViewParticipantNumer.setText(getItemCount() + " " + getResources().getString(R.string.participants));
+                    }
+
+                } else {
+                    textViewParticipantNumer.setText("0" + " " + getResources().getString(R.string.participants));
+                }
+
+            }
+        };
+
+        recyclerView.setAdapter(adapter);
     }
 
 

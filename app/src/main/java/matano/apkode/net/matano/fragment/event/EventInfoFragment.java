@@ -396,7 +396,8 @@ public class EventInfoFragment extends Fragment {
                     String status = dataSnapshot.getValue(String.class);
                     switch (status) {
                         case "0":
-                            button_participer.setText("En attente");
+                            // button_participer.setText("En attente");
+                            button_participer.setText("Je participe");
                             button_participer.setTag("0");
                             break;
                         case "1":

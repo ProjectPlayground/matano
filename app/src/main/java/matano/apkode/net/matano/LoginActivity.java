@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -43,7 +43,7 @@ import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.model.User;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends FragmentActivity {
     private static final int RC_SIGN_IN = 9001;
     private FbDatabase fbDatabase;
     private Db db;
