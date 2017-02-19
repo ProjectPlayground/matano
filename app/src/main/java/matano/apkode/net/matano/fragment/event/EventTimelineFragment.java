@@ -46,6 +46,7 @@ import matano.apkode.net.matano.UserActivity;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.FbStorage;
+import matano.apkode.net.matano.config.Share;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.PhotoDialogFragment;
 import matano.apkode.net.matano.holder.event.EventTimelineHolder;
@@ -60,6 +61,7 @@ public class EventTimelineFragment extends Fragment {
     private FbDatabase fbDatabase;
     private FbStorage fbStorage;
     private String incomeEventUid;
+    private Share share;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -103,6 +105,7 @@ public class EventTimelineFragment extends Fragment {
         db = new Db(context);
         fbDatabase = new FbDatabase();
         fbStorage = new FbStorage();
+        share = new Share(context, getActivity());
     }
 
     @Nullable
@@ -257,7 +260,8 @@ public class EventTimelineFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 if (user != null && user.getPhotoProfl() != null && user.getUsername() != null) {
-                    displayLayout(eventTimelineHolder, photoUid, photo, user, position);
+                    getPhotoLikesNumber(eventTimelineHolder, photoUid, photo, user, position);
+
                 }
             }
 
@@ -268,7 +272,24 @@ public class EventTimelineFragment extends Fragment {
         });
     }
 
-    private void displayLayout(EventTimelineHolder eventTimelineHolder, final String photoUid, Photo photo, User user, final int position) {
+    private void getPhotoLikesNumber(final EventTimelineHolder eventTimelineHolder, final String photoUid, final Photo photo, final User user, final int position) {
+        Query query = fbDatabase.getRefPhotoLikes(photoUid);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                displayLayout(eventTimelineHolder, photoUid, photo, user, position, dataSnapshot.getChildrenCount());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    private void displayLayout(EventTimelineHolder eventTimelineHolder, final String photoUid, final Photo photo, User user, final int position, final long likeCount) {
         final String userUid = photo.getUser();
         String url = photo.getUrl();
         Date date = photo.getDate();
@@ -309,6 +330,8 @@ public class EventTimelineFragment extends Fragment {
 
 
         ImageButton imageButtonLikePhoto = eventTimelineHolder.getImageButtonLikePhoto();
+        ImageButton imageButtonSharePhoto = eventTimelineHolder.getImageButtonSharePhoto();
+        eventTimelineHolder.setTextViewCountLike(likeCount + "");
 
         getPhotoLike(imageButtonLikePhoto, photoUid);
 
@@ -316,6 +339,14 @@ public class EventTimelineFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 db.setPhotoLike(photoUid, (String) view.getTag(), currentUserUid);
+            }
+        });
+
+        imageButtonSharePhoto.setVisibility(View.VISIBLE);
+        imageButtonSharePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                share.shareLink("title", "description", "hashatag", photo.getUrl());
             }
         });
 

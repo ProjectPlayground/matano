@@ -54,7 +54,7 @@ public class EventPrivateTchatFragment extends Fragment {
     private Context context;
     private LinearLayoutManager manager;
     private RecyclerView recyclerView;
-    private FirebaseRecyclerAdapter<String, EventPrivateTchatHolder> adapter;
+    private FirebaseRecyclerAdapter<Tchat, EventPrivateTchatHolder> adapter;
     private EditText editTextMessage;
     private ImageButton buttonButtonSendMessage;
 
@@ -183,18 +183,17 @@ public class EventPrivateTchatFragment extends Fragment {
         };
     }
 
-
     private void createView() {
-        Query query = fbDatabase.getRefEventTchats(incomeEventUid).orderByChild("date");
+        Query query = fbDatabase.getRefEventTchats(incomeEventUid);
 
-        adapter = new FirebaseRecyclerAdapter<String, EventPrivateTchatHolder>(String.class, R.layout.card_event_private_tchat, EventPrivateTchatHolder.class, query) {
+        adapter = new FirebaseRecyclerAdapter<Tchat, EventPrivateTchatHolder>(Tchat.class, R.layout.card_event_private_tchat, EventPrivateTchatHolder.class, query) {
+
             @Override
-            protected void populateViewHolder(EventPrivateTchatHolder eventPrivateTchatHolder, String s, int position) {
-                if (s != null) {
-                    getTchat(eventPrivateTchatHolder, getRef(position).getKey());
-                }
+            protected void populateViewHolder(EventPrivateTchatHolder eventPrivateTchatHolder, Tchat tchat, int position) {
+                getUser(eventPrivateTchatHolder, tchat);
             }
         };
+
 
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -216,6 +215,8 @@ public class EventPrivateTchatFragment extends Fragment {
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
                 manager.smoothScrollToPosition(recyclerView, null, adapter.getItemCount());
+                // recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
+
             }
 
             @Override
@@ -252,6 +253,13 @@ public class EventPrivateTchatFragment extends Fragment {
             }
         });
 
+        editTextMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
+            }
+        });
+
         editTextMessage.setFilters(new InputFilter[]{new InputFilter.LengthFilter(DEFAULT_MSG_LENGTH_LIMIT)});
 
 
@@ -267,25 +275,6 @@ public class EventPrivateTchatFragment extends Fragment {
         });
     }
 
-
-    private void getTchat(final EventPrivateTchatHolder eventPrivateTchatHolder, final String tchatUid) {
-        Query query = fbDatabase.getRefTchat(tchatUid);
-
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Tchat tchat = dataSnapshot.getValue(Tchat.class);
-                if (tchat != null) {
-                    getUser(eventPrivateTchatHolder, tchat);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     private void getUser(final EventPrivateTchatHolder eventPrivateTchatHolder, final Tchat tchat) {
         Query query = fbDatabase.getRefUser(tchat.getUser());

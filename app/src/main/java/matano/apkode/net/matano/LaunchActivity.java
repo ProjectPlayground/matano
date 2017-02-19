@@ -24,6 +24,7 @@ public class LaunchActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_launch);
+
         new BackgroundTask().execute();
 
     }

@@ -37,7 +37,6 @@ import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.PhotoDialogFragment;
 import matano.apkode.net.matano.holder.event.privates.EventPrivatePhotoHolder;
 import matano.apkode.net.matano.model.Photo;
-import matano.apkode.net.matano.model.Tchat;
 import matano.apkode.net.matano.model.User;
 
 public class EventPrivatePhotoFragment extends Fragment {
@@ -121,7 +120,7 @@ public class EventPrivatePhotoFragment extends Fragment {
             @Override
             protected void populateViewHolder(EventPrivatePhotoHolder eventPrivatePhotoHolder, String s, int position) {
                 if (s != null) {
-                    getTchat(eventPrivatePhotoHolder, getRef(position).getKey(), position);
+                    //  getTchat(eventPrivatePhotoHolder, getRef(position).getKey(), position);
                 }
             }
         };
@@ -186,6 +185,7 @@ public class EventPrivatePhotoFragment extends Fragment {
             }
         };
     }
+/*
 
     private void getTchat(final EventPrivatePhotoHolder eventPrivatePhotoHolder, String tchatUid, final int position) {
         Query query = fbDatabase.getRefTchat(tchatUid);
@@ -205,6 +205,7 @@ public class EventPrivatePhotoFragment extends Fragment {
             }
         });
     }
+*/
 
     private void getPhoto(final EventPrivatePhotoHolder eventPrivatePhotoHolder, final String photoUid, final int position) {
         Query query = fbDatabase.getRefPhoto(photoUid);

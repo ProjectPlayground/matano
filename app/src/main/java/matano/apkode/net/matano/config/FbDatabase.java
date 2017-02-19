@@ -7,7 +7,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import matano.apkode.net.matano.model.Event;
 import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.Tarif;
-import matano.apkode.net.matano.model.Tchat;
 import matano.apkode.net.matano.model.Ticket;
 import matano.apkode.net.matano.model.User;
 import matano.apkode.net.matano.model.Video;
@@ -20,7 +19,6 @@ public class FbDatabase {
 
     private Event event;
     private Photo photo;
-    private Tchat tchat;
     private User user;
     private Ticket ticket;
     private Video video;
@@ -41,10 +39,6 @@ public class FbDatabase {
 
     public DatabaseReference getRefPhotos() {
         return refRoot.child(Utils.FIREBASE_DATABASE_PHOTOS);
-    }
-
-    public DatabaseReference getRefTchats() {
-        return refRoot.child(Utils.FIREBASE_DATABASE_TCHATS);
     }
 
     public DatabaseReference getRefUsers() {
@@ -119,11 +113,6 @@ public class FbDatabase {
 
     public DatabaseReference getRefPhotoLike(String photoUid, String likeUid) {
         return getRefPhotoLikes(photoUid).child(likeUid);
-    }
-
-    // Tchat
-    public DatabaseReference getRefTchat(String tchatUid) {
-        return getRefTchats().child(tchatUid);
     }
 
     // User

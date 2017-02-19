@@ -117,6 +117,7 @@ public class EventTimelineHolder extends RecyclerView.ViewHolder {
         if (s != null) {
             if (textViewCountLike != null) {
                 textViewCountLike.setText(s);
+                textViewCountLike.setVisibility(View.VISIBLE);
             }
         }
     }

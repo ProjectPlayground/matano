@@ -3,8 +3,11 @@ package matano.apkode.net.matano.config;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -128,7 +131,14 @@ public class Db {
     public void setTchatMessage(String message, String uuid, String incomeEventUid, String currentUserUid) {
         Tchat tchat = new Tchat(incomeEventUid, currentUserUid, new Date(), message, null, null);
 
-        Map hashMap = new HashMap();
+        fbDatabase.getRefEventTchats(incomeEventUid).push().setValue(tchat).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.e(Utils.TAG, "Veuillez verifier votre connexion ");
+            }
+        });
+
+      /*  Map hashMap = new HashMap();
 
         hashMap.put("event/" + incomeEventUid + "/tchats/" + uuid, "1");
         hashMap.put("user/" + currentUserUid + "/tchats/" + uuid, "1");
@@ -141,7 +151,7 @@ public class Db {
                     Log.e(Utils.TAG, "error " + databaseError.getMessage());
                 }
             }
-        });
+        });*/
     }
 
 }
