@@ -15,7 +15,6 @@ public class Utils {
     public static final String ARG_MODULE = "module";
 
 
-
     // DATABASE
     public static final String FIREBASE_DATABASE_EVENTS = "event";
     public static final String FIREBASE_DATABASE_TCHATS = "tchat";

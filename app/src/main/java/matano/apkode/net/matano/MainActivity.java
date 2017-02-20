@@ -13,14 +13,22 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import matano.apkode.net.matano.config.Db;
+import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.MainEventFragment;
 import matano.apkode.net.matano.fragment.MainTimelineFragment;
 
 
 public class MainActivity extends AppCompatActivity {
     private Db db;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private FirebaseUser currentUser = null;
+    private String currentUserUid;
 
     private MainEventFragment mainEventFragment;
     private MainTimelineFragment mainTimelineFragment;
@@ -31,10 +39,9 @@ public class MainActivity extends AppCompatActivity {
 
         db = new Db(this);
 
-        //fbDatabase.getRefEvent("-KctmsdelXhPGyJBhYFb").child(Utils.FIREBASE_DATABASE_EVENT_INVITES).push().setValue(new Programme("Jacques ATTALI", "Président - Positive Planet", "http://www.sahelinnov.org/wp-content/uploads/2016/01/Attali.jpg", "Jacques Attali est né le 1er novembre 1943. Polytechnicien, énarque et ancien conseiller spécial du président de la République François Mitterrand pendant dix ans, il est le fondateur de quatre institutions internationales : Action contre la faim, Eureka, BERD et Positive Planet. Cette dernière est la plus importante institution mondiale de soutien à la microfinance et a apporté son appui à plus de 10 millions de micro-entrepreneurs."));
-
-
         setContentView(R.layout.activity_main);
+
+        createAuthStateListener();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -58,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -81,7 +88,8 @@ public class MainActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.ic_bottom_profil:
-                        Intent intent = new Intent(getApplicationContext(), ProfilActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), UserActivity.class);
+                        intent.putExtra(Utils.ARG_USER_UID, currentUserUid);
                         startActivity(intent);
                         break;
 
@@ -102,6 +110,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -155,6 +166,27 @@ public class MainActivity extends AppCompatActivity {
         });
 
         return true;
+    }
+
+    private void createAuthStateListener() {
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                currentUser = firebaseAuth.getCurrentUser();
+                if (currentUser == null) {
+                    goLogin();
+                } else {
+                    currentUserUid = currentUser.getUid();
+                }
+            }
+        };
+    }
+
+    private void goLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
 }

@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,6 @@ import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
-import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.holder.MainTimelineHolder;
 import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.User;
@@ -65,8 +63,6 @@ public class MainTimelineFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        createAuthStateListener();
-
         db = new Db(context);
         fbDatabase = new FbDatabase();
     }
@@ -90,7 +86,10 @@ public class MainTimelineFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        createAuthStateListener();
+
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -141,7 +140,6 @@ public class MainTimelineFragment extends Fragment {
 
 
     private void createAuthStateListener() {
-        Log.e(Utils.TAG, "TImeline");
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -240,20 +238,18 @@ public class MainTimelineFragment extends Fragment {
 
             @Override
             protected void populateViewHolder(MainTimelineHolder mainTimelineHolder, Photo photo, int position) {
-                Log.e(Utils.TAG, "populateViewHolder");
                 if (photo != null) {
-                    Log.e(Utils.TAG, "photo != null ");
                     displayLayout(mainTimelineHolder, user, photo);
                     // getPhotos(mainTimelineHolder, user,  getRef(position).getKey());
                 } else {
-                    Log.e(Utils.TAG, "photo == null ");
+
                 }
             }
         };
 
+        adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
     }
-
 
 
     private void displayLayout(final MainTimelineHolder mainTimelineHolder, User user, Photo photo) {
@@ -261,8 +257,6 @@ public class MainTimelineFragment extends Fragment {
         String photoProfl = user.getPhotoProfl();
         String url = photo.getUrl();
         Date date = photo.getDate();
-
-        Log.e(Utils.TAG, "photoProfl " + photoProfl);
 
         String dateString = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date);
 

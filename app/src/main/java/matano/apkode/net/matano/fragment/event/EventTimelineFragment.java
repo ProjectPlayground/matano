@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +40,8 @@ import java.util.Locale;
 import java.util.UUID;
 
 import matano.apkode.net.matano.LoginActivity;
-import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
+import matano.apkode.net.matano.UserActivity;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.FbStorage;
@@ -106,8 +105,6 @@ public class EventTimelineFragment extends Fragment {
         fbDatabase = new FbDatabase();
         fbStorage = new FbStorage();
         share = new Share(context, getActivity());
-
-        Log.e(Utils.TAG, "onCreate timeline");
     }
 
     @Nullable
@@ -122,8 +119,6 @@ public class EventTimelineFragment extends Fragment {
         if (incomeEventUid == null) {
             finishActivity();
         }
-
-        Log.e(Utils.TAG, "onCreateView timeline");
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
 
@@ -141,7 +136,6 @@ public class EventTimelineFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Log.e(Utils.TAG, "onViewCreated timeline");
         createAuthStateListener();
 
     }
@@ -149,20 +143,17 @@ public class EventTimelineFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Log.e(Utils.TAG, "onStart timeline");
         mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.e(Utils.TAG, "onResume timeline");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.e(Utils.TAG, "onPause timeline");
     }
 
     @Override
@@ -183,7 +174,6 @@ public class EventTimelineFragment extends Fragment {
         super.onDestroy();
         if (adapter != null) {
             adapter.cleanup();
-            adapter.notifyDataSetChanged();
         }
     }
 
@@ -221,6 +211,7 @@ public class EventTimelineFragment extends Fragment {
             }
         };
 
+        adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
 
         floatingButtonPhoto.setOnClickListener(new View.OnClickListener() {
@@ -301,7 +292,6 @@ public class EventTimelineFragment extends Fragment {
         });
     }
 
-
     private void displayLayout(EventTimelineHolder eventTimelineHolder, final String photoUid, final Photo photo, User user, final int position, final long likeCount) {
         final String userUid = photo.getUser();
         String url = photo.getUrl();
@@ -337,7 +327,7 @@ public class EventTimelineFragment extends Fragment {
         eventTimelineHolder.getLinearLayoutUser().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goProfilActivity(userUid);
+                goUserActivity(userUid);
             }
         });
 
@@ -396,7 +386,7 @@ public class EventTimelineFragment extends Fragment {
         final String uuid = UUID.randomUUID().toString();
 
         progressBar.setVisibility(View.VISIBLE);
-        Toast.makeText(getContext(), "En cours...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "En cours de téléchargement...", Toast.LENGTH_SHORT).show();
 
         StorageReference photoRef = fbStorage.getRefRoot().child(uuid);
         photoRef.putFile(selectedImageUri)
@@ -405,8 +395,6 @@ public class EventTimelineFragment extends Fragment {
                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                         long totalByteCount = taskSnapshot.getTotalByteCount();
                         long bytesTransferred = taskSnapshot.getBytesTransferred();
-
-                        Log.e(Utils.TAG, "bytesTransferred : " + bytesTransferred + " , totalByteCount : " + totalByteCount);
 
                         progressBar.setMax((int) totalByteCount);
                         progressBar.setProgress((int) bytesTransferred);
@@ -418,14 +406,14 @@ public class EventTimelineFragment extends Fragment {
                         Uri downloadUri = taskSnapshot.getDownloadUrl();
                         db.setPhotoTimeline(downloadUri, uuid, incomeEventUid, currentUserUid);
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Téléchargement terminé", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Erreur, veuillez vérifier la connexion internet", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -440,8 +428,8 @@ public class EventTimelineFragment extends Fragment {
         }
     }
 
-    private void goProfilActivity(String userUid) {
-        Intent intent = new Intent(context, ProfilActivity.class);
+    private void goUserActivity(String userUid) {
+        Intent intent = new Intent(context, UserActivity.class);
         intent.putExtra(Utils.ARG_USER_UID, userUid);
         startActivity(intent);
     }

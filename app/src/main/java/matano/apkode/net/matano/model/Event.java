@@ -32,7 +32,6 @@ public class Event implements Serializable {
     private Map<String, Programme> programmes = new HashMap<>(); // programmeUid
 
 
-
     public Event() {
     }
 

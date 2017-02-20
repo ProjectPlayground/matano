@@ -202,25 +202,22 @@ public class MainEventFragment extends Fragment {
             }
         };
 
-      /*  adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
                 super.onChanged();
-                Log.e(Utils.TAG, "onChanged ");
             }
 
             @Override
             public void onItemRangeChanged(int positionStart, int itemCount) {
                 super.onItemRangeChanged(positionStart, itemCount);
                 progressBar.setVisibility(View.GONE);
-                Log.e(Utils.TAG, "positionStart " + positionStart + " itemCount " + itemCount);
             }
 
             @Override
             public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
                 super.onItemRangeChanged(positionStart, itemCount, payload);
                 progressBar.setVisibility(View.GONE);
-                Log.e(Utils.TAG, "positionStart " + positionStart + " itemCount " + itemCount + " payload " + payload);
             }
 
             @Override
@@ -228,22 +225,20 @@ public class MainEventFragment extends Fragment {
                 super.onItemRangeInserted(positionStart, itemCount);
                 progressBar.setVisibility(View.GONE);
                 adapter.notifyDataSetChanged();
-                Log.e(Utils.TAG, "onItemRangeInserted ");
             }
 
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 super.onItemRangeRemoved(positionStart, itemCount);
-                Log.e(Utils.TAG, "onItemRangeRemoved ");
             }
 
             @Override
             public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
                 super.onItemRangeMoved(fromPosition, toPosition, itemCount);
-                Log.e(Utils.TAG, "onItemRangeMoved ");
             }
-        });*/
+        });
 
+        adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
     }
 

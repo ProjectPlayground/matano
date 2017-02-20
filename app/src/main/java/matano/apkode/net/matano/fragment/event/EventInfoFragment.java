@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,8 +86,6 @@ public class EventInfoFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString(Utils.ARG_EVENT_UID, eventUid);
 
-        Log.e(Utils.TAG, "newInstance Info");
-
         eventInfoFragment.setArguments(bundle);
 
         return eventInfoFragment;
@@ -98,7 +95,6 @@ public class EventInfoFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-        Log.e(Utils.TAG, "onAttach Info");
     }
 
     @Override
@@ -107,8 +103,6 @@ public class EventInfoFragment extends Fragment {
 
         db = new Db(context);
         fbDatabase = new FbDatabase();
-
-        Log.e(Utils.TAG, "onCreate Info");
     }
 
     @Nullable
@@ -123,8 +117,6 @@ public class EventInfoFragment extends Fragment {
         if (incomeEventUid == null) {
             finishActivity();
         }
-
-        Log.e(Utils.TAG, "onCreateView Info");
 
         imageViewPhotoProfil = (ImageView) view.findViewById(R.id.imageViewPhotoProfil);
         textViewTitle = (TextView) view.findViewById(R.id.textViewTitle);
@@ -148,7 +140,6 @@ public class EventInfoFragment extends Fragment {
         recyclerViewTopPhoto.setLayoutManager(manager);
         recyclerViewTopPhoto.setItemAnimator(new DefaultItemAnimator());
 
-
         return view;
     }
 
@@ -156,34 +147,28 @@ public class EventInfoFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Log.e(Utils.TAG, "onViewCreated Info");
         createAuthStateListener();
-
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.e(Utils.TAG, "onStart info");
         mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onResume() {
-        Log.e(Utils.TAG, "onResume Info");
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        Log.e(Utils.TAG, "onPause Info");
         super.onPause();
     }
 
 
     @Override
     public void onStop() {
-        Log.e(Utils.TAG, "onStop Info");
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
@@ -192,29 +177,23 @@ public class EventInfoFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        Log.e(Utils.TAG, "onDestroyView Info");
         super.onDestroyView();
     }
 
     @Override
     public void onDestroy() {
-        Log.e(Utils.TAG, "onDestroy Info");
         super.onDestroy();
         if (adapter != null) {
             adapter.cleanup();
-            adapter.notifyDataSetChanged();
         }
-        Log.e(Utils.TAG, "onDestroy Info fin");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.e(Utils.TAG, "onDetach Info");
     }
 
     private void createAuthStateListener() {
-        Log.e(Utils.TAG, "createAuthStateListener info");
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -306,34 +285,6 @@ public class EventInfoFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
-
-       /* fbDatabase.getRefEventProgrammes(incomeEventUid).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Programme programme = snapshot.getValue(Programme.class);
-                    Log.e(Utils.TAG, "snapshot : "+programme.getTitle());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        FirebaseListAdapter<Programme> adapterProgramme = new FirebaseListAdapter<Programme>(getActivity(), Programme.class, android.R.layout.simple_list_item_1, databaseReferenceProgramme) {
-
-            @Override
-            protected void populateView(View view, Programme programme, int position) {
-                ((TextView)view.findViewById(android.R.id.text1)).setText(programme.getTitle());
-                Log.e(Utils.TAG, ""+programme.getTitle());
-            }
-        };
-
-        listViewProgramme.setAdapter(adapterProgramme);*/
-
 
     }
 

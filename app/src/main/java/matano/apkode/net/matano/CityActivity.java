@@ -15,6 +15,7 @@ import matano.apkode.net.matano.config.LocalStorage;
 public class CityActivity extends ListActivity {
     private ArrayList<String> cities;
     private LocalStorage localStorage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

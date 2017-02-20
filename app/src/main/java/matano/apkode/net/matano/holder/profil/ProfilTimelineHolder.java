@@ -19,6 +19,7 @@ public class ProfilTimelineHolder extends RecyclerView.ViewHolder {
     private TextView textViewTitle;
     private ImageButton imageButtonLikePhoto;
     private ImageButton imageButtonSharePhoto;
+    private TextView textViewCountLike;
     private LinearLayout linearLayoutTitle;
 
     public ProfilTimelineHolder(View itemView) {
@@ -29,6 +30,7 @@ public class ProfilTimelineHolder extends RecyclerView.ViewHolder {
         imageButtonLikePhoto = (ImageButton) itemView.findViewById(R.id.imageButtonLikePhoto);
         imageButtonSharePhoto = (ImageButton) itemView.findViewById(R.id.imageButtonSharePhoto);
         linearLayoutTitle = (LinearLayout) itemView.findViewById(R.id.linearLayoutTitle);
+        textViewCountLike = (TextView) itemView.findViewById(R.id.textViewCountLike);
     }
 
     public void setTextViewDate(String s) {
@@ -79,5 +81,14 @@ public class ProfilTimelineHolder extends RecyclerView.ViewHolder {
 
     public LinearLayout getLinearLayoutTitle() {
         return linearLayoutTitle;
+    }
+
+    public void setTextViewCountLike(String s) {
+        if (s != null) {
+            if (textViewCountLike != null) {
+                textViewCountLike.setText(s);
+                textViewCountLike.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }

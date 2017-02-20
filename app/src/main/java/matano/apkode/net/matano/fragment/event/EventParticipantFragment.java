@@ -195,6 +195,7 @@ public class EventParticipantFragment extends Fragment {
             }
         };
 
+        adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
     }
 

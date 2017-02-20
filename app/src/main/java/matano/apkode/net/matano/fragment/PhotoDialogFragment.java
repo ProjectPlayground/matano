@@ -97,6 +97,7 @@ public class PhotoDialogFragment extends DialogFragment {
         userUid = getArguments().getString(Utils.ARG_USER_UID);
         photoUid = getArguments().getString(Utils.ARG_PHOTO_UID);
 
+
         if (photos == null || userUid == null || photoUid == null) {
             finishActivity();
         }

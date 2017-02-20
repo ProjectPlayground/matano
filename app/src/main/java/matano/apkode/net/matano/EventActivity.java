@@ -190,7 +190,6 @@ public class EventActivity extends AppCompatActivity {
     }
 
 
-
     /**
      * FragmentPagerAdapter
      */

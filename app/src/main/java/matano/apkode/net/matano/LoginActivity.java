@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -40,7 +39,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
-import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.model.User;
 
 public class LoginActivity extends FragmentActivity {
@@ -116,12 +114,10 @@ public class LoginActivity extends FragmentActivity {
 
             @Override
             public void onCancel() {
-                Log.d(Utils.TAG, "facebook:onCancel");
             }
 
             @Override
             public void onError(FacebookException error) {
-                Log.d(Utils.TAG, "facebook:onError", error);
             }
         });
 

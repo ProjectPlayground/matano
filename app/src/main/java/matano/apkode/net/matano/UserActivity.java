@@ -29,6 +29,7 @@ import java.util.Locale;
 
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
+import matano.apkode.net.matano.config.Share;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.PhotoDialogFragment;
 import matano.apkode.net.matano.holder.profil.ProfilTimelineHolder;
@@ -40,6 +41,7 @@ public class UserActivity extends AppCompatActivity {
     private FbDatabase fbDatabase;
     private String incomeUserUid;
     private Db db;
+    private Share share;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -66,6 +68,7 @@ public class UserActivity extends AppCompatActivity {
 
         db = new Db(this);
         fbDatabase = new FbDatabase();
+        share = new Share(this, this);
 
         setSupportActionBar(toolbar);
 
@@ -162,11 +165,6 @@ public class UserActivity extends AppCompatActivity {
 
                 if (photo != null && photo.getUrl() != null && photo.getDate() != null && photo.getUser() != null) {
                     getUser(profilTimelineHolder, photoUid, photo, position);
-
-                    if (!photos.contains(photo)) {
-                        photos.add(photo);
-                    }
-
                 }
 
             }
@@ -212,7 +210,8 @@ public class UserActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 final Event event = dataSnapshot.getValue(Event.class);
                 if (event != null) {
-                    displayLayout(profilTimelineHolder, photoUid, eventUid, photo, user, event, position);
+                    getPhotoLikesNumber(profilTimelineHolder, photoUid, photo, user, eventUid, event, position);
+                    //  displayLayout(profilTimelineHolder, photoUid, eventUid, photo, user, event, position);
                 }
             }
 
@@ -223,11 +222,30 @@ public class UserActivity extends AppCompatActivity {
         });
     }
 
-    private void displayLayout(ProfilTimelineHolder profilTimelineHolder, final String photoUid, final String eventUid, Photo photo, User user, Event event, final int position) {
+    private void getPhotoLikesNumber(final ProfilTimelineHolder profilTimelineHolder, final String photoUid, final Photo photo, final User user, final String eventUid, final Event event, final int position) {
+        Query query = fbDatabase.getRefPhotoLikes(photoUid);
+        query.keepSynced(true);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                displayLayout(profilTimelineHolder, photoUid, eventUid, photo, user, event, position, dataSnapshot.getChildrenCount());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void displayLayout(ProfilTimelineHolder profilTimelineHolder, final String photoUid, final String eventUid, final Photo photo, User user, Event event, final int position, final long likeCount) {
         final String userUid = photo.getUser();
         String url = photo.getUrl();
         Date date = photo.getDate();
         String title = event.getTitle();
+
+        photos.add(photo);
 
         profilTimelineHolder.setTextViewTitle(title);
         profilTimelineHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
@@ -239,8 +257,9 @@ public class UserActivity extends AppCompatActivity {
 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(Utils.ARG_PHOTO_DIALOG, (Serializable) photos);
-                bundle.putInt(Utils.ARG_PHOTO_DIALOG_POSITION, position);
+                bundle.putInt(Utils.ARG_PHOTO_DIALOG_POSITION, 0);
                 bundle.putString(Utils.ARG_USER_UID, userUid);
+                bundle.putString(Utils.ARG_PHOTO_UID, photoUid);
 
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
@@ -261,38 +280,11 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
-        final ImageButton imageButtonLikePhoto = profilTimelineHolder.getImageButtonLikePhoto();
+        ImageButton imageButtonLikePhoto = profilTimelineHolder.getImageButtonLikePhoto();
+        ImageButton imageButtonSharePhoto = profilTimelineHolder.getImageButtonSharePhoto();
+        profilTimelineHolder.setTextViewCountLike(likeCount + "");
 
-        Query query = fbDatabase.getRefUserLikes(userUid);
-        query.keepSynced(true);
-
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getChildrenCount() == 0) {
-                    imageButtonLikePhoto.setTag("0");
-                    imageButtonLikePhoto.setVisibility(View.VISIBLE);
-                    imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
-                } else {
-                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                        if (photoUid.equals(snap.getKey())) {
-                            imageButtonLikePhoto.setTag(null);
-                            imageButtonLikePhoto.setVisibility(View.VISIBLE);
-                            imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_padding);
-                        } else {
-                            imageButtonLikePhoto.setTag("0");
-                            imageButtonLikePhoto.setVisibility(View.VISIBLE);
-                            imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // TODO handle error
-            }
-        });
+        getPhotoLike(imageButtonLikePhoto, photoUid);
 
         imageButtonLikePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -301,8 +293,44 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
+        imageButtonSharePhoto.setVisibility(View.VISIBLE);
+        imageButtonSharePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                share.shareLink("title", "description", "hashatag", photo.getUrl());
+            }
+        });
+
 
     }
+
+
+    private void getPhotoLike(final ImageButton imageButtonLikePhoto, final String photoUid) {
+        Query query = fbDatabase.getRefPhotoLikes(photoUid).child(currentUserUid);
+        query.keepSynced(true);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String tag = dataSnapshot.getValue(String.class);
+                if (tag == null) {
+                    imageButtonLikePhoto.setTag("0");
+                    imageButtonLikePhoto.setVisibility(View.VISIBLE);
+                    imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
+                } else {
+                    imageButtonLikePhoto.setTag(null);
+                    imageButtonLikePhoto.setVisibility(View.VISIBLE);
+                    imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_padding);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     private void goLogin() {
         Intent intent = new Intent(this, LoginActivity.class);

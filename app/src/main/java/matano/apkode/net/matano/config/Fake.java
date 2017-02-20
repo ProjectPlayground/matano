@@ -40,6 +40,8 @@ private void goLogin() {
 
 "https://firebasestorage.googleapis.com/v0/b/matano-5b3d0.appspot.com/o/1fb7187f-38b3-4695-81aa-0fdde7c7e130?alt=media&token=e6345fb1-8bd4-41f5-9f2e-c2112884420c"
 
+        //fbDatabase.getRefEvent("-KctmsdelXhPGyJBhYFb").child(Utils.FIREBASE_DATABASE_EVENT_INVITES).push().setValue(new Programme("Jacques ATTALI", "Président - Positive Planet", "http://www.sahelinnov.org/wp-content/uploads/2016/01/Attali.jpg", "Jacques Attali est né le 1er novembre 1943. Polytechnicien, énarque et ancien conseiller spécial du président de la République François Mitterrand pendant dix ans, il est le fondateur de quatre institutions internationales : Action contre la faim, Eureka, BERD et Positive Planet. Cette dernière est la plus importante institution mondiale de soutien à la microfinance et a apporté son appui à plus de 10 millions de micro-entrepreneurs."));
+
 
      */
 }
