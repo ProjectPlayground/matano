@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Locale;
 
 import matano.apkode.net.matano.LoginActivity;
+import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.UserActivity;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
@@ -115,6 +115,7 @@ public class EventPrivatePhotoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Query query = fbDatabase.getRefEventTchats(incomeEventUid);
+        query.keepSynced(true);
 
         adapter = new FirebaseRecyclerAdapter<String, EventPrivatePhotoHolder>(String.class, R.layout.card_event_private_photo, EventPrivatePhotoHolder.class, query) {
             @Override
@@ -189,6 +190,7 @@ public class EventPrivatePhotoFragment extends Fragment {
 
     private void getTchat(final EventPrivatePhotoHolder eventPrivatePhotoHolder, String tchatUid, final int position) {
         Query query = fbDatabase.getRefTchat(tchatUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -209,6 +211,7 @@ public class EventPrivatePhotoFragment extends Fragment {
 
     private void getPhoto(final EventPrivatePhotoHolder eventPrivatePhotoHolder, final String photoUid, final int position) {
         Query query = fbDatabase.getRefPhoto(photoUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -234,7 +237,7 @@ public class EventPrivatePhotoFragment extends Fragment {
         String userUid = photo.getUser();
 
         Query query = fbDatabase.getRefUser(userUid);
-
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -297,7 +300,7 @@ public class EventPrivatePhotoFragment extends Fragment {
     }
 
     private void goProfilActivity(String userUid) {
-        Intent intent = new Intent(context, UserActivity.class);
+        Intent intent = new Intent(context, ProfilActivity.class);
         intent.putExtra(Utils.ARG_USER_UID, userUid);
         startActivity(intent);
     }

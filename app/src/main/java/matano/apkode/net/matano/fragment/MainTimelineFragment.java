@@ -159,7 +159,7 @@ public class MainTimelineFragment extends Fragment {
 
     private void setViewAdaper() {
         Query query = fbDatabase.getRefUserFollowings(currentUserUid);
-
+        query.keepSynced(true);
 
         query.addChildEventListener(new ChildEventListener() {
             @Override
@@ -210,6 +210,7 @@ public class MainTimelineFragment extends Fragment {
 
     private void getUser(final String userUid) {
         Query query = fbDatabase.getRefUser(userUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -234,7 +235,6 @@ public class MainTimelineFragment extends Fragment {
         Query keyRef = fbDatabase.getRefUserPhotos(userUid);
         Query dataRef = fbDatabase.getRefPhotos();
 
-        Log.e(Utils.TAG, "dataRef " + dataRef.getRef() + " keyRef " + keyRef.getRef());
 
         adapter = new FirebaseIndexRecyclerAdapter<Photo, MainTimelineHolder>(Photo.class, R.layout.card_main_timeline, MainTimelineHolder.class, keyRef, dataRef) {
 

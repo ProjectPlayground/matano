@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.fragment.user;
+package matano.apkode.net.matano.fragment.profil;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,10 +26,10 @@ import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
-import matano.apkode.net.matano.holder.user.UserEventHolder;
+import matano.apkode.net.matano.holder.profil.ProfilEventHolder;
 import matano.apkode.net.matano.model.Event;
 
-public class UserEventFragment extends Fragment {
+public class ProfilEventFragment extends Fragment {
     private FbDatabase fbDatabase;
     private String incomeUserUid;
     private Db db;
@@ -42,20 +42,20 @@ public class UserEventFragment extends Fragment {
 
     private Context context;
     private RecyclerView recyclerView;
-    private FirebaseRecyclerAdapter<String, UserEventHolder> adapter;
+    private FirebaseRecyclerAdapter<String, ProfilEventHolder> adapter;
 
-    public UserEventFragment() {
+    public ProfilEventFragment() {
     }
 
-    public static UserEventFragment newInstance(String userUid) {
-        UserEventFragment userEventFragment = new UserEventFragment();
+    public static ProfilEventFragment newInstance(String userUid) {
+        ProfilEventFragment profilEventFragment = new ProfilEventFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString(Utils.ARG_USER_UID, userUid);
 
-        userEventFragment.setArguments(bundle);
+        profilEventFragment.setArguments(bundle);
 
-        return userEventFragment;
+        return profilEventFragment;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class UserEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View view = inflater.inflate(R.layout.fragment_user_event, container, false);
+        View view = inflater.inflate(R.layout.fragment_profil_event, container, false);
 
         incomeUserUid = getArguments().getString(Utils.ARG_USER_UID);
 
@@ -101,12 +101,13 @@ public class UserEventFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Query query = fbDatabase.getRefUserEvents(incomeUserUid);
+        query.keepSynced(true);
 
-        adapter = new FirebaseRecyclerAdapter<String, UserEventHolder>(String.class, R.layout.card_user_event, UserEventHolder.class, query) {
+        adapter = new FirebaseRecyclerAdapter<String, ProfilEventHolder>(String.class, R.layout.card_profil_event, ProfilEventHolder.class, query) {
             @Override
-            protected void populateViewHolder(UserEventHolder userEventHolder, String s, int position) {
+            protected void populateViewHolder(ProfilEventHolder profilEventHolder, String s, int position) {
                 if (s != null) {
-                    getEvent(userEventHolder, getRef(position).getKey());
+                    getEvent(profilEventHolder, getRef(position).getKey());
                 }
             }
         };
@@ -172,16 +173,17 @@ public class UserEventFragment extends Fragment {
         };
     }
 
-    private void getEvent(final UserEventHolder userEventHolder, final String eventUid) {
+    private void getEvent(final ProfilEventHolder profilEventHolder, final String eventUid) {
 
         Query query = fbDatabase.getRefEvent(eventUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 final Event event = dataSnapshot.getValue(Event.class);
                 if (event != null && event.getPhotoProfil() != null && event.getTitle() != null && event.getPlace() != null && event.getTarification() != null) {
-                    displayLayout(userEventHolder, eventUid, event);
+                    displayLayout(profilEventHolder, eventUid, event);
                 }
             }
 
@@ -192,19 +194,19 @@ public class UserEventFragment extends Fragment {
         });
     }
 
-    private void displayLayout(UserEventHolder userEventHolder, final String eventUid, Event event) {
+    private void displayLayout(ProfilEventHolder profilEventHolder, final String eventUid, Event event) {
 
         String photoProfil = event.getPhotoProfil();
         String title = event.getTitle();
         String place = event.getPlace();
         String tarification = event.getTarification();
 
-        userEventHolder.setImageViewPhotoProfil(context, photoProfil);
-        userEventHolder.setTextViewTitle(title);
-        userEventHolder.setTextViewPlace(place);
-        userEventHolder.setTextViewTarification(tarification);
+        profilEventHolder.setImageViewPhotoProfil(context, photoProfil);
+        profilEventHolder.setTextViewTitle(title);
+        profilEventHolder.setTextViewPlace(place);
+        profilEventHolder.setTextViewTarification(tarification);
 
-        userEventHolder.getLinearLayoutEvent().setOnClickListener(new View.OnClickListener() {
+        profilEventHolder.getLinearLayoutEvent().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 goEventActivity(eventUid);

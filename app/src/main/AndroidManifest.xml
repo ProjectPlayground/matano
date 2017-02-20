@@ -19,7 +19,6 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
@@ -37,7 +36,7 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".UserActivity"
+            android:name=".ProfilActivity"
             android:label="@string/title_activity_prrofil"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -77,6 +76,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="matano.apkode.net.matano.EventActivity" />
         </activity>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="5987414682bec36d11b4c1bfa8b6e6fcdd83ee8a" />
+
+        <activity
+            android:name=".UserActivity"
+            android:label="@string/title_activity_user"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

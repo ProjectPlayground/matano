@@ -33,6 +33,7 @@ public class Utils {
     public static final String FIREBASE_DATABASE_EVENT_INTERVENANTS = "intervenants";
     public static final String FIREBASE_DATABASE_EVENT_INVITES = "invites";
     public static final String FIREBASE_DATABASE_EVENT_ACTIVITES = "activites";
+    public static final String FIREBASE_DATABASE_EVENT_TWITTER = "twitter";
 
 
     public static final String FIREBASE_DATABASE_PHOTO_LIKES = "likes";

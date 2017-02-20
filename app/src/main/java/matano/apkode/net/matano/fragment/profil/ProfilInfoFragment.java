@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.fragment.user;
+package matano.apkode.net.matano.fragment.profil;
 
 import android.app.Activity;
 import android.content.Context;
@@ -31,7 +31,7 @@ import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.model.User;
 
-public class UserInfoFragment extends Fragment {
+public class ProfilInfoFragment extends Fragment {
     private FbDatabase fbDatabase;
     private String incomeUserUid;
     private Db db;
@@ -53,18 +53,18 @@ public class UserInfoFragment extends Fragment {
     private ImageButton imageButtonAddOrSetting;
 
 
-    public UserInfoFragment() {
+    public ProfilInfoFragment() {
     }
 
-    public static UserInfoFragment newInstance(String userUid) {
-        UserInfoFragment userInfoFragment = new UserInfoFragment();
+    public static ProfilInfoFragment newInstance(String userUid) {
+        ProfilInfoFragment profilInfoFragment = new ProfilInfoFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString(Utils.ARG_USER_UID, userUid);
 
-        userInfoFragment.setArguments(bundle);
+        profilInfoFragment.setArguments(bundle);
 
-        return userInfoFragment;
+        return profilInfoFragment;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class UserInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View view = inflater.inflate(R.layout.fragment_user_info, container, false);
+        View view = inflater.inflate(R.layout.fragment_profil_info, container, false);
 
         incomeUserUid = getArguments().getString(Utils.ARG_USER_UID);
 
@@ -112,6 +112,7 @@ public class UserInfoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Query query = fbDatabase.getRefUser(incomeUserUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -271,6 +272,7 @@ public class UserInfoFragment extends Fragment {
 
     private void isUserMyFriend(final ImageButton imageButtonAddOrSetting) {
         Query query = fbDatabase.getRefUserFollowings(currentUserUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override

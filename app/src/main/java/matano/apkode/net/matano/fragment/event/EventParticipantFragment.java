@@ -177,6 +177,7 @@ public class EventParticipantFragment extends Fragment {
 
     private void createView() {
         Query query = fbDatabase.getRefEventUsers(incomeEventUid);
+        query.keepSynced(true);
 
         adapter = new FirebaseRecyclerAdapter<String, EventParticipantHolder>(String.class, R.layout.card_event_participant, EventParticipantHolder.class, query) {
             @Override
@@ -200,6 +201,7 @@ public class EventParticipantFragment extends Fragment {
 
     private void getUser(final EventParticipantHolder eventParticipantHolder, final String userUid) {
         Query query = fbDatabase.getRefUser(userUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -264,6 +266,7 @@ public class EventParticipantFragment extends Fragment {
 
     private void isUserMyFriend(final ImageButton imageButtonAddOrSetting, final String userUid) {
         Query query = fbDatabase.getRefUserFollowing(currentUserUid, userUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override

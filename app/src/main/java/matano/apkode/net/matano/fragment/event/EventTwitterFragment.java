@@ -1,36 +1,35 @@
-package matano.apkode.net.matano.fragment.user;
+package matano.apkode.net.matano.fragment.event;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.TextView;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.twitter.sdk.android.tweetui.SearchTimeline;
+import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
 
 import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
-import matano.apkode.net.matano.holder.user.UserTicketHolder;
-import matano.apkode.net.matano.model.Event;
-import matano.apkode.net.matano.model.Ticket;
 
-public class UserTicketFragment extends Fragment {
+public class EventTwitterFragment extends ListFragment {
     private FbDatabase fbDatabase;
-    private String incomeUserUid;
+    private String incomeEventUid;
     private Db db;
 
     private FirebaseAuth mAuth;
@@ -40,24 +39,25 @@ public class UserTicketFragment extends Fragment {
     private String currentUserUid;
 
     private Context context;
-    private RecyclerView recyclerView;
-    private List<Event> events = new ArrayList<>();
-    private FirebaseRecyclerAdapter<Ticket, UserTicketHolder> adapter;
 
-    public UserTicketFragment() {
+    private ListView listViewTwitter;
+    private TextView textViewEmpty;
+
+
+    public EventTwitterFragment() {
     }
 
-    public static UserTicketFragment newInstance(String userUid) {
-        UserTicketFragment userTicketFragment = new UserTicketFragment();
+    public static EventTwitterFragment newInstance(String eventUid) {
+        EventTwitterFragment eventTwitterFragment = new EventTwitterFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putString(Utils.ARG_USER_UID, userUid);
+        bundle.putString(Utils.ARG_EVENT_UID, eventUid);
 
-        userTicketFragment.setArguments(bundle);
+        eventTwitterFragment.setArguments(bundle);
 
-        return userTicketFragment;
+        return eventTwitterFragment;
+
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -69,32 +69,22 @@ public class UserTicketFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        createAuthStateListener();
-
         db = new Db(context);
         fbDatabase = new FbDatabase();
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_event_twitter, container, false);
 
-        View view = inflater.inflate(R.layout.fragment_user_ticket, container, false);
+        incomeEventUid = getArguments().getString(Utils.ARG_EVENT_UID);
 
-
-        incomeUserUid = getArguments().getString(Utils.ARG_USER_UID);
-
-        if (incomeUserUid == null) {
+        if (incomeEventUid == null) {
             finishActivity();
         }
 
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(manager);
-
-        recyclerView.setAdapter(adapter);
+        textViewEmpty = (TextView) view.findViewById(android.R.id.empty);
 
         return view;
     }
@@ -103,6 +93,7 @@ public class UserTicketFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        createAuthStateListener();
     }
 
     @Override
@@ -121,6 +112,7 @@ public class UserTicketFragment extends Fragment {
         super.onPause();
     }
 
+
     @Override
     public void onStop() {
         super.onStop();
@@ -137,16 +129,12 @@ public class UserTicketFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (adapter != null) {
-            adapter.cleanup();
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
     }
-
 
     private void createAuthStateListener() {
         mAuth = FirebaseAuth.getInstance();
@@ -158,10 +146,46 @@ public class UserTicketFragment extends Fragment {
                     goLogin();
                 } else {
                     currentUserUid = currentUser.getUid();
+                    createView();
                 }
             }
         };
     }
+
+    private void createView() {
+        Query query = fbDatabase.getRefEvent(incomeEventUid).child(Utils.FIREBASE_DATABASE_EVENT_TWITTER);
+        query.keepSynced(true);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String hashtag = dataSnapshot.getValue(String.class);
+                if (hashtag == null) {
+                    textViewEmpty.setText(R.string.empty_twitter);
+                } else {
+                    showTwitter(hashtag);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void showTwitter(String hashtag) {
+        SearchTimeline searchTimeline = new SearchTimeline.Builder()
+                .query("#" + hashtag)
+                .build();
+
+        TweetTimelineListAdapter adapter = new TweetTimelineListAdapter.Builder(context)
+                .setTimeline(searchTimeline)
+                .build();
+        setListAdapter(adapter);
+    }
+
 
     private void goLogin() {
         Intent intent = new Intent(context, LoginActivity.class);

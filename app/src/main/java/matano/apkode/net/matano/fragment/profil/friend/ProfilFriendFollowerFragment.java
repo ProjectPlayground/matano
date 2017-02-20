@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.fragment.user.friend;
+package matano.apkode.net.matano.fragment.profil.friend;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,16 +22,16 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import matano.apkode.net.matano.LoginActivity;
+import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.UserActivity;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
-import matano.apkode.net.matano.holder.user.UserFriendHolder;
+import matano.apkode.net.matano.holder.profil.ProfilFriendHolder;
 import matano.apkode.net.matano.model.User;
 
 
-public class ProfilFriendFollowingFragment extends Fragment {
+public class ProfilFriendFollowerFragment extends Fragment {
     private FbDatabase fbDatabase;
     private String incomeUserUid;
     private Db db;
@@ -42,21 +43,21 @@ public class ProfilFriendFollowingFragment extends Fragment {
     private String currentUserUid;
 
     private Context context;
-    private FirebaseRecyclerAdapter<String, UserFriendHolder> adapter;
+    private FirebaseRecyclerAdapter<String, ProfilFriendHolder> adapter;
     private RecyclerView recyclerView;
 
-    public ProfilFriendFollowingFragment() {
+    public ProfilFriendFollowerFragment() {
     }
 
-    public static ProfilFriendFollowingFragment newInstance(String userUid) {
-        ProfilFriendFollowingFragment profilFriendFollowingFragment = new ProfilFriendFollowingFragment();
+    public static ProfilFriendFollowerFragment newInstance(String userUid) {
+        ProfilFriendFollowerFragment profilFriendFollowerFragment = new ProfilFriendFollowerFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString(Utils.ARG_USER_UID, userUid);
 
-        profilFriendFollowingFragment.setArguments(bundle);
+        profilFriendFollowerFragment.setArguments(bundle);
 
-        return profilFriendFollowingFragment;
+        return profilFriendFollowerFragment;
     }
 
     @Override
@@ -80,7 +81,7 @@ public class ProfilFriendFollowingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View view = inflater.inflate(R.layout.fragment_user_friend_following, container, false);
+        View view = inflater.inflate(R.layout.fragment_profil_friend_follower, container, false);
 
         incomeUserUid = getArguments().getString(Utils.ARG_USER_UID);
 
@@ -88,13 +89,10 @@ public class ProfilFriendFollowingFragment extends Fragment {
             finishActivity();
         }
 
-
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
-
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
-
 
         return view;
     }
@@ -103,13 +101,14 @@ public class ProfilFriendFollowingFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Query query = fbDatabase.getRefUserFollowings(incomeUserUid);
+        Query query = fbDatabase.getRefUserFollowers(incomeUserUid);
+        query.keepSynced(true);
 
-        adapter = new FirebaseRecyclerAdapter<String, UserFriendHolder>(String.class, R.layout.card_user_friend, UserFriendHolder.class, query) {
+        adapter = new FirebaseRecyclerAdapter<String, ProfilFriendHolder>(String.class, R.layout.card_profil_friend, ProfilFriendHolder.class, query) {
             @Override
-            protected void populateViewHolder(UserFriendHolder userFriendHolder, String s, int position) {
+            protected void populateViewHolder(ProfilFriendHolder profilFriendHolder, String s, int position) {
                 if (s != null) {
-                    getUser(userFriendHolder, getRef(position).getKey());
+                    getUser(profilFriendHolder, getRef(position).getKey());
                 }
             }
         };
@@ -132,14 +131,14 @@ public class ProfilFriendFollowingFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -154,7 +153,6 @@ public class ProfilFriendFollowingFragment extends Fragment {
             adapter.cleanup();
         }
     }
-
 
     @Override
     public void onDetach() {
@@ -177,9 +175,9 @@ public class ProfilFriendFollowingFragment extends Fragment {
         };
     }
 
-
-    private void getUser(final UserFriendHolder userFriendHolder, final String userUid) {
+    private void getUser(final ProfilFriendHolder profilFriendHolder, final String userUid) {
         Query query = fbDatabase.getRefUser(userUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -187,7 +185,7 @@ public class ProfilFriendFollowingFragment extends Fragment {
                 User user = dataSnapshot.getValue(User.class);
 
                 if (user != null) {
-                    displayLayout(userFriendHolder, user, userUid);
+                    displayLayout(profilFriendHolder, user, userUid);
                 }
             }
 
@@ -198,39 +196,85 @@ public class ProfilFriendFollowingFragment extends Fragment {
         });
     }
 
-    private void displayLayout(final UserFriendHolder userFriendHolder, User user, final String userUid) {
+    private void displayLayout(final ProfilFriendHolder profilFriendHolder, User user, final String userUid) {
         String photoProfl = user.getPhotoProfl();
         String username = user.getUsername();
 
         if (photoProfl != null && username != null) {
 
-            userFriendHolder.setTextViewUsername(username);
-            userFriendHolder.setImageViewPhoto(context, photoProfl);
+            profilFriendHolder.setTextViewUsername(username);
+            profilFriendHolder.setImageViewPhoto(context, photoProfl);
 
-            userFriendHolder.setCardViewParticipant();
+            ImageButton imageButtonAddFollowing = profilFriendHolder.getImageButtonAddFollowing();
 
-            userFriendHolder.getImageViewPhoto().setOnClickListener(new View.OnClickListener() {
+            if (!userUid.equals(currentUserUid)) {
+                isUserMyFriend(imageButtonAddFollowing, userUid);
+            }
+
+            imageButtonAddFollowing.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, UserActivity.class);
+                    db.setFollowing(userUid, (String) view.getTag(), currentUserUid);
+                }
+            });
+
+            profilFriendHolder.setCardViewParticipant();
+
+            profilFriendHolder.getImageViewPhoto().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ProfilActivity.class);
                     intent.putExtra(Utils.ARG_USER_UID, userUid);
                     startActivity(intent);
                 }
             });
 
-            userFriendHolder.getTextViewUsername().setOnClickListener(new View.OnClickListener() {
+            profilFriendHolder.getTextViewUsername().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, UserActivity.class);
+                    Intent intent = new Intent(context, ProfilActivity.class);
                     intent.putExtra(Utils.ARG_USER_UID, userUid);
                     startActivity(intent);
                 }
             });
 
+            profilFriendHolder.getRelativeLayoutFriend().setVisibility(View.VISIBLE);
 
-            userFriendHolder.getRelativeLayoutFriend().setVisibility(View.VISIBLE);
         }
 
+    }
+
+    private void isUserMyFriend(final ImageButton imageButtonAddFollowing, final String userUid) {
+        Query query = fbDatabase.getRefUserFollowings(currentUserUid);
+        query.keepSynced(true);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    imageButtonAddFollowing.setTag("1");
+                    imageButtonAddFollowing.setImageResource(R.mipmap.ic_action_social_group_add_padding);
+                } else {
+                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                        if (snap.getKey().equals(userUid)) {
+                            // We are friends
+                            imageButtonAddFollowing.setTag(null);
+                            imageButtonAddFollowing.setImageResource(R.mipmap.ic_action_social_people_padding);
+                        } else {
+                            // we are not friends
+                            imageButtonAddFollowing.setTag("1");
+                            imageButtonAddFollowing.setImageResource(R.mipmap.ic_action_social_group_add_padding);
+                        }
+                    }
+                }
+                imageButtonAddFollowing.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // TODO handle error
+            }
+        });
     }
 
     private void goLogin() {
@@ -242,5 +286,6 @@ public class ProfilFriendFollowingFragment extends Fragment {
     private void finishActivity() {
         getActivity().finish();
     }
+
 
 }

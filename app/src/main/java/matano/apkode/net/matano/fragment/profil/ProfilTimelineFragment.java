@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.fragment.user;
+package matano.apkode.net.matano.fragment.profil;
 
 import android.content.Context;
 import android.content.Intent;
@@ -36,12 +36,12 @@ import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.PhotoDialogFragment;
-import matano.apkode.net.matano.holder.user.UserTimelineHolder;
+import matano.apkode.net.matano.holder.profil.ProfilTimelineHolder;
 import matano.apkode.net.matano.model.Event;
 import matano.apkode.net.matano.model.Photo;
 import matano.apkode.net.matano.model.User;
 
-public class UserTimelineFragment extends Fragment {
+public class ProfilTimelineFragment extends Fragment {
     private FbDatabase fbDatabase;
     private String incomeUserUid;
     private Db db;
@@ -55,20 +55,20 @@ public class UserTimelineFragment extends Fragment {
     private Context context;
     private RecyclerView recyclerView;
     private List<Photo> photos = new ArrayList<>();
-    private FirebaseRecyclerAdapter<String, UserTimelineHolder> adapter;
+    private FirebaseRecyclerAdapter<String, ProfilTimelineHolder> adapter;
 
-    public UserTimelineFragment() {
+    public ProfilTimelineFragment() {
     }
 
-    public static UserTimelineFragment newInstance(String userUid) {
-        UserTimelineFragment userTimelineFragment = new UserTimelineFragment();
+    public static ProfilTimelineFragment newInstance(String userUid) {
+        ProfilTimelineFragment profilTimelineFragment = new ProfilTimelineFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString(Utils.ARG_USER_UID, userUid);
 
-        userTimelineFragment.setArguments(bundle);
+        profilTimelineFragment.setArguments(bundle);
 
-        return userTimelineFragment;
+        return profilTimelineFragment;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class UserTimelineFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View view = inflater.inflate(R.layout.fragment_user_timeline, container, false);
+        View view = inflater.inflate(R.layout.fragment_profil_timeline, container, false);
 
 
         incomeUserUid = getArguments().getString(Utils.ARG_USER_UID);
@@ -115,12 +115,13 @@ public class UserTimelineFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Query query = fbDatabase.getRefUserPhotos(incomeUserUid);
+        query.keepSynced(true);
 
-        adapter = new FirebaseRecyclerAdapter<String, UserTimelineHolder>(String.class, R.layout.card_user_timeline, UserTimelineHolder.class, query) {
+        adapter = new FirebaseRecyclerAdapter<String, ProfilTimelineHolder>(String.class, R.layout.card_profil_timeline, ProfilTimelineHolder.class, query) {
             @Override
-            protected void populateViewHolder(UserTimelineHolder userTimelineHolder, String s, int position) {
+            protected void populateViewHolder(ProfilTimelineHolder profilTimelineHolder, String s, int position) {
                 if (s != null) {
-                    getPhoto(userTimelineHolder, getRef(position).getKey(), position);
+                    getPhoto(profilTimelineHolder, getRef(position).getKey(), position);
                 }
             }
         };
@@ -188,8 +189,9 @@ public class UserTimelineFragment extends Fragment {
     }
 
 
-    private void getPhoto(final UserTimelineHolder userTimelineHolder, final String photoUid, final int position) {
+    private void getPhoto(final ProfilTimelineHolder profilTimelineHolder, final String photoUid, final int position) {
         Query query = fbDatabase.getRefPhoto(photoUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -197,7 +199,7 @@ public class UserTimelineFragment extends Fragment {
                 Photo photo = dataSnapshot.getValue(Photo.class);
 
                 if (photo != null && photo.getUrl() != null && photo.getDate() != null && photo.getUser() != null) {
-                    getUser(userTimelineHolder, photoUid, photo, position);
+                    getUser(profilTimelineHolder, photoUid, photo, position);
 
                     if (!photos.contains(photo)) {
                         photos.add(photo);
@@ -214,19 +216,20 @@ public class UserTimelineFragment extends Fragment {
         });
     }
 
-    private void getUser(final UserTimelineHolder userTimelineHolder, final String photoUid, final Photo photo, final int position) {
+    private void getUser(final ProfilTimelineHolder profilTimelineHolder, final String photoUid, final Photo photo, final int position) {
         String userUid = photo.getUser();
 
         Query query = fbDatabase.getRefUser(userUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                // getEvent(userTimelineHolder, photoUid, photo, user, position);
+                // getEvent(profilTimelineHolder, photoUid, photo, user, position);
                 // TODO traiter l'erreur
                 if (user != null && user.getPhotoProfl() != null && user.getUsername() != null) {
-                    getEvent(userTimelineHolder, photoUid, photo, user, position);
+                    getEvent(profilTimelineHolder, photoUid, photo, user, position);
                 }
             }
 
@@ -237,17 +240,18 @@ public class UserTimelineFragment extends Fragment {
         });
     }
 
-    private void getEvent(final UserTimelineHolder userTimelineHolder, final String photoUid, final Photo photo, final User user, final int position) {
+    private void getEvent(final ProfilTimelineHolder profilTimelineHolder, final String photoUid, final Photo photo, final User user, final int position) {
         final String eventUid = photo.getEvent();
 
         Query query = fbDatabase.getRefEvent(eventUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 final Event event = dataSnapshot.getValue(Event.class);
                 if (event != null) {
-                    displayLayout(userTimelineHolder, photoUid, eventUid, photo, user, event, position);
+                    displayLayout(profilTimelineHolder, photoUid, eventUid, photo, user, event, position);
                 }
             }
 
@@ -258,17 +262,17 @@ public class UserTimelineFragment extends Fragment {
         });
     }
 
-    private void displayLayout(UserTimelineHolder userTimelineHolder, final String photoUid, final String eventUid, Photo photo, User user, Event event, final int position) {
+    private void displayLayout(ProfilTimelineHolder profilTimelineHolder, final String photoUid, final String eventUid, Photo photo, User user, Event event, final int position) {
         final String userUid = photo.getUser();
         String url = photo.getUrl();
         Date date = photo.getDate();
         String title = event.getTitle();
 
-        userTimelineHolder.setTextViewTitle(title);
-        userTimelineHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
-        userTimelineHolder.setImageViewPhoto(context, url);
-        userTimelineHolder.getImageViewPhoto().setTag(position);
-        userTimelineHolder.getImageViewPhoto().setOnClickListener(new View.OnClickListener() {
+        profilTimelineHolder.setTextViewTitle(title);
+        profilTimelineHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
+        profilTimelineHolder.setImageViewPhoto(context, url);
+        profilTimelineHolder.getImageViewPhoto().setTag(position);
+        profilTimelineHolder.getImageViewPhoto().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -289,16 +293,17 @@ public class UserTimelineFragment extends Fragment {
         });
 
 
-        userTimelineHolder.getLinearLayoutTitle().setOnClickListener(new View.OnClickListener() {
+        profilTimelineHolder.getLinearLayoutTitle().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 goEventActivity(eventUid);
             }
         });
 
-        final ImageButton imageButtonLikePhoto = userTimelineHolder.getImageButtonLikePhoto();
+        final ImageButton imageButtonLikePhoto = profilTimelineHolder.getImageButtonLikePhoto();
 
         Query query = fbDatabase.getRefUserLikes(userUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override

@@ -171,4 +171,7 @@
     </string-array>
     <string name="title_activity_modules">Programmes</string>
     <string name="title_activity_module">Programme</string>
+    <string name="empty_twitter">Aucun tweet</string>
+    <string name="page_event_twitter">Tweets</string>
+    <string name="title_activity_user">User</string>
 </resources>

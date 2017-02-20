@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.holder.user;
+package matano.apkode.net.matano.holder.profil;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide;
 import matano.apkode.net.matano.R;
 
 
-public class UserFriendHolder extends RecyclerView.ViewHolder {
+public class ProfilFriendHolder extends RecyclerView.ViewHolder {
     private ImageView imageViewPhoto;
     private TextView textViewUsername;
     private ImageButton imageButtonAddOrSetting;
@@ -23,7 +23,7 @@ public class UserFriendHolder extends RecyclerView.ViewHolder {
     private CardView cardViewParticipant;
     private RelativeLayout relativeLayoutFriend;
 
-    public UserFriendHolder(View itemView) {
+    public ProfilFriendHolder(View itemView) {
         super(itemView);
         imageViewPhoto = (ImageView) itemView.findViewById(R.id.imageViewPhoto);
         textViewUsername = (TextView) itemView.findViewById(R.id.textViewUsername);

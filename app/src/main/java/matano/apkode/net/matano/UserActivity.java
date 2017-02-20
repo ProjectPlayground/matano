@@ -1,40 +1,40 @@
 package matano.apkode.net.matano;
 
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ImageSpan;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.ImageButton;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
-import matano.apkode.net.matano.fragment.user.UserEventFragment;
-import matano.apkode.net.matano.fragment.user.UserFriendFragment;
-import matano.apkode.net.matano.fragment.user.UserInfoFragment;
-import matano.apkode.net.matano.fragment.user.UserTicketFragment;
-import matano.apkode.net.matano.fragment.user.UserTimelineFragment;
+import matano.apkode.net.matano.fragment.PhotoDialogFragment;
+import matano.apkode.net.matano.holder.profil.ProfilTimelineHolder;
+import matano.apkode.net.matano.model.Event;
+import matano.apkode.net.matano.model.Photo;
+import matano.apkode.net.matano.model.User;
 
 public class UserActivity extends AppCompatActivity {
     private FbDatabase fbDatabase;
@@ -47,96 +47,40 @@ public class UserActivity extends AppCompatActivity {
     private FirebaseUser currentUser = null;
     private String currentUserUid;
 
-    private ViewPager mViewPager;
-    private TextView textViewToolbarTitle;
-    private int countPage = 4;
+    private List<Photo> photos = new ArrayList<>();
+    private RecyclerView recyclerView;
+
+    private FirebaseRecyclerAdapter<String, ProfilTimelineHolder> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        createAuthStateListener();
-
-        db = new Db(this);
-        fbDatabase = new FbDatabase();
-
         setContentView(R.layout.activity_user);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         incomeUserUid = getIntent().getStringExtra(Utils.ARG_USER_UID);
 
         if (incomeUserUid == null) {
-            finishActivity();
+            finish();
         }
 
-
-        if (incomeUserUid.equals(currentUserUid)) {
-            countPage = 5;
-        }
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.mipmap.ic_action_navigation_arrow_back_padding);
+        db = new Db(this);
+        fbDatabase = new FbDatabase();
 
         setSupportActionBar(toolbar);
 
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Drawable upArrow = ContextCompat.getDrawable(this, R.mipmap.ic_action_navigation_arrow_back_padding);
-        upArrow.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
-        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
 
-        textViewToolbarTitle = (TextView) findViewById(R.id.textViewToolbarTitle);
-        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_info));
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(manager);
 
-        ProfilPagerAdapter profilPagerAdapter = new ProfilPagerAdapter(getSupportFragmentManager());
 
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(profilPagerAdapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
-
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            TabLayout.Tab tab = tabLayout.getTabAt(i);
-            tab.setCustomView(profilPagerAdapter.getTabView(i));
-        }
-
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                switch (position + 1) {
-                    case 1:
-                        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_info));
-                        break;
-                    case 2:
-                        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_timeline));
-                        break;
-                    case 3:
-                        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_event));
-                        break;
-                    case 4:
-                        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_tchat));
-                        break;
-                    case 5:
-                        textViewToolbarTitle.setText(getResources().getString(R.string.page_profil_ticket));
-                        break;
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        createAuthStateListener();
 
     }
-
 
     @Override
     protected void onStart() {
@@ -162,30 +106,17 @@ public class UserActivity extends AppCompatActivity {
         }
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_profil, menu);
-        return true;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
 
-            case R.id.action_logout:
-                FirebaseAuth.getInstance().signOut();
-                return true;
             case android.R.id.home:
                 finish();
                 return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
         }
 
+        return super.onOptionsItemSelected(item);
     }
 
     private void createAuthStateListener() {
@@ -198,9 +129,179 @@ public class UserActivity extends AppCompatActivity {
                     goLogin();
                 } else {
                     currentUserUid = currentUser.getUid();
+                    createView();
                 }
             }
         };
+    }
+
+    private void createView() {
+        Query query = fbDatabase.getRefUserPhotos(incomeUserUid);
+        query.keepSynced(true);
+
+        adapter = new FirebaseRecyclerAdapter<String, ProfilTimelineHolder>(String.class, R.layout.card_profil_timeline, ProfilTimelineHolder.class, query) {
+            @Override
+            protected void populateViewHolder(ProfilTimelineHolder profilTimelineHolder, String s, int position) {
+                if (s != null) {
+                    getPhoto(profilTimelineHolder, getRef(position).getKey(), position);
+                }
+            }
+        };
+
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void getPhoto(final ProfilTimelineHolder profilTimelineHolder, final String photoUid, final int position) {
+        Query query = fbDatabase.getRefPhoto(photoUid);
+        query.keepSynced(true);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Photo photo = dataSnapshot.getValue(Photo.class);
+
+                if (photo != null && photo.getUrl() != null && photo.getDate() != null && photo.getUser() != null) {
+                    getUser(profilTimelineHolder, photoUid, photo, position);
+
+                    if (!photos.contains(photo)) {
+                        photos.add(photo);
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getUser(final ProfilTimelineHolder profilTimelineHolder, final String photoUid, final Photo photo, final int position) {
+        String userUid = photo.getUser();
+
+        Query query = fbDatabase.getRefUser(userUid);
+        query.keepSynced(true);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (user != null && user.getPhotoProfl() != null && user.getUsername() != null) {
+                    getSupportActionBar().setTitle(user.getUsername());
+                    getEvent(profilTimelineHolder, photoUid, photo, user, position);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getEvent(final ProfilTimelineHolder profilTimelineHolder, final String photoUid, final Photo photo, final User user, final int position) {
+        final String eventUid = photo.getEvent();
+
+        Query query = fbDatabase.getRefEvent(eventUid);
+        query.keepSynced(true);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final Event event = dataSnapshot.getValue(Event.class);
+                if (event != null) {
+                    displayLayout(profilTimelineHolder, photoUid, eventUid, photo, user, event, position);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void displayLayout(ProfilTimelineHolder profilTimelineHolder, final String photoUid, final String eventUid, Photo photo, User user, Event event, final int position) {
+        final String userUid = photo.getUser();
+        String url = photo.getUrl();
+        Date date = photo.getDate();
+        String title = event.getTitle();
+
+        profilTimelineHolder.setTextViewTitle(title);
+        profilTimelineHolder.setTextViewDate(new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(date));
+        profilTimelineHolder.setImageViewPhoto(this, url);
+        profilTimelineHolder.getImageViewPhoto().setTag(position);
+        profilTimelineHolder.getImageViewPhoto().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(Utils.ARG_PHOTO_DIALOG, (Serializable) photos);
+                bundle.putInt(Utils.ARG_PHOTO_DIALOG_POSITION, position);
+                bundle.putString(Utils.ARG_USER_UID, userUid);
+
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+                PhotoDialogFragment photoDialogFragment = new PhotoDialogFragment();
+
+                photoDialogFragment.setArguments(bundle);
+
+                photoDialogFragment.show(fragmentTransaction, Utils.TAG_PHOTO_DIALOG);
+
+            }
+        });
+
+
+        profilTimelineHolder.getLinearLayoutTitle().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goEventActivity(eventUid);
+            }
+        });
+
+        final ImageButton imageButtonLikePhoto = profilTimelineHolder.getImageButtonLikePhoto();
+
+        Query query = fbDatabase.getRefUserLikes(userUid);
+        query.keepSynced(true);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getChildrenCount() == 0) {
+                    imageButtonLikePhoto.setTag("0");
+                    imageButtonLikePhoto.setVisibility(View.VISIBLE);
+                    imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
+                } else {
+                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                        if (photoUid.equals(snap.getKey())) {
+                            imageButtonLikePhoto.setTag(null);
+                            imageButtonLikePhoto.setVisibility(View.VISIBLE);
+                            imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_padding);
+                        } else {
+                            imageButtonLikePhoto.setTag("0");
+                            imageButtonLikePhoto.setVisibility(View.VISIBLE);
+                            imageButtonLikePhoto.setImageResource(R.mipmap.ic_action_action_favorite_outline_padding);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // TODO handle error
+            }
+        });
+
+        imageButtonLikePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                db.setPhotoLike(photoUid, (String) view.getTag(), currentUserUid);
+            }
+        });
+
+
     }
 
     private void goLogin() {
@@ -209,66 +310,11 @@ public class UserActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void finishActivity() {
-        finish();
+    private void goEventActivity(String eventUid) {
+        Intent intent = new Intent(this, EventActivity.class);
+        intent.putExtra(Utils.ARG_EVENT_UID, eventUid);
+        startActivity(intent);
     }
 
-
-    /**
-     * FragmentPagerAdapter
-     */
-    public class ProfilPagerAdapter extends FragmentPagerAdapter {
-        private int icons[] = {R.mipmap.ic_action_action_account_box_padding, R.mipmap.ic_action_image_image_padding, R.mipmap.ic_action_notification_event_note_padding, R.mipmap.ic_action_action_account_child_padding, R.mipmap.ic_action_action_account_balance_wallet_padding};
-
-        public ProfilPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        public View getTabView(int position) {
-            View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.tab_view, null);
-
-            ImageView img = (ImageView) v.findViewById(R.id.tabImage);
-            img.setImageResource(icons[position]);
-            return v;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-
-            switch (position + 1) {
-
-                case 1:
-                    return UserInfoFragment.newInstance(incomeUserUid);
-                case 2:
-                    return UserTimelineFragment.newInstance(incomeUserUid);
-                case 3:
-                    return UserEventFragment.newInstance(incomeUserUid);
-                case 4:
-                    return UserFriendFragment.newInstance(incomeUserUid);
-                case 5:
-                    return UserTicketFragment.newInstance(incomeUserUid);
-                default:
-                    return null;
-            }
-
-        }
-
-        @Override
-        public int getCount() {
-            return countPage;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-
-            Drawable drawable = getResources().getDrawable(icons[position]);
-
-            ImageSpan imageSpan = new ImageSpan(drawable);
-            SpannableString spannableString = new SpannableString("");
-            spannableString.setSpan(imageSpan, 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            return spannableString;
-        }
-    }
 
 }

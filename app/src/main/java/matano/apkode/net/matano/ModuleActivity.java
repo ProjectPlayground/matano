@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.Query;
@@ -33,6 +34,7 @@ public class ModuleActivity extends AppCompatActivity {
 
         fbDatabase = new FbDatabase();
 
+        Log.e(Utils.TAG, "onCreate");
 
         incomeEventUid = getIntent().getStringExtra(Utils.ARG_EVENT_UID);
         incomeModule = getIntent().getStringExtra(Utils.ARG_MODULE);
@@ -51,6 +53,7 @@ public class ModuleActivity extends AppCompatActivity {
             recyclerView.setLayoutManager(manager);
 
             Query query = fbDatabase.getRefEvent(incomeEventUid).child(incomeModule);
+            query.keepSynced(true);
 
             adapter = new FirebaseRecyclerAdapter<Programme, ModuleHolder>(Programme.class, R.layout.card_module, ModuleHolder.class, query) {
 
@@ -79,6 +82,41 @@ public class ModuleActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e(Utils.TAG, "onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e(Utils.TAG, "onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e(Utils.TAG, "onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e(Utils.TAG, "onStop");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e(Utils.TAG, "onDestroy");
+        if (adapter != null) {
+            adapter.cleanup();
+            adapter.notifyDataSetChanged();
+        }
+        Log.e(Utils.TAG, "onDestroy fin");
     }
 
 }

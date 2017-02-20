@@ -185,6 +185,7 @@ public class EventPrivateTchatFragment extends Fragment {
 
     private void createView() {
         Query query = fbDatabase.getRefEventTchats(incomeEventUid);
+        query.keepSynced(true);
 
         adapter = new FirebaseRecyclerAdapter<Tchat, EventPrivateTchatHolder>(Tchat.class, R.layout.card_event_private_tchat, EventPrivateTchatHolder.class, query) {
 
@@ -256,7 +257,8 @@ public class EventPrivateTchatFragment extends Fragment {
         editTextMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
+                // recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
+                recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount());
             }
         });
 
@@ -278,6 +280,7 @@ public class EventPrivateTchatFragment extends Fragment {
 
     private void getUser(final EventPrivateTchatHolder eventPrivateTchatHolder, final Tchat tchat) {
         Query query = fbDatabase.getRefUser(tchat.getUser());
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override

@@ -31,6 +31,7 @@ import matano.apkode.net.matano.fragment.event.EventInfoFragment;
 import matano.apkode.net.matano.fragment.event.EventParticipantFragment;
 import matano.apkode.net.matano.fragment.event.EventPrivateFragment;
 import matano.apkode.net.matano.fragment.event.EventTimelineFragment;
+import matano.apkode.net.matano.fragment.event.EventTwitterFragment;
 import matano.apkode.net.matano.model.Event;
 
 
@@ -107,6 +108,8 @@ public class EventActivity extends AppCompatActivity {
                     case 4:
                         textViewToolbarTitle.setText(getResources().getString(R.string.page_event_tchat));
                         break;
+                    case 5:
+                        textViewToolbarTitle.setText(getResources().getString(R.string.page_event_twitter));
                 }
             }
 
@@ -163,6 +166,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void setTitleImage() {
         Query query = fbDatabase.getRefEvent(incomeEventUid);
+        query.keepSynced(true);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -191,7 +195,7 @@ public class EventActivity extends AppCompatActivity {
      * FragmentPagerAdapter
      */
     public class EventPagerAdapter extends FragmentPagerAdapter {
-        private int icons[] = {R.mipmap.ic_action_notification_event_note_padding, R.mipmap.ic_action_action_list_padding, R.mipmap.ic_action_action_account_child_padding, R.mipmap.ic_action_communication_chat_padding};
+        private int icons[] = {R.mipmap.ic_action_notification_event_note_padding, R.mipmap.ic_action_action_list_padding, R.mipmap.ic_action_action_account_child_padding, R.mipmap.ic_action_communication_chat_padding, R.mipmap.ic_action_action_subject};
 
 
         public EventPagerAdapter(FragmentManager fm) {
@@ -219,6 +223,8 @@ public class EventActivity extends AppCompatActivity {
                     return EventParticipantFragment.newInstance(incomeEventUid);
                 case 4:
                     return EventPrivateFragment.newInstance(incomeEventUid);
+                case 5:
+                    return EventTwitterFragment.newInstance(incomeEventUid);
                 default:
                     return null;
             }
@@ -227,7 +233,7 @@ public class EventActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
 
         @Override

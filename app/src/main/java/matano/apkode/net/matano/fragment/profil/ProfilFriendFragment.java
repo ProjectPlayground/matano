@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.fragment.user;
+package matano.apkode.net.matano.fragment.profil;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,10 +21,10 @@ import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
-import matano.apkode.net.matano.fragment.user.friend.ProfilFriendFollowerFragment;
-import matano.apkode.net.matano.fragment.user.friend.ProfilFriendFollowingFragment;
+import matano.apkode.net.matano.fragment.profil.friend.ProfilFriendFollowerFragment;
+import matano.apkode.net.matano.fragment.profil.friend.ProfilFriendFollowingFragment;
 
-public class UserFriendFragment extends Fragment {
+public class ProfilFriendFragment extends Fragment {
     private FbDatabase fbDatabase;
     private String incomeUserUid;
     private Db db;
@@ -42,17 +42,17 @@ public class UserFriendFragment extends Fragment {
     private ProfilFriendFollowerFragment profilFriendFollowerFragment;
     private ProfilFriendFollowingFragment profilFriendFollowingFragment;
 
-    public UserFriendFragment() {
+    public ProfilFriendFragment() {
     }
 
-    public static UserFriendFragment newInstance(String userUid) {
-        UserFriendFragment userFriendFragment = new UserFriendFragment();
+    public static ProfilFriendFragment newInstance(String userUid) {
+        ProfilFriendFragment profilFriendFragment = new ProfilFriendFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString(Utils.ARG_USER_UID, userUid);
 
-        userFriendFragment.setArguments(bundle);
-        return userFriendFragment;
+        profilFriendFragment.setArguments(bundle);
+        return profilFriendFragment;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class UserFriendFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View view = inflater.inflate(R.layout.fragment_user_friend, container, false);
+        View view = inflater.inflate(R.layout.fragment_profil_friend, container, false);
 
 
         incomeUserUid = getArguments().getString(Utils.ARG_USER_UID);

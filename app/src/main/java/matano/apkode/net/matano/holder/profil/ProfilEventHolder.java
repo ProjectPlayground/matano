@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.holder.user;
+package matano.apkode.net.matano.holder.profil;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,14 +13,14 @@ import com.bumptech.glide.Glide;
 import matano.apkode.net.matano.R;
 
 
-public class UserEventHolder extends RecyclerView.ViewHolder {
+public class ProfilEventHolder extends RecyclerView.ViewHolder {
     private ImageView imageViewPhotoProfil;
     private TextView textViewTitle;
     private TextView textViewPlace;
     private TextView textViewTarification;
     private LinearLayout linearLayoutEvent;
 
-    public UserEventHolder(View itemView) {
+    public ProfilEventHolder(View itemView) {
         super(itemView);
         imageViewPhotoProfil = (ImageView) itemView.findViewById(R.id.imageViewPhotoProfil);
         textViewTitle = (TextView) itemView.findViewById(R.id.textViewTitle);

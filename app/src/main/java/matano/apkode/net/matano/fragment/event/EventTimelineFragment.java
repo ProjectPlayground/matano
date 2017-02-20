@@ -41,8 +41,8 @@ import java.util.Locale;
 import java.util.UUID;
 
 import matano.apkode.net.matano.LoginActivity;
+import matano.apkode.net.matano.ProfilActivity;
 import matano.apkode.net.matano.R;
-import matano.apkode.net.matano.UserActivity;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.FbStorage;
@@ -106,6 +106,8 @@ public class EventTimelineFragment extends Fragment {
         fbDatabase = new FbDatabase();
         fbStorage = new FbStorage();
         share = new Share(context, getActivity());
+
+        Log.e(Utils.TAG, "onCreate timeline");
     }
 
     @Nullable
@@ -120,6 +122,8 @@ public class EventTimelineFragment extends Fragment {
         if (incomeEventUid == null) {
             finishActivity();
         }
+
+        Log.e(Utils.TAG, "onCreateView timeline");
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
 
@@ -137,6 +141,7 @@ public class EventTimelineFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Log.e(Utils.TAG, "onViewCreated timeline");
         createAuthStateListener();
 
     }
@@ -144,17 +149,20 @@ public class EventTimelineFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Log.e(Utils.TAG, "onStart timeline");
         mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Log.e(Utils.TAG, "onResume timeline");
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        Log.e(Utils.TAG, "onPause timeline");
     }
 
     @Override
@@ -175,6 +183,7 @@ public class EventTimelineFragment extends Fragment {
         super.onDestroy();
         if (adapter != null) {
             adapter.cleanup();
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -201,6 +210,7 @@ public class EventTimelineFragment extends Fragment {
 
     private void createView() {
         Query query = fbDatabase.getRefEventPhotos(incomeEventUid);
+        query.keepSynced(true);
 
         adapter = new FirebaseRecyclerAdapter<String, EventTimelineHolder>(String.class, R.layout.card_event_timeline, EventTimelineHolder.class, query) {
             @Override
@@ -226,6 +236,7 @@ public class EventTimelineFragment extends Fragment {
 
     private void getPhoto(final EventTimelineHolder eventTimelineHolder, final String photoUid, final int position) {
         Query query = fbDatabase.getRefPhoto(photoUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -254,6 +265,7 @@ public class EventTimelineFragment extends Fragment {
         String userUid = photo.getUser();
 
         Query query = fbDatabase.getRefUser(userUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -274,6 +286,7 @@ public class EventTimelineFragment extends Fragment {
 
     private void getPhotoLikesNumber(final EventTimelineHolder eventTimelineHolder, final String photoUid, final Photo photo, final User user, final int position) {
         Query query = fbDatabase.getRefPhotoLikes(photoUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -354,6 +367,7 @@ public class EventTimelineFragment extends Fragment {
 
     private void getPhotoLike(final ImageButton imageButtonLikePhoto, final String photoUid) {
         Query query = fbDatabase.getRefPhotoLikes(photoUid).child(currentUserUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -427,7 +441,7 @@ public class EventTimelineFragment extends Fragment {
     }
 
     private void goProfilActivity(String userUid) {
-        Intent intent = new Intent(context, UserActivity.class);
+        Intent intent = new Intent(context, ProfilActivity.class);
         intent.putExtra(Utils.ARG_USER_UID, userUid);
         startActivity(intent);
     }

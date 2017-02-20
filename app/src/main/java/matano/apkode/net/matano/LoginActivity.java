@@ -226,6 +226,7 @@ public class LoginActivity extends FragmentActivity {
     private void saveUserInDatabase(final FirebaseUser currentUser) {
 
         final DatabaseReference databaseReference = fbDatabase.getRefUser(currentUser.getUid());
+        databaseReference.keepSynced(true);
 
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import matano.apkode.net.matano.UserActivity;
+import matano.apkode.net.matano.ProfilActivity;
 
 
 public class EventTopParticipantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -17,7 +17,7 @@ public class EventTopParticipantHolder extends RecyclerView.ViewHolder implement
     @Override
     public void onClick(View view) {
 
-        Intent intent = new Intent(view.getContext(), UserActivity.class);
+        Intent intent = new Intent(view.getContext(), ProfilActivity.class);
         view.getContext().startActivity(intent);
     }
 }

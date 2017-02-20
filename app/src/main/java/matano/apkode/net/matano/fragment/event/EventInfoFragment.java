@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,8 @@ public class EventInfoFragment extends Fragment {
 
     private Context context;
 
+    private FirebaseRecyclerAdapter<String, EventPhotoHolder> adapter;
+
     private RecyclerView recyclerViewTopPhoto;
     private RecyclerView recyclerViewTopUser;
     private List<Photo> photos = new ArrayList<>();
@@ -84,6 +87,8 @@ public class EventInfoFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString(Utils.ARG_EVENT_UID, eventUid);
 
+        Log.e(Utils.TAG, "newInstance Info");
+
         eventInfoFragment.setArguments(bundle);
 
         return eventInfoFragment;
@@ -93,6 +98,7 @@ public class EventInfoFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
+        Log.e(Utils.TAG, "onAttach Info");
     }
 
     @Override
@@ -101,6 +107,8 @@ public class EventInfoFragment extends Fragment {
 
         db = new Db(context);
         fbDatabase = new FbDatabase();
+
+        Log.e(Utils.TAG, "onCreate Info");
     }
 
     @Nullable
@@ -115,6 +123,8 @@ public class EventInfoFragment extends Fragment {
         if (incomeEventUid == null) {
             finishActivity();
         }
+
+        Log.e(Utils.TAG, "onCreateView Info");
 
         imageViewPhotoProfil = (ImageView) view.findViewById(R.id.imageViewPhotoProfil);
         textViewTitle = (TextView) view.findViewById(R.id.textViewTitle);
@@ -146,6 +156,7 @@ public class EventInfoFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Log.e(Utils.TAG, "onViewCreated Info");
         createAuthStateListener();
 
     }
@@ -153,22 +164,26 @@ public class EventInfoFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Log.e(Utils.TAG, "onStart info");
         mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onResume() {
+        Log.e(Utils.TAG, "onResume Info");
         super.onResume();
     }
 
     @Override
     public void onPause() {
+        Log.e(Utils.TAG, "onPause Info");
         super.onPause();
     }
 
 
     @Override
     public void onStop() {
+        Log.e(Utils.TAG, "onStop Info");
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
@@ -177,20 +192,29 @@ public class EventInfoFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        Log.e(Utils.TAG, "onDestroyView Info");
         super.onDestroyView();
     }
 
     @Override
     public void onDestroy() {
+        Log.e(Utils.TAG, "onDestroy Info");
         super.onDestroy();
+        if (adapter != null) {
+            adapter.cleanup();
+            adapter.notifyDataSetChanged();
+        }
+        Log.e(Utils.TAG, "onDestroy Info fin");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.e(Utils.TAG, "onDetach Info");
     }
 
     private void createAuthStateListener() {
+        Log.e(Utils.TAG, "createAuthStateListener info");
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -208,8 +232,9 @@ public class EventInfoFragment extends Fragment {
 
     private void createView() {
         Query query = fbDatabase.getRefEventPhotos(incomeEventUid).limitToFirst(10);
+        query.keepSynced(true);
 
-        FirebaseRecyclerAdapter<String, EventPhotoHolder> adapter = new FirebaseRecyclerAdapter<String, EventPhotoHolder>(String.class, R.layout.card_event_info_top_photo, EventPhotoHolder.class, query) {
+        adapter = new FirebaseRecyclerAdapter<String, EventPhotoHolder>(String.class, R.layout.card_event_info_top_photo, EventPhotoHolder.class, query) {
             @Override
             protected void populateViewHolder(EventPhotoHolder eventPhotoHolder, String s, int position) {
                 if (s != null) {
@@ -221,6 +246,8 @@ public class EventInfoFragment extends Fragment {
         recyclerViewTopPhoto.setAdapter(adapter);
 
         Query query1 = fbDatabase.getRefEvent(incomeEventUid);
+        query1.keepSynced(true);
+
         query1.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -385,6 +412,7 @@ public class EventInfoFragment extends Fragment {
     private void isUserParticipe() {
 
         Query query = fbDatabase.getRefUserEvents(currentUserUid).child(incomeEventUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -419,6 +447,7 @@ public class EventInfoFragment extends Fragment {
 
     private void getPhoto(final EventPhotoHolder eventPhotoHolder, final String photoUid, final int position) {
         Query query = fbDatabase.getRefPhoto(photoUid);
+        query.keepSynced(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override

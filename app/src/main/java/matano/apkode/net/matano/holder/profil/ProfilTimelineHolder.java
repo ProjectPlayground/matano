@@ -1,4 +1,4 @@
-package matano.apkode.net.matano.holder.user;
+package matano.apkode.net.matano.holder.profil;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide;
 
 import matano.apkode.net.matano.R;
 
-public class UserTimelineHolder extends RecyclerView.ViewHolder {
+public class ProfilTimelineHolder extends RecyclerView.ViewHolder {
     private TextView textViewDate;
     private ImageView imageViewPhoto;
     private TextView textViewTitle;
@@ -21,7 +21,7 @@ public class UserTimelineHolder extends RecyclerView.ViewHolder {
     private ImageButton imageButtonSharePhoto;
     private LinearLayout linearLayoutTitle;
 
-    public UserTimelineHolder(View itemView) {
+    public ProfilTimelineHolder(View itemView) {
         super(itemView);
         textViewDate = (TextView) itemView.findViewById(R.id.textViewDate);
         imageViewPhoto = (ImageView) itemView.findViewById(R.id.imageViewPhoto);

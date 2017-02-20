@@ -12,7 +12,7 @@ public class Event implements Serializable {
     private String title;
     private String category;
     private String subCategory;
-    private String contry;
+    private String country;
     private String city;
     private String place;
     private String address;
@@ -36,11 +36,11 @@ public class Event implements Serializable {
     public Event() {
     }
 
-    public Event(String title, String category, String subCategory, String contry, String city, String place, String address, Double longitude, Double latitude, Double altitude, Date date, String presentation, String photoProfil, String videoProfil, String tarification, Map<String, String> tickets, Map<String, String> users, Map<String, String> photos, Map<String, Tchat> tchats, Map<String, Programme> programmes) {
+    public Event(String title, String category, String subCategory, String country, String city, String place, String address, Double longitude, Double latitude, Double altitude, Date date, String presentation, String photoProfil, String videoProfil, String tarification, Map<String, String> tickets, Map<String, String> users, Map<String, String> photos, Map<String, Tchat> tchats, Map<String, Programme> programmes) {
         this.title = title;
         this.category = category;
         this.subCategory = subCategory;
-        this.contry = contry;
+        this.country = country;
         this.city = city;
         this.place = place;
         this.address = address;
@@ -83,12 +83,12 @@ public class Event implements Serializable {
         this.subCategory = subCategory;
     }
 
-    public String getContry() {
-        return contry;
+    public String getCountry() {
+        return country;
     }
 
-    public void setContry(String contry) {
-        this.contry = contry;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getCity() {

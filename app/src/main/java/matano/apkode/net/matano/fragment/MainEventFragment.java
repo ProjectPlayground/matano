@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -189,24 +188,21 @@ public class MainEventFragment extends Fragment {
     }
 
     private void createView() {
-        Log.e(Utils.TAG, "Country " + country + ", city " + city);
-        // Query query = app.getRefEvents().orderByChild("category").equalTo(CATEGORIE);
-        Query query = fbDatabase.getRefEvents();
+        Query query = fbDatabase.getRefEvents().orderByChild("city").equalTo(city);
+        query.keepSynced(true);
 
         adapter = new FirebaseRecyclerAdapter<Event, MainEventHolder>(Event.class, R.layout.card_main_event, MainEventHolder.class, query) {
             @Override
             protected void populateViewHolder(MainEventHolder mainEventHolder, Event event, int position) {
                 if (event != null) {
                     if (event.getCategory() != null) {
-                        // if (event.getCategory().equals(CATEGORIE)) {
                         displayLayout(mainEventHolder, event, getRef(position).getKey());
-                        // }
                     }
                 }
             }
         };
 
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+      /*  adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
                 super.onChanged();
@@ -231,6 +227,7 @@ public class MainEventFragment extends Fragment {
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
                 progressBar.setVisibility(View.GONE);
+                adapter.notifyDataSetChanged();
                 Log.e(Utils.TAG, "onItemRangeInserted ");
             }
 
@@ -245,12 +242,14 @@ public class MainEventFragment extends Fragment {
                 super.onItemRangeMoved(fromPosition, toPosition, itemCount);
                 Log.e(Utils.TAG, "onItemRangeMoved ");
             }
-        });
+        });*/
 
         recyclerView.setAdapter(adapter);
     }
 
     private void displayLayout(MainEventHolder mainEventHolder, Event event, final String refEvent) {
+        progressBar.setVisibility(View.GONE);
+
         String title = event.getTitle();
         String place = event.getPlace();
         String category = event.getCategory();
@@ -281,6 +280,7 @@ public class MainEventFragment extends Fragment {
             });
 
         }
+
 
     }
 
