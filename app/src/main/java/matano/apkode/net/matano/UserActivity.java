@@ -293,7 +293,7 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
-        imageButtonSharePhoto.setVisibility(View.VISIBLE);
+        // imageButtonSharePhoto.setVisibility(View.VISIBLE);
         imageButtonSharePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -111,39 +111,6 @@
                     android:background="@color/white"
                     android:padding="@dimen/activity_horizontal_margin" />
 
-                <Button
-                    android:id="@+id/buttonProgramme"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/appbar_padding_top"
-                    android:text="Programme"
-                    android:textSize="13sp" />
-
-                <Button
-                    android:id="@+id/buttonIntervenant"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/appbar_padding_top"
-                    android:text="Intervenants"
-                    android:textSize="13sp" />
-
-                <Button
-                    android:id="@+id/buttonInvite"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/appbar_padding_top"
-                    android:text="Invités d'honneur"
-                    android:textSize="13sp" />
-
-                <Button
-                    android:id="@+id/buttonActivite"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/appbar_padding_top"
-                    android:text="Activités"
-                    android:textSize="13sp" />
-
-
             </LinearLayout>
 
 

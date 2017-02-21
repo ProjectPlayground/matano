@@ -29,7 +29,6 @@ import matano.apkode.net.matano.config.FbDatabase;
 import matano.apkode.net.matano.config.Utils;
 import matano.apkode.net.matano.fragment.event.EventInfoFragment;
 import matano.apkode.net.matano.fragment.event.EventParticipantFragment;
-import matano.apkode.net.matano.fragment.event.EventPrivateFragment;
 import matano.apkode.net.matano.fragment.event.EventTimelineFragment;
 import matano.apkode.net.matano.fragment.event.EventTwitterFragment;
 import matano.apkode.net.matano.model.Event;
@@ -194,7 +193,7 @@ public class EventActivity extends AppCompatActivity {
      * FragmentPagerAdapter
      */
     public class EventPagerAdapter extends FragmentPagerAdapter {
-        private int icons[] = {R.mipmap.ic_action_notification_event_note_padding, R.mipmap.ic_action_action_list_padding, R.mipmap.ic_action_action_account_child_padding, R.mipmap.ic_action_communication_chat_padding, R.mipmap.ic_action_action_subject};
+        private int icons[] = {R.mipmap.ic_action_notification_event_note_padding, R.mipmap.ic_action_action_list_padding, R.mipmap.ic_action_action_account_child_padding, R.mipmap.ic_action_communication_chat_padding};
 
 
         public EventPagerAdapter(FragmentManager fm) {
@@ -221,8 +220,6 @@ public class EventActivity extends AppCompatActivity {
                 case 3:
                     return EventParticipantFragment.newInstance(incomeEventUid);
                 case 4:
-                    return EventPrivateFragment.newInstance(incomeEventUid);
-                case 5:
                     return EventTwitterFragment.newInstance(incomeEventUid);
                 default:
                     return null;
@@ -232,7 +229,7 @@ public class EventActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 5;
+            return 4;
         }
 
         @Override

@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Locale;
 
 import matano.apkode.net.matano.LoginActivity;
-import matano.apkode.net.matano.ModuleActivity;
 import matano.apkode.net.matano.R;
 import matano.apkode.net.matano.config.Db;
 import matano.apkode.net.matano.config.FbDatabase;
@@ -126,11 +125,6 @@ public class EventInfoFragment extends Fragment {
         textViewTarification = (TextView) view.findViewById(R.id.textViewTarification);
         textViewPresentation = (TextView) view.findViewById(R.id.textViewPresentation);
         button_participer = (Button) view.findViewById(R.id.button_participer);
-
-        buttonProgramme = (Button) view.findViewById(R.id.buttonProgramme);
-        buttonInvite = (Button) view.findViewById(R.id.buttonInvite);
-        buttonIntervenant = (Button) view.findViewById(R.id.buttonIntervenant);
-        buttonActivite = (Button) view.findViewById(R.id.buttonActivite);
 
 
         LinearLayoutManager manager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
@@ -242,7 +236,7 @@ public class EventInfoFragment extends Fragment {
             }
         });
 
-        buttonProgramme.setOnClickListener(new View.OnClickListener() {
+       /* buttonProgramme.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, ModuleActivity.class);
@@ -284,7 +278,7 @@ public class EventInfoFragment extends Fragment {
 
                 startActivity(intent);
             }
-        });
+        });*/
 
     }
 
