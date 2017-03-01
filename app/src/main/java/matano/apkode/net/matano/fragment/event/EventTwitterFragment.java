@@ -18,8 +18,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.twitter.sdk.android.tweetui.SearchTimeline;
-import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
 
 import matano.apkode.net.matano.LoginActivity;
 import matano.apkode.net.matano.R;
@@ -163,7 +161,7 @@ public class EventTwitterFragment extends ListFragment {
                 if (hashtag == null) {
                     textViewEmpty.setText(R.string.empty_twitter);
                 } else {
-                    showTwitter(hashtag);
+                    //   showTwitter(hashtag);
                 }
             }
 
@@ -176,14 +174,14 @@ public class EventTwitterFragment extends ListFragment {
     }
 
     private void showTwitter(String hashtag) {
-        SearchTimeline searchTimeline = new SearchTimeline.Builder()
+       /* SearchTimeline searchTimeline = new SearchTimeline.Builder()
                 .query("#" + hashtag)
                 .build();
 
         TweetTimelineListAdapter adapter = new TweetTimelineListAdapter.Builder(context)
                 .setTimeline(searchTimeline)
-                .build();
-        setListAdapter(adapter);
+                .build();*/
+        //   setListAdapter(adapter);
     }
 
 
